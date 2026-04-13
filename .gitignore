@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.DS_Store
+.agents/
+.claude/
+.mcp.json
+skills-lock.json
+tsconfig.tsbuildinfo
+*.lock
