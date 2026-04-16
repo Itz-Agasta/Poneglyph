@@ -116,7 +116,7 @@ async fn start_local_server(pool: sqlx::PgPool) -> Result<()> {
                         Ok(resp) => make_response(&mut stream, 200, &resp).await,
                         Err(e) => {
                             tracing::error!("Sync failed: {:?}", e);
-                            make_response(&mut stream, 500, &json!({"error": format!("Sync failed: {}", e)})).await;
+                            make_response(&mut stream, 500, &json!({"error": "Internal server error"})).await;
                         }
                     }
                 }
@@ -133,7 +133,7 @@ async fn start_local_server(pool: sqlx::PgPool) -> Result<()> {
                         Ok(resp) => make_response(&mut stream, 200, &resp).await,
                         Err(e) => {
                             tracing::error!("Embed batch failed: {:?}", e);
-                            make_response(&mut stream, 500, &json!({"error": format!("Embed batch failed: {}", e)})).await;
+                            make_response(&mut stream, 500, &json!({"error": "Internal server error"})).await;
                         }
                     }
                 }
