@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@Poneglyph/env": "workspace:*",
+    "@better-auth/infra": "^0.2.3",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },

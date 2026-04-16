@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@Poneglyph/ui/components/button';
-import { Input } from '@Poneglyph/ui/components/input';
-import { 
-  Paperclip, 
-  Send, 
-  Minimize2, 
-  Maximize2, 
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@Poneglyph/ui/components/button";
+import { Input } from "@Poneglyph/ui/components/input";
+import {
+  Paperclip,
+  Send,
+  Minimize2,
+  Maximize2,
   X,
   FileText,
-  Upload
-} from 'lucide-react';
+  Upload,
+} from "lucide-react";
 
 interface Message {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "agent";
   content: string;
   files?: File[];
   timestamp: Date;
@@ -26,51 +26,56 @@ interface AgentPanelProps {
   isMinimized?: boolean;
 }
 
-export function AgentPanel({ onMinimize, isMinimized = false }: AgentPanelProps) {
+export function AgentPanel({
+  onMinimize,
+  isMinimized = false,
+}: AgentPanelProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
-      role: 'assistant',
-      content: 'Hello! I\'m your research assistant. Upload a dataset or start drawing on the whiteboard, and I can help you analyze and visualize your survey data.',
-      timestamp: new Date()
-    }
+      id: "1",
+      role: "agent",
+      content:
+        "Hello! I'm your research agent. Upload a dataset or start drawing on the whiteboard, and I can help you analyze and visualize your survey data.",
+      timestamp: new Date(),
+    },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = () => {
     if (!input.trim()) return;
-    
+
     const userMessage: Message = {
       id: Date.now().toString(),
-      role: 'user',
+      role: "user",
       content: input,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+
     // Simulate agent response (replace with actual API call)
     setTimeout(() => {
       const agentMessage: Message = {
         id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: 'I received your message. You can ask me about your data, request visualizations, or anything about the whiteboard content.',
-        timestamp: new Date()
+        role: "agent",
+        content:
+          "I received your message. You can ask me about your data, request visualizations, or anything about the whiteboard content.",
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, agentMessage]);
+      setMessages((prev) => [...prev, agentMessage]);
     }, 1000);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -82,22 +87,22 @@ export function AgentPanel({ onMinimize, isMinimized = false }: AgentPanelProps)
       // Add file to the last user message or create a new one
       const userMessage: Message = {
         id: Date.now().toString(),
-        role: 'user',
+        role: "user",
         content: `Uploaded ${files.length} file(s)`,
         files: Array.from(files),
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, userMessage]);
-      
+      setMessages((prev) => [...prev, userMessage]);
+
       // Simulate processing
       setTimeout(() => {
         const agentMessage: Message = {
           id: (Date.now() + 1).toString(),
-          role: 'assistant',
+          role: "agent",
           content: `I\'ve processed your uploaded file(s). I can see the data now. What would you like to visualize or analyze?`,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
-        setMessages(prev => [...prev, agentMessage]);
+        setMessages((prev) => [...prev, agentMessage]);
       }, 1500);
     }
   };
@@ -118,12 +123,12 @@ export function AgentPanel({ onMinimize, isMinimized = false }: AgentPanelProps)
     if (files.length > 0) {
       const userMessage: Message = {
         id: Date.now().toString(),
-        role: 'user',
+        role: "user",
         content: `Uploaded ${files.length} file(s) via drag & drop`,
         files: Array.from(files),
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, userMessage]);
+      setMessages((prev) => [...prev, userMessage]);
     }
   };
 
@@ -132,7 +137,7 @@ export function AgentPanel({ onMinimize, isMinimized = false }: AgentPanelProps)
   }
 
   return (
-    <div 
+    <div
       className="fixed bottom-0 left-0 right-0 h-[400px] bg-background border-t shadow-lg flex flex-col z-50"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -145,7 +150,12 @@ export function AgentPanel({ onMinimize, isMinimized = false }: AgentPanelProps)
           <span className="font-medium text-sm">Research Agent</span>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onMinimize}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onMinimize}
+          >
             <Minimize2 className="h-4 w-4" />
           </Button>
         </div>
@@ -156,13 +166,13 @@ export function AgentPanel({ onMinimize, isMinimized = false }: AgentPanelProps)
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
               className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                msg.role === 'user'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted'
+                msg.role === "user"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted"
               }`}
             >
               <p className="text-sm whitespace-pre-wrap">{msg.content}</p>

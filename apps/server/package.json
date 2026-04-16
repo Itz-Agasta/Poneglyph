@@ -13,6 +13,8 @@
     "@Poneglyph/auth": "workspace:*",
     "@Poneglyph/db": "workspace:*",
     "@Poneglyph/env": "workspace:*",
+    "@Poneglyph/validators": "workspace:*",
+    "@hono/zod-validator": "^0.7.6",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "hono": "^4.8.2",

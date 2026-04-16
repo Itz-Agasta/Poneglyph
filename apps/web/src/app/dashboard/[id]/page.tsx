@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Button } from "@Poneglyph/ui/components/button";
@@ -16,8 +16,11 @@ import {
   Linkedin,
   Copy,
   Check,
+  Database,
 } from "lucide-react";
 import type { Article } from "../components/article-card";
+import { apiClient } from "@/lib/api-client";
+import { PaginatedResponseSchema, DatasetListItemSchema } from "@Poneglyph/validators";
 
 const ARTICLE_CATEGORIES: Record<string, string> = {
   "1": "Health",
@@ -172,10 +175,54 @@ const ARTICLE_BODIES: Record<string, string[]> = {
   ],
 };
 
+interface Dataset {
+  id: string;
+  title: string;
+  description: string | null;
+  publisher: string | null;
+  language: string;
+  fileTypes: string[] | null;
+  status: string;
+  viewCount: number;
+  downloadCount: number;
+  createdAt: string;
+  tags?: Array<{ id: string; name: string; slug: string }>;
+}
+
 export default function ArticlePage() {
   const params = useParams<{ id: string }>();
   const [urlCopied, setUrlCopied] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
+  const [datasets, setDatasets] = useState<Dataset[]>([]);
+  const [datasetsLoading, setDatasetsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDatasets() {
+      try {
+        console.log("Fetching datasets...");
+        const res = await apiClient.api.v1.datasets.$get({ query: { limit: "10" } });
+        console.log("Response status:", res.status, res.ok);
+        if (res.ok) {
+          const json = await res.json();
+          console.log("Response json:", JSON.stringify(json).slice(0, 200));
+          const parsed = PaginatedResponseSchema(DatasetListItemSchema).safeParse(json);
+          if (parsed.success) {
+            console.log("Parsed successfully, datasets:", parsed.data.data.length);
+            setDatasets(parsed.data.data);
+          } else {
+            console.error("Parse error:", parsed.error);
+          }
+        } else {
+          console.error("Response not ok");
+        }
+      } catch (error) {
+        console.error("Failed to fetch datasets:", error);
+      } finally {
+        setDatasetsLoading(false);
+      }
+    }
+    fetchDatasets();
+  }, []);
 
   const article = sampleArticles.find((a) => a.id === params.id);
 
@@ -317,9 +364,7 @@ export default function ArticlePage() {
 
             {/* Dataset tags */}
             <div className="mt-6 flex flex-wrap items-center gap-2">
-              <span className="text-body-sm text-grey-2">
-                Linked datasets:
-              </span>
+              <span className="text-body-sm text-grey-2">Linked datasets:</span>
               {article.datasetIds.map((id) => (
                 <Badge key={id} variant="outline" className="text-[11px]">
                   {id}
@@ -378,7 +423,7 @@ export default function ArticlePage() {
                 href="#"
                 className="mb-5 inline-block text-body-sm text-blue transition-opacity hover:opacity-75"
               >
-                ♦ Reports
+                Reports
               </a>
 
               {/* Download */}
@@ -439,32 +484,49 @@ export default function ArticlePage() {
                 </div>
               </div>
 
-              {/* Embed code */}
-              <div>
-                <p className="mb-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.12em] text-grey-2">
-                  HTML code to embed chart{" "}
-                  <span className="text-blue">♦</span>:
-                </p>
-                <div className="relative">
-                  <textarea
-                    readOnly
-                    value={embedCode}
-                    rows={3}
-                    className="w-full resize-none rounded-sm border border-grey-3 bg-grey-4 p-2 pr-8 text-[11px] leading-relaxed text-grey-1 focus:outline-none"
-                  />
-                  <button
-                    onClick={() =>
-                      copyToClipboard(embedCode, setEmbedCopied)
-                    }
-                    className="absolute right-2 top-2 text-grey-2 transition-colors hover:text-grey-1"
-                  >
-                    {embedCopied ? (
-                      <Check className="size-3.5 text-success" />
-                    ) : (
-                      <Copy className="size-3.5" />
-                    )}
-                  </button>
+              {/* Datasets section */}
+              <div className="rounded-md border border-grey-3 p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Database className="size-4 text-blue" />
+                  <p className="text-body-sm font-bold text-black">
+                    Datasets
+                  </p>
                 </div>
+                {datasetsLoading ? (
+                  <div className="space-y-2">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="h-8 animate-pulse rounded-sm bg-grey-35"
+                      />
+                    ))}
+                  </div>
+                ) : datasets.length > 0 ? (
+                  <ul className="space-y-1">
+                    {datasets.slice(0, 5).map((dataset) => (
+                      <li key={dataset.id}>
+                        <Link
+                          href={`/datasets?id=${dataset.id}`}
+                          className="block truncate text-body-sm text-blue transition-opacity hover:opacity-75"
+                        >
+                          {dataset.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-body-sm text-grey-2">
+                    No datasets available.
+                  </p>
+                )}
+                {datasets.length > 5 && (
+                  <Link
+                    href="/datasets"
+                    className="mt-2 block text-body-sm text-blue underline underline-offset-2"
+                  >
+                    View all datasets
+                  </Link>
+                )}
               </div>
             </div>
           </aside>
