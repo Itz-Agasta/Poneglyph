@@ -18,20 +18,68 @@ export interface UploadMessage {
   tags: string[];
   attachments: AttachmentInfo[];
   callback_url: string;
+  _retry?: number;
+}
+
+const FAILED_QUEUE_SUFFIX = "-failed";
+
+/**
+ * Get the dead letter queue name for a given queue.
+ */
+function getFailedQueueName(queueName: string): string {
+  return `${queueName}${FAILED_QUEUE_SUFFIX}`;
 }
 
 /**
  * Publish an upload message to the RabbitMQ queue.
  * Opens a connection, publishes, then closes — keeps server stateless.
+ * 
+ * Messages include _retry count starting at 0 for retry tracking.
  */
 export async function publishUploadMessage(msg: UploadMessage): Promise<void> {
   const conn = await amqplib.connect(env.RABBITMQ_URL);
   try {
     const channel = await conn.createChannel();
-    // Durable queue — survives broker restarts
-    await channel.assertQueue(env.RABBITMQ_QUEUE, { durable: true });
+
+    const queueName = env.RABBITMQ_QUEUE;
+    const failedQueueName = getFailedQueueName(queueName);
+
+    // Assert both main queue and dead letter queue (durable)
+    await channel.assertQueue(queueName, { durable: true });
+    await channel.assertQueue(failedQueueName, { durable: true });
+
+    // Add retry count if not present (should be 0 for new messages)
+    const messageWithRetry: UploadMessage = {
+      ...msg,
+      _retry: msg._retry ?? 0,
+    };
+
     channel.sendToQueue(
-      env.RABBITMQ_QUEUE,
+      queueName,
+      Buffer.from(JSON.stringify(messageWithRetry)),
+      { persistent: true, contentType: "application/json" },
+    );
+    await channel.close();
+  } finally {
+    await conn.close();
+  }
+}
+
+/**
+ * Republish a message to the failed queue (after max retries exceeded).
+ */
+export async function publishToFailedQueue(msg: UploadMessage): Promise<void> {
+  const conn = await amqplib.connect(env.RABBITMQ_URL);
+  try {
+    const channel = await conn.createChannel();
+
+    const failedQueueName = getFailedQueueName(env.RABBITMQ_QUEUE);
+
+    // Ensure failed queue exists
+    await channel.assertQueue(failedQueueName, { durable: true });
+
+    channel.sendToQueue(
+      failedQueueName,
       Buffer.from(JSON.stringify(msg)),
       { persistent: true, contentType: "application/json" },
     );

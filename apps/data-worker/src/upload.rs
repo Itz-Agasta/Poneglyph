@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use bytes::Bytes;
 use calamine::{open_workbook_from_rs, Reader, Xlsx};
 use lapin::{
-    options::{BasicAckOptions, BasicConsumeOptions, BasicNackOptions, BasicQosOptions, QueueDeclareOptions},
+    options::{BasicAckOptions, BasicConsumeOptions, BasicNackOptions, BasicPublishOptions, BasicQosOptions, QueueDeclareOptions},
     types::FieldTable,
     Connection, ConnectionProperties,
 };
@@ -14,9 +14,8 @@ use uuid::Uuid;
 
 use crate::{config, db, embed};
 
-// ── Message types ─────────────────────────────────────────────────────────────
-
-#[derive(Debug, Deserialize)]
+// Message types 
+#[derive(Debug, Deserialize, Serialize)]
 pub struct UploadMessage {
     pub upload_id: String,
     pub user_id: String,
@@ -27,9 +26,11 @@ pub struct UploadMessage {
     pub tags: Vec<String>,
     pub attachments: Vec<AttachmentInfo>,
     pub callback_url: String,
+    #[serde(default)]
+    pub _retry: u32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct AttachmentInfo {
     pub s3_key: String,
     pub presigned_url: String,
@@ -46,7 +47,7 @@ struct CallbackPayload {
     error: Option<String>,
 }
 
-// ── Consumer entry point ──────────────────────────────────────────────────────
+// Consumer entry point 
 
 /// Long-running RabbitMQ consumer.
 /// Activated when `RABBITMQ_CONSUMER=true` is set.
@@ -73,7 +74,16 @@ pub async fn run_consumer(pool: PgPool) -> Result<()> {
             FieldTable::default(),
         )
         .await
-        .context("Failed to declare queue")?;
+        .context("Failed to declare main queue")?;
+
+    channel
+        .queue_declare(
+            &cfg.rabbitmq_failed_queue,
+            QueueDeclareOptions { durable: true, ..Default::default() },
+            FieldTable::default(),
+        )
+        .await
+        .context("Failed to declare failed queue")?;
 
     let mut consumer = channel
         .basic_consume(
@@ -85,7 +95,11 @@ pub async fn run_consumer(pool: PgPool) -> Result<()> {
         .await
         .context("Failed to start consumer")?;
 
-    tracing::info!("Listening on queue '{}'", cfg.rabbitmq_queue);
+    tracing::info!(
+        "Listening on queue '{}' (failed queue: '{}')",
+        cfg.rabbitmq_queue,
+        cfg.rabbitmq_failed_queue
+    );
 
     use futures::StreamExt;
     while let Some(delivery) = consumer.next().await {
@@ -97,7 +111,9 @@ pub async fn run_consumer(pool: PgPool) -> Result<()> {
             }
         };
 
-        let msg: UploadMessage = match serde_json::from_slice(&delivery.data) {
+        let data_bytes = delivery.data.clone();
+        
+        let msg: UploadMessage = match serde_json::from_slice(&data_bytes) {
             Ok(m) => m,
             Err(e) => {
                 tracing::error!("Failed to parse upload message: {}", e);
@@ -107,16 +123,67 @@ pub async fn run_consumer(pool: PgPool) -> Result<()> {
             }
         };
 
-        tracing::info!("Processing upload_id={}", msg.upload_id);
+        let retry_count = msg._retry;
+        
+        tracing::info!(
+            "Processing upload_id={} (retry={})",
+            msg.upload_id,
+            retry_count
+        );
 
         match process_upload(&pool, msg).await {
             Ok(_) => {
                 let _ = delivery.ack(BasicAckOptions::default()).await;
             }
             Err(e) => {
-                tracing::error!("Upload processing failed: {:?}", e);
-                // Requeue once on transient errors (network, Gemini rate limit, etc.)
-                let _ = delivery.nack(BasicNackOptions { requeue: true, ..Default::default() }).await;
+                tracing::error!(
+                    "Upload processing failed: {:?} (retry={})",
+                    e,
+                    retry_count
+                );
+
+                // Republish with incremented retry count
+                let mut retry_msg: UploadMessage = serde_json::from_slice(&data_bytes).unwrap();
+                retry_msg._retry = retry_count + 1;
+                let payload = serde_json::to_vec(&retry_msg).unwrap_or_default();
+
+                if retry_count < 2 {
+                    tracing::warn!(
+                        "Retrying upload_id={} (attempt {}/2)",
+                        retry_msg.upload_id,
+                        retry_count + 1
+                    );
+                    let _ = channel
+                        .basic_publish(
+                            "",
+                            &cfg.rabbitmq_queue,
+                            BasicPublishOptions::default(),
+                            &payload,
+                            lapin::BasicProperties::default()
+                                .with_content_type("application/json".into())
+                                .with_delivery_mode(2),
+                        )
+                        .await;
+                } else {
+                    tracing::error!(
+                        "Max retries exceeded for upload_id={}, sending to failed queue",
+                        retry_msg.upload_id
+                    );
+                    // TODO: Add logging for failed job (e.g., database entry, external service, etc.)
+                    let _ = channel
+                        .basic_publish(
+                            "",
+                            &cfg.rabbitmq_failed_queue,
+                            BasicPublishOptions::default(),
+                            &payload,
+                            lapin::BasicProperties::default()
+                                .with_content_type("application/json".into())
+                                .with_delivery_mode(2),
+                        )
+                        .await;
+                }
+
+                let _ = delivery.ack(BasicAckOptions::default()).await;
             }
         }
     }
@@ -124,7 +191,7 @@ pub async fn run_consumer(pool: PgPool) -> Result<()> {
     Ok(())
 }
 
-// ── Core processing ───────────────────────────────────────────────────────────
+// Core processing
 
 async fn process_upload(pool: &PgPool, msg: UploadMessage) -> Result<()> {
     let cfg = &*config::CONFIG;
@@ -219,7 +286,7 @@ async fn process_upload(pool: &PgPool, msg: UploadMessage) -> Result<()> {
     Ok(())
 }
 
-// ── Embedding helpers ─────────────────────────────────────────────────────────
+// Embedding helpers 
 
 fn build_text_for_embedding(msg: &UploadMessage) -> String {
     let mut parts = vec![msg.title.as_str(), msg.description.as_str()];
@@ -495,7 +562,7 @@ fn average_vectors(vectors: Vec<Vec<f32>>) -> Vec<f32> {
     result
 }
 
-// ── Server notification ───────────────────────────────────────────────────────
+// Server notification
 
 /// Fire-and-forget POST to the server callback URL.
 /// Non-fatal: logs on failure but does not fail the overall job.
