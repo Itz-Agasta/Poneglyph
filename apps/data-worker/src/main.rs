@@ -3,6 +3,7 @@ mod db;
 mod embed;
 mod sources;
 mod sync;
+mod upload;
 
 use anyhow::Result;
 use lambda_http::{service_fn, Body, Error, Request, Response};
@@ -33,11 +34,13 @@ async fn main() -> Result<(), Error> {
 
     // ENTRY POINT SELECTION
     //
-    // AWS_LAMBDA_FUNCTION_NAME is set automatically by the Lambda runtime.
-    // If present → deploy as AWS Lambda (handler route)
-    // If absent → run as local HTTP server (dev/testing)
-    if std::env::var("AWS_LAMBDA_FUNCTION_NAME").is_ok() {
-        // AWS Lambda
+    // RABBITMQ_CONSUMER=true → long-running queue consumer (user upload processing)
+    // AWS_LAMBDA_FUNCTION_NAME set → AWS Lambda (CKAN sync / embed-batch)
+    // otherwise → local HTTP dev server
+    if std::env::var("RABBITMQ_CONSUMER").is_ok() {
+        tracing::info!("Starting in RabbitMQ consumer mode");
+        upload::run_consumer(pool).await?;
+    } else if std::env::var("AWS_LAMBDA_FUNCTION_NAME").is_ok() {
         lambda_http::run(service_fn(|req: Request| {
             handler(req, &pool)
         }))
