@@ -345,13 +345,14 @@ pub async fn insert_upload_dataset(
     publisher: Option<&str>,
     s3_keys: &[String],
     file_types: &[String],
+    thumbnail_s3_key: Option<&str>,
 ) -> Result<Uuid> {
     let row = sqlx::query(
         r#"
         INSERT INTO datasets
             (source_id, title, description, summary, publisher,
-             s3_keys, file_types, dataset_status)
-        VALUES ($1, $2, $3, $4, $5, $6, $7::file_type[], 'pending')
+             s3_keys, file_types, thumbnail_s3_key, dataset_status)
+        VALUES ($1, $2, $3, $4, $5, $6, $7::file_type[], $8, 'pending')
         RETURNING id
         "#,
     )
@@ -363,6 +364,7 @@ pub async fn insert_upload_dataset(
     .bind(publisher)
     .bind(s3_keys)
     .bind(file_types)
+    .bind(thumbnail_s3_key)
     .fetch_one(pool)
     .await
     .context("Failed to insert upload dataset")?;

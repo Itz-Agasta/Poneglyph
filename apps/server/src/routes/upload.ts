@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { uploadFile, getPresignedUrl } from "../lib/s3";
-import { publishUploadMessage, type AttachmentInfo } from "../lib/queue";
+import { publishUploadMessage } from "../lib/queue";
 
 const upload = new Hono();
 
@@ -13,7 +13,8 @@ const MIME_TO_FILE_TYPE: Record<string, string> = {
   "application/json": "json",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
   "application/vnd.ms-excel": "xls",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    "docx",
 };
 
 function resolveFileType(mime: string): string {
@@ -29,8 +30,9 @@ function resolveFileType(mime: string): string {
  *   - publisher    (optional)
  *   - tags         (optional, comma-separated)
  *   - files        (one or more attachments)
+ *   - thumbnail    (optional, image file)
  *
- * Uploads files to R2, enqueues processing job, returns upload_id.
+ * Uploads files to R2 in parallel, enqueues processing job, returns upload_id.
  */
 upload.post("/", async (c) => {
   // Better-auth session check
@@ -53,7 +55,12 @@ upload.post("/", async (c) => {
   const summary = formData.get("summary")?.toString() ?? undefined;
   const publisher = formData.get("publisher")?.toString() ?? undefined;
   const tagsRaw = formData.get("tags")?.toString() ?? "";
-  const tags = tagsRaw ? tagsRaw.split(",").map((t) => t.trim()).filter(Boolean) : [];
+  const tags = tagsRaw
+    ? tagsRaw
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean)
+    : [];
 
   // Collect all uploaded files
   const fileEntries = formData.getAll("files") as File[];
@@ -63,9 +70,8 @@ upload.post("/", async (c) => {
 
   const uploadId = crypto.randomUUID();
 
-  // Upload each file to R2 and generate a presigned URL
-  const attachments: AttachmentInfo[] = [];
-  for (const file of fileEntries) {
+  // Parallel upload all attachments to R2
+  const attachmentPromises = fileEntries.map(async (file) => {
     const ext = file.name.split(".").pop() ?? "bin";
     const key = `uploads/${uploadId}/${crypto.randomUUID()}.${ext}`;
     const buffer = await file.arrayBuffer();
@@ -73,12 +79,27 @@ upload.post("/", async (c) => {
     await uploadFile(key, buffer, file.type || "application/octet-stream");
     const presignedUrl = await getPresignedUrl(key);
 
-    attachments.push({
+    return {
       s3_key: key,
       presigned_url: presignedUrl,
       mime_type: file.type || "application/octet-stream",
       file_type: resolveFileType(file.type),
-    });
+    };
+  });
+
+  // TODO: Handle partial failures (e.g., 4/5 files uploaded successfully)
+  // I havent thought about it yet
+  const attachments = await Promise.all(attachmentPromises);
+
+  // Upload optional thumbnail in parallel with attachments
+  let thumbnailS3Key: string | undefined;
+  const thumbnailFile = formData.get("thumbnail") as File | null;
+  if (thumbnailFile) {
+    const thumbExt = thumbnailFile.name.split(".").pop() ?? "bin";
+    const thumbKey = `uploads/${uploadId}/thumbnail.${thumbExt}`;
+    const thumbBuffer = await thumbnailFile.arrayBuffer();
+    await uploadFile(thumbKey, thumbBuffer, thumbnailFile.type || "image/*");
+    thumbnailS3Key = thumbKey;
   }
 
   // Publish to RabbitMQ — worker handles everything from here
@@ -91,6 +112,7 @@ upload.post("/", async (c) => {
     publisher,
     tags,
     attachments,
+    thumbnail_s3_key: thumbnailS3Key,
     callback_url: `${c.req.url.split("/api/")[0]}/api/upload/callback`,
   });
 
@@ -113,9 +135,13 @@ upload.post("/callback", zValidator("json", callbackSchema), async (c) => {
   const body = c.req.valid("json");
 
   if (body.status === "completed") {
-    console.log(`[upload] completed: upload_id=${body.upload_id} dataset_id=${body.dataset_id}`);
+    console.log(
+      `[upload] completed: upload_id=${body.upload_id} dataset_id=${body.dataset_id}`,
+    );
   } else {
-    console.error(`[upload] failed: upload_id=${body.upload_id} error=${body.error}`);
+    console.error(
+      `[upload] failed: upload_id=${body.upload_id} error=${body.error}`,
+    );
   }
 
   // TODO: push real-time notification to frontend (WebSocket/SSE)

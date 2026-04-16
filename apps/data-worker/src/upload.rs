@@ -25,6 +25,7 @@ pub struct UploadMessage {
     pub publisher: Option<String>,
     pub tags: Vec<String>,
     pub attachments: Vec<AttachmentInfo>,
+    pub thumbnail_s3_key: Option<String>,
     pub callback_url: String,
     #[serde(default)]
     pub _retry: u32,
@@ -219,6 +220,7 @@ async fn process_upload(pool: &PgPool, msg: UploadMessage) -> Result<()> {
         msg.publisher.as_deref(),
         &s3_keys,
         &file_types,
+        msg.thumbnail_s3_key.as_deref(),
     )
     .await
     .context("Failed to insert dataset")?;

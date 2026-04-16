@@ -13,6 +13,7 @@ export default function TestUploadPage() {
   const [publisher, setPublisher] = useState("");
   const [tags, setTags] = useState("");
   const [files, setFiles] = useState<File[]>([]);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadId, setUploadId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +21,12 @@ export default function TestUploadPage() {
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
       setFiles(Array.from(e.target.files));
+    }
+  }
+
+  function handleThumbnailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && e.target.files[0]) {
+      setThumbnail(e.target.files[0]);
     }
   }
 
@@ -38,6 +45,9 @@ export default function TestUploadPage() {
       if (tags) formData.append("tags", tags);
       for (const file of files) {
         formData.append("files", file);
+      }
+      if (thumbnail) {
+        formData.append("thumbnail", thumbnail);
       }
 
       const res = await fetch(`${SERVER_URL}/api/upload`, {
@@ -120,6 +130,20 @@ export default function TestUploadPage() {
             placeholder="education, survey, rural"
             style={inputStyle}
           />
+        </label>
+
+        <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          Thumbnail (optional)
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleThumbnailChange}
+          />
+          {thumbnail && (
+            <span style={{ fontSize: "0.875rem", color: "#555" }}>
+              Selected: {thumbnail.name}
+            </span>
+          )}
         </label>
 
         <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>

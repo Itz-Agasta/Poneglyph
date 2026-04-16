@@ -17,6 +17,7 @@ export interface UploadMessage {
   publisher?: string;
   tags: string[];
   attachments: AttachmentInfo[];
+  thumbnail_s3_key?: string;
   callback_url: string;
   _retry?: number;
 }
