@@ -53,6 +53,8 @@ coverage
 .cache
 tmp
 temp
+.Rhistory
+PR.md
 
 # Reference directory
 raw/
