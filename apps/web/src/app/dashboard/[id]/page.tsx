@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import type { Article } from "../components/article-card";
 import { apiClient } from "@/lib/api-client";
-import { PaginatedResponseSchema, DatasetListItemSchema } from "@Poneglyph/validators";
+import { PaginatedResponseSchema, DatasetListItemSchema } from "@/lib/types";
 
 const ARTICLE_CATEGORIES: Record<string, string> = {
   "1": "Health",

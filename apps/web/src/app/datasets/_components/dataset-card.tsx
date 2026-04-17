@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { DatasetListItem } from "@Poneglyph/validators";
+import type { DatasetListItem } from "@/lib/types";
 import { Badge } from "@Poneglyph/ui/components/badge";
 import { IconEye, IconDownload, IconDatabase } from "@tabler/icons-react";
 

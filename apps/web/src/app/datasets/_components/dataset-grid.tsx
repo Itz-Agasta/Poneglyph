@@ -2,7 +2,7 @@ import { apiClient } from "@/lib/api-client";
 import {
   DatasetListItemSchema,
   PaginatedResponseSchema,
-} from "@Poneglyph/validators";
+} from "@/lib/types";
 import { DatasetCard } from "./dataset-card";
 import Link from "next/link";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
