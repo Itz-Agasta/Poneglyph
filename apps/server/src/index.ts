@@ -12,6 +12,10 @@ const allowedOrigins = env.CORS_ORIGINS.split(",").map((o) => o.trim());
 
 import { datasetsRoute } from "./routes/datasets";
 
+import { volunteerRoutes } from "./routes/volunteer";
+import upload from "./routes/upload";
+import chat from "./routes/chat";
+
 const app = new Hono();
 
 app.use(logger());

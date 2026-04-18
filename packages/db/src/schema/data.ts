@@ -11,6 +11,7 @@ import {
   uuid,
   pgEnum,
   vector,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
@@ -50,6 +51,55 @@ export const tags = pgTable("tags", {
   slug: varchar("slug", { length: 100 }).notNull().unique(),
 });
 
+<<<<<<< HEAD
+=======
+export const volunteer = pgTable(
+  "volunteer",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+    description: text("description"),
+    city: varchar("city", { length: 100 }),
+    pastWorks: text("past_works").array().notNull().default([]),
+    bio: text("bio"),
+    isOpenToWork: boolean("is_open_to_work").default(false).notNull(),
+    wantsToStartOrg: boolean("wants_to_start_org").default(false).notNull(),
+    wantsToHire: boolean("wants_to_hire").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("idx_volunteer_user_id").on(table.userId),
+    index("idx_volunteer_city").on(table.city),
+  ],
+);
+
+export const volunteerTags = pgTable(
+  "volunteer_tags",
+  {
+    volunteerId: text("volunteer_id")
+      .notNull()
+      .references(() => volunteer.userId, { onDelete: "cascade" }),
+    tagId: uuid("tag_id")
+      .notNull()
+      .references(() => tags.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_volunteer_tags_tag_id").on(table.tagId),
+    index("idx_volunteer_tags_volunteer_id").on(table.volunteerId),
+    primaryKey({
+      name: "volunteer_tags_pk",
+      columns: [table.volunteerId, table.tagId],
+    }),
+  ],
+);
+
+>>>>>>> 6e64379 (Refactored code)
 // Core pointer record table
 export const datasets = pgTable(
   "datasets",

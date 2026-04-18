@@ -45,6 +45,24 @@
         "typescript": "^5",
       },
     },
+    "apps/volunteer-backend": {
+      "name": "volunteer-backend",
+      "dependencies": {
+        "dotenv": "catalog:",
+        "hono": "^4.8.2",
+        "ioredis": "^5.8.2",
+        "minio": "^8.0.6",
+        "pg": "^8.17.1",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@Poneglyph/config": "workspace:*",
+        "@types/bun": "catalog:",
+        "@types/pg": "^8.15.6",
+        "tsdown": "^0.16.5",
+        "typescript": "^5",
+      },
+    },
     "apps/web": {
       "name": "web",
       "version": "0.1.0",
