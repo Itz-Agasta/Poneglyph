@@ -16,7 +16,8 @@ function hashQuery(query: string): string {
  * Cache miss → call API → cache result. Simple and effective.
  */
 export async function embedQuery(query: string): Promise<number[]> {
-  const cacheKey = `emb:${hashQuery(query)}`;
+  const normalized = query.trim().toLowerCase();
+  const cacheKey = `emb:${hashQuery(normalized)}`;
 
   // Check Redis cache first
   const cached = await redis.get<number[]>(cacheKey);
@@ -24,7 +25,7 @@ export async function embedQuery(query: string): Promise<number[]> {
 
   const { embedding } = await embed({
     model: EMBEDDING_MODEL,
-    value: query,
+    value: normalized,
     providerOptions: {
       google: {
         outputDimensionality: 768,

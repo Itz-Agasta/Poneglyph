@@ -70,8 +70,25 @@ export const searchDatabaseTool = tool({
       };
     }
 
+    // Batch-fetch tags for all result dataset IDs in a single query
+    const datasetIds = rows.map((r) => r.id);
+    const allTags = await db.execute<{ dataset_id: string; name: string }>(sql`
+      SELECT dt.dataset_id, t.name
+      FROM dataset_tags dt
+      INNER JOIN tags t ON dt.tag_id = t.id
+      WHERE dt.dataset_id IN (${sql.join(datasetIds.map((id) => sql`${id}`), sql`, `)})
+    `);
+
+    // Map tags to their datasets for O(1) lookup
+    const tagsByDataset = new Map<string, string[]>();
+    for (const t of allTags.rows) {
+      const existing = tagsByDataset.get(t.dataset_id);
+      if (existing) existing.push(t.name);
+      else tagsByDataset.set(t.dataset_id, [t.name]);
+    }
+
     // Enrich each result: generate presigned S3 URLs for file access,
-    // and fetch tags for filtering/display.
+    // and attach pre-fetched tags for filtering/display.
     const enriched = await Promise.all(
       rows.map(async (r) => {
         const fileLinks = r.s3_keys
@@ -82,13 +99,6 @@ export const searchDatabaseTool = tool({
               })),
             )
           : [];
-
-        const tagResults = await db.execute<{ name: string }>(sql`
-          SELECT t.name
-          FROM dataset_tags dt
-          INNER JOIN tags t ON dt.tag_id = t.id
-          WHERE dt.dataset_id = ${r.id}
-        `);
 
         return {
           title: r.title,
@@ -101,7 +111,7 @@ export const searchDatabaseTool = tool({
           sourceType: r.source_type,
           fileTypes: r.file_types,
           files: fileLinks,
-          tags: tagResults.rows.map((t) => t.name),
+          tags: tagsByDataset.get(r.id) ?? [],
           relevanceScore: Number(r.similarity).toFixed(4),
         };
       }),
