@@ -3,15 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@Poneglyph/ui/components/button";
 import { Input } from "@Poneglyph/ui/components/input";
-import {
-  Paperclip,
-  Send,
-  Minimize2,
-  Maximize2,
-  X,
-  FileText,
-  Upload,
-} from "lucide-react";
+import { Paperclip, Send, Minimize2, FileText, Upload } from "lucide-react";
 
 interface Message {
   id: string;
@@ -26,10 +18,7 @@ interface AgentPanelProps {
   isMinimized?: boolean;
 }
 
-export function AgentPanel({
-  onMinimize,
-  isMinimized = false,
-}: AgentPanelProps) {
+export function AgentPanel({ onMinimize, isMinimized = false }: AgentPanelProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -99,7 +88,7 @@ export function AgentPanel({
         const agentMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: "agent",
-          content: `I\'ve processed your uploaded file(s). I can see the data now. What would you like to visualize or analyze?`,
+          content: `I've processed your uploaded file(s). I can see the data now. What would you like to visualize or analyze?`,
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, agentMessage]);
@@ -150,12 +139,7 @@ export function AgentPanel({
           <span className="font-medium text-sm">Research Agent</span>
         </div>
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={onMinimize}
-          >
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onMinimize}>
             <Minimize2 className="h-4 w-4" />
           </Button>
         </div>
@@ -170,9 +154,7 @@ export function AgentPanel({
           >
             <div
               className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                msg.role === "user"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted"
+                msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
               }`}
             >
               <p className="text-sm whitespace-pre-wrap">{msg.content}</p>

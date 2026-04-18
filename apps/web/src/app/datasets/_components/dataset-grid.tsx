@@ -37,25 +37,23 @@ export async function DatasetGrid(props: DatasetGridProps) {
   if (!res.ok) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <h3 className="text-lg font-semibold text-foreground">
-          Error loading datasets
-        </h3>
-        <p className="text-sm text-muted-foreground mt-2">
-          Please try again later.
-        </p>
+        <h3 className="text-lg font-semibold text-foreground">Error loading datasets</h3>
+        <p className="text-sm text-muted-foreground mt-2">Please try again later.</p>
       </div>
     );
   }
 
-  const { data: datasets, total, page, totalPages } =
-    (await res.json()) as PaginatedResponse<DatasetListItem>;
+  const {
+    data: datasets,
+    total,
+    page,
+    totalPages,
+  } = (await res.json()) as PaginatedResponse<DatasetListItem>;
 
   if (datasets.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center border border-dashed border-border rounded-xl bg-card">
-        <h3 className="text-lg font-semibold text-foreground">
-          No datasets found
-        </h3>
+        <h3 className="text-lg font-semibold text-foreground">No datasets found</h3>
         <p className="text-sm text-muted-foreground mt-2">
           Try adjusting your search or filters to find what you're looking for.
         </p>
@@ -85,10 +83,8 @@ export async function DatasetGrid(props: DatasetGridProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing{" "}
-          <span className="font-medium text-foreground">{datasets.length}</span>{" "}
-          of <span className="font-medium text-foreground">{total}</span>{" "}
-          datasets
+          Showing <span className="font-medium text-foreground">{datasets.length}</span> of{" "}
+          <span className="font-medium text-foreground">{total}</span> datasets
         </p>
       </div>
 
@@ -118,12 +114,8 @@ export async function DatasetGrid(props: DatasetGridProps) {
           </Link>
 
           <div className="flex items-center gap-1">
-            <span className="text-sm font-medium text-foreground">
-              Page {page}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              of {totalPages}
-            </span>
+            <span className="text-sm font-medium text-foreground">Page {page}</span>
+            <span className="text-sm text-muted-foreground">of {totalPages}</span>
           </div>
 
           <Link

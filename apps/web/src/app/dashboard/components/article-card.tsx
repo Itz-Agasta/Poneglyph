@@ -17,12 +17,7 @@ interface ArticleCardProps {
   variant?: "grid" | "carousel";
 }
 
-export function ArticleCard({
-  article,
-  category,
-  isPreview,
-  variant = "grid",
-}: ArticleCardProps) {
+export function ArticleCard({ article, category, isPreview, variant = "grid" }: ArticleCardProps) {
   return (
     <Link
       href={`/dashboard/${article.id}`}
@@ -71,11 +66,7 @@ export function ArticleCard({
       <div className="mt-3 flex items-center justify-between border-t border-gray-300 px-4 py-2.5">
         <div className="flex flex-wrap gap-1">
           {article.datasetIds.slice(0, 2).map((id) => (
-            <Badge
-              key={id}
-              variant="secondary"
-              className="h-4 px-1.5 text-[10px]"
-            >
+            <Badge key={id} variant="secondary" className="h-4 px-1.5 text-[10px]">
               {id}
             </Badge>
           ))}

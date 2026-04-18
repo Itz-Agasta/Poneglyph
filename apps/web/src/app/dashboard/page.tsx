@@ -4,12 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ArticleCard, type Article } from "./components/article-card";
 import { Button } from "@Poneglyph/ui/components/button";
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconMail,
-  IconPhone,
-} from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight, IconMail, IconPhone } from "@tabler/icons-react";
 
 const ARTICLE_CATEGORIES: Record<string, string> = {
   "1": "Health",
@@ -27,8 +22,7 @@ const sampleArticles: Article[] = [
   {
     id: "1",
     heading: "Global Health Trends 2024",
-    imageUrl:
-      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=500&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=500&fit=crop",
     content:
       "Analysis of health survey data across 50 countries showing emerging health patterns and disease prevalence.",
     datasetIds: ["DS-001", "DS-002"],
@@ -36,8 +30,7 @@ const sampleArticles: Article[] = [
   {
     id: "2",
     heading: "Education Access Report",
-    imageUrl:
-      "https://images.unsplash.com/photo-1503676260728-1c00da1a496d?w=800&h=500&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da1a496d?w=800&h=500&fit=crop",
     content:
       "Insights on educational opportunities in developing regions based on collected survey data.",
     datasetIds: ["DS-003"],
@@ -45,35 +38,28 @@ const sampleArticles: Article[] = [
   {
     id: "3",
     heading: "Climate Impact Survey",
-    imageUrl:
-      "https://images.unsplash.com/photo-1569163139599-0f4517e36b51?w=800&h=500&fit=crop",
-    content:
-      "Data-driven analysis of climate change effects on local communities and agriculture.",
+    imageUrl: "https://images.unsplash.com/photo-1569163139599-0f4517e36b51?w=800&h=500&fit=crop",
+    content: "Data-driven analysis of climate change effects on local communities and agriculture.",
     datasetIds: ["DS-004", "DS-005", "DS-006"],
   },
   {
     id: "4",
     heading: "Poverty Alleviation Progress",
-    imageUrl:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop",
-    content:
-      "Tracking poverty indicators over the past decade using aggregated survey datasets.",
+    imageUrl: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop",
+    content: "Tracking poverty indicators over the past decade using aggregated survey datasets.",
     datasetIds: ["DS-007"],
   },
   {
     id: "5",
     heading: "Water Sanitation Study",
-    imageUrl:
-      "https://images.unsplash.com/photo-1541976590-713941481591?w=800&h=500&fit=crop",
-    content:
-      "Survey results on water and sanitation access in rural areas of developing nations.",
+    imageUrl: "https://images.unsplash.com/photo-1541976590-713941481591?w=800&h=500&fit=crop",
+    content: "Survey results on water and sanitation access in rural areas of developing nations.",
     datasetIds: ["DS-008", "DS-009"],
   },
   {
     id: "6",
     heading: "Gender Equality Index",
-    imageUrl:
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=500&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=500&fit=crop",
     content:
       "Comprehensive gender equality metrics derived from multiple survey sources worldwide.",
     datasetIds: ["DS-010"],
@@ -81,36 +67,27 @@ const sampleArticles: Article[] = [
   {
     id: "7",
     heading: "Youth Employment Survey",
-    imageUrl:
-      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=500&fit=crop",
-    content:
-      "Analysis of youth unemployment rates and employment trends across major economies.",
+    imageUrl: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=500&fit=crop",
+    content: "Analysis of youth unemployment rates and employment trends across major economies.",
     datasetIds: ["DS-011"],
   },
   {
     id: "8",
     heading: "Digital Inclusion Report",
-    imageUrl:
-      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=500&fit=crop",
-    content:
-      "Measuring digital literacy and internet access in underserved communities globally.",
+    imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=500&fit=crop",
+    content: "Measuring digital literacy and internet access in underserved communities globally.",
     datasetIds: ["DS-012", "DS-013"],
   },
   {
     id: "9",
     heading: "Food Security Analysis",
-    imageUrl:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop",
-    content:
-      "Comprehensive study on food accessibility and nutrition across different regions.",
+    imageUrl: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop",
+    content: "Comprehensive study on food accessibility and nutrition across different regions.",
     datasetIds: ["DS-014"],
   },
 ];
 
-const ALL_TOPICS = [
-  "All",
-  ...Array.from(new Set(Object.values(ARTICLE_CATEGORIES))),
-];
+const ALL_TOPICS = ["All", ...Array.from(new Set(Object.values(ARTICLE_CATEGORIES)))];
 
 const CAROUSEL_VISIBLE = 3;
 const ITEMS_PER_PAGE = 3;
@@ -124,10 +101,7 @@ export default function Dashboard() {
   // Carousel
   const canPrev = carouselStart > 0;
   const canNext = carouselStart < sampleArticles.length - CAROUSEL_VISIBLE;
-  const carouselArticles = sampleArticles.slice(
-    carouselStart,
-    carouselStart + CAROUSEL_VISIBLE,
-  );
+  const carouselArticles = sampleArticles.slice(carouselStart, carouselStart + CAROUSEL_VISIBLE);
 
   const shiftCarousel = (dir: "prev" | "next") => {
     if (carouselFading) return;
@@ -143,9 +117,7 @@ export default function Dashboard() {
   // Grid filter + pagination
   const filteredArticles = useMemo(() => {
     if (selectedTopic === "All") return sampleArticles;
-    return sampleArticles.filter(
-      (a) => ARTICLE_CATEGORIES[a.id] === selectedTopic,
-    );
+    return sampleArticles.filter((a) => ARTICLE_CATEGORIES[a.id] === selectedTopic);
   }, [selectedTopic]);
 
   const totalPages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
@@ -201,8 +173,8 @@ export default function Dashboard() {
             Global stories vividly visualized
           </h1>
           <p className="mx-auto mt-4 max-w-lg text-body text-muted-foreground">
-            AI-powered analysis from survey datasets worldwide — built for NGOs,
-            researchers, and journalists.
+            AI-powered analysis from survey datasets worldwide — built for NGOs, researchers, and
+            journalists.
           </p>
         </div>
       </section>
@@ -299,9 +271,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <p className="text-body-sm text-muted-foreground">
-                No articles in this topic.
-              </p>
+              <p className="text-body-sm text-muted-foreground">No articles in this topic.</p>
               <Button
                 variant="link"
                 size="sm"
@@ -327,9 +297,7 @@ export default function Dashboard() {
                 {currentPage} / {totalPages}
               </span>
               <button
-                onClick={() =>
-                  currentPage < totalPages && setCurrentPage((p) => p + 1)
-                }
+                onClick={() => currentPage < totalPages && setCurrentPage((p) => p + 1)}
                 disabled={currentPage === totalPages}
                 className="flex size-8 items-center justify-center rounded-sm border border-border text-muted-foreground transition hover:bg-muted disabled:pointer-events-none disabled:opacity-30"
               >
@@ -349,9 +317,7 @@ export default function Dashboard() {
             </p>
             <h2 className="text-heading-4 font-semibold tracking-tight text-foreground">
               Get in touch with us.{" "}
-              <span className="text-muted-foreground">
-                We are happy to help.
-              </span>
+              <span className="text-muted-foreground">We are happy to help.</span>
             </h2>
           </div>
 
@@ -392,12 +358,8 @@ export default function Dashboard() {
                   className="size-14 shrink-0 rounded-full object-cover"
                 />
                 <div>
-                  <p className="text-body-sm font-medium text-foreground">
-                    Dr. Amara Osei
-                  </p>
-                  <p className="mb-3 text-body-sm text-muted-foreground">
-                    Lead Data Journalist
-                  </p>
+                  <p className="text-body-sm font-medium text-foreground">Dr. Amara Osei</p>
+                  <p className="mb-3 text-body-sm text-muted-foreground">Lead Data Journalist</p>
                   <a
                     href="mailto:a.osei@poneglyph.org"
                     className="mb-1 flex items-center gap-1.5 text-body-sm text-muted-foreground transition-opacity hover:text-foreground"

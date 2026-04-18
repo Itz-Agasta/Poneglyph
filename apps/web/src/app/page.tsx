@@ -30,10 +30,7 @@ export default function Home() {
   );
 
   return (
-    <main
-      ref={containerRef}
-      className="w-full relative overflow-x-hidden text-[#2d4a77]"
-    >
+    <main ref={containerRef} className="w-full relative overflow-x-hidden text-[#2d4a77]">
       {/* Fixed animated gradient background for the entire landing page */}
       <div className="fixed inset-0 z-[-1] bg-gradient-to-b from-[#708db8] via-[#a8c1d8] to-[#edf2f8] bg-[length:100%_200%] animate-sky-gradient pointer-events-none" />
 
@@ -44,8 +41,7 @@ export default function Home() {
             Poneglyph
           </h1>
           <p className="text-xl md:text-4xl font-medium opacity-90 drop-shadow-sm max-w-2xl text-center px-4">
-            The world's <span className="italic font-serif">open</span> dataset
-            hub.
+            The world's <span className="italic font-serif">open</span> dataset hub.
           </p>
         </div>
 
@@ -146,8 +142,7 @@ export default function Home() {
 
           <div className="relative z-10 text-center">
             <h3 className="text-4xl md:text-6xl font-light tracking-tight text-[#2d4a77]">
-              Ready to explore the{" "}
-              <span className="italic font-serif">unseen</span>?
+              Ready to explore the <span className="italic font-serif">unseen</span>?
             </h3>
             <button className="mt-12 bg-[#1e1e1e] text-white px-12 py-5 rounded-3xl text-xl font-bold hover:scale-105 transition-all shadow-2xl">
               Get Started Now

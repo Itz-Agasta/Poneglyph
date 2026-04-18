@@ -10,9 +10,7 @@ export const env = createEnv({
     // Comma-separated list of allowed origins, e.g.:
     // CORS_ORIGINS=http://localhost:3001,http://localhost:3000
     CORS_ORIGINS: z.string().min(1),
-    NODE_ENV: z
-      .enum(["development", "production", "test"])
-      .default("development"),
+    NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     // Cloudflare R2 (S3-compatible)
     S3_ACCESS_KEY: z.string().min(1),
     S3_SECRET_KEY: z.string().min(1),

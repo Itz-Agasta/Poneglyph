@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  IconInfinity,
-  IconChevronDown,
-  IconArrowUp,
-} from "@tabler/icons-react";
+import { IconInfinity, IconChevronDown, IconArrowUp } from "@tabler/icons-react";
 import { Input } from "@Poneglyph/ui/components/input";
 import {
   DropdownMenu,

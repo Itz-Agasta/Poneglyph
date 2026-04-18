@@ -57,7 +57,7 @@ export function DatasetFilters() {
 
       return params.toString();
     },
-    [searchParams]
+    [searchParams],
   );
 
   const handleParamChange = (name: string, value: string) => {
@@ -88,7 +88,9 @@ export function DatasetFilters() {
   const currentLanguage = searchParams.get("language") || "";
 
   return (
-    <div className={`space-y-8 ${isPending ? "opacity-70 pointer-events-none" : ""} transition-opacity duration-200`}>
+    <div
+      className={`space-y-8 ${isPending ? "opacity-70 pointer-events-none" : ""} transition-opacity duration-200`}
+    >
       {/* Sort */}
       <div className="space-y-3">
         <h3 className="text-sm font-semibold tracking-tight text-foreground uppercase">Sort By</h3>
@@ -129,7 +131,9 @@ export function DatasetFilters() {
 
       {/* File Type */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold tracking-tight text-foreground uppercase">File Type</h3>
+        <h3 className="text-sm font-semibold tracking-tight text-foreground uppercase">
+          File Type
+        </h3>
         <div className="space-y-2">
           <label className="flex items-center gap-2 cursor-pointer group">
             <input
@@ -179,7 +183,11 @@ export function DatasetFilters() {
       </div>
 
       {/* Reset button */}
-      {(currentStatus || currentFileType || currentLanguage || currentSortBy !== "createdAt" || currentSortOrder !== "desc") && (
+      {(currentStatus ||
+        currentFileType ||
+        currentLanguage ||
+        currentSortBy !== "createdAt" ||
+        currentSortOrder !== "desc") && (
         <button
           onClick={() => {
             startTransition(() => {

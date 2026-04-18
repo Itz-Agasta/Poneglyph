@@ -4,9 +4,9 @@ import "./globals.css";
 import { cn } from "@Poneglyph/ui/lib/utils";
 import { Navigation } from "@/components/navigation";
 
-const spaceGroteskHeading = Space_Grotesk({subsets:['latin'],variable:'--font-heading'});
+const spaceGroteskHeading = Space_Grotesk({ subsets: ["latin"], variable: "--font-heading" });
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -29,18 +29,15 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Poneglyph — Data Stories Vividly Visualized",
-  description:
-    "AI-powered analysis and extracted insights from survey datasets worldwide.",
+  description: "AI-powered analysis and extracted insights from survey datasets worldwide.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={cn("font-sans", geist.variable, spaceGroteskHeading.variable)}>
-      <body className={`${outfit.variable} ${newsreader.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}>
+      <body
+        className={`${outfit.variable} ${newsreader.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}
+      >
         <Navigation />
         {children}
       </body>

@@ -6,17 +6,20 @@ import Image from "next/image";
 const pillars = [
   {
     title: "Global Data Network",
-    description: "Tell us your needs and preferences—our volunteer network will strive to deliver the raw survey data you deserve.",
+    description:
+      "Tell us your needs and preferences—our volunteer network will strive to deliver the raw survey data you deserve.",
     image: "/assets/bird4.avif", // Using existing bird asset
   },
   {
     title: "Precision in Details",
-    description: "From data cleaning to structured reports, we help you stay on track with thoughtful, AI-powered automation.",
+    description:
+      "From data cleaning to structured reports, we help you stay on track with thoughtful, AI-powered automation.",
     image: "/assets/butterfly.avif", // Using existing butterfly asset
   },
   {
     title: "Support You Can Count On",
-    description: "Build a lasting relationship with a team that knows you and is there as your research needs evolve.",
+    description:
+      "Build a lasting relationship with a team that knows you and is there as your research needs evolve.",
     image: "/assets/branches4.avif", // Using existing branches asset
   },
 ];
@@ -51,9 +54,7 @@ export function CommunityPillars() {
                   className="object-contain max-h-full transition-transform duration-500 group-hover:-translate-y-4"
                 />
               </div>
-              <h3 className="text-2xl font-bold mb-6 text-[#2d4a77]">
-                {pillar.title}
-              </h3>
+              <h3 className="text-2xl font-bold mb-6 text-[#2d4a77]">{pillar.title}</h3>
               <p className="text-lg text-[#2d4a77]/70 font-medium leading-relaxed max-w-sm">
                 {pillar.description}
               </p>

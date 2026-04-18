@@ -70,12 +70,7 @@ function DatasetPreviewCard({
       {/* Thumbnail / media area */}
       <div className="aspect-square bg-grey-4 relative overflow-hidden">
         {thumbnailUrl ? (
-          <Image
-            src={thumbnailUrl}
-            alt="Dataset thumbnail"
-            fill
-            className="object-cover"
-          />
+          <Image src={thumbnailUrl} alt="Dataset thumbnail" fill className="object-cover" />
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
             <div className="w-16 h-16 rounded-2xl bg-black flex items-center justify-center">
@@ -89,9 +84,7 @@ function DatasetPreviewCard({
             {fileCount > 0 && (
               <div className="flex items-center gap-1.5 bg-primary/20 rounded-full px-3 py-1">
                 <Sparkles className="h-3.5 w-3.5 text-black" />
-                <span className="text-xs font-medium text-black">
-                  Ready to share
-                </span>
+                <span className="text-xs font-medium text-black">Ready to share</span>
               </div>
             )}
           </div>
@@ -111,14 +104,10 @@ function DatasetPreviewCard({
       {/* Caption */}
       <div className="px-4 pb-4 space-y-1.5">
         <p className="text-sm font-semibold text-black leading-snug">
-          {title || (
-            <span className="text-grey-2 font-normal italic">Dataset title…</span>
-          )}
+          {title || <span className="text-grey-2 font-normal italic">Dataset title…</span>}
         </p>
         {description && (
-          <p className="text-xs text-grey-1 line-clamp-2 leading-relaxed">
-            {description}
-          </p>
+          <p className="text-xs text-grey-1 line-clamp-2 leading-relaxed">{description}</p>
         )}
         {tagList.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-0.5">
@@ -207,16 +196,14 @@ export default function DatasetUploadPage() {
           <span className="flex items-center gap-1.5">
             <Users className="h-3.5 w-3.5 text-primary" />
             <span>
-              <strong className="text-primary">2,847</strong> researchers
-              already contributing
+              <strong className="text-primary">2,847</strong> researchers already contributing
             </span>
           </span>
           <span className="text-grey-2 hidden sm:block">·</span>
           <span className="flex items-center gap-1.5">
             <Database className="h-3.5 w-3.5 text-primary" />
             <span>
-              <strong className="text-primary">14,200+</strong> datasets in the
-              ecosystem
+              <strong className="text-primary">14,200+</strong> datasets in the ecosystem
             </span>
           </span>
           <span className="text-grey-2 hidden sm:block">·</span>
@@ -236,9 +223,7 @@ export default function DatasetUploadPage() {
               <p className="text-xs font-medium uppercase tracking-widest text-grey-1 mb-1">
                 Post preview
               </p>
-              <p className="text-sm text-grey-1">
-                This is how your dataset appears in the feed
-              </p>
+              <p className="text-sm text-grey-1">This is how your dataset appears in the feed</p>
             </div>
             <DatasetPreviewCard
               title={title}
@@ -271,8 +256,8 @@ export default function DatasetUploadPage() {
                 ))}
               </div>
               <p className="text-xs text-grey-1 leading-snug">
-                <strong className="text-black">Fatima, Priya, Lucas</strong>{" "}
-                and 2,844 others contributed this week
+                <strong className="text-black">Fatima, Priya, Lucas</strong> and 2,844 others
+                contributed this week
               </p>
             </div>
           </div>
@@ -285,8 +270,7 @@ export default function DatasetUploadPage() {
                 Share your dataset
               </h1>
               <p className="text-xs text-grey-1 mt-1">
-                Your contribution helps researchers worldwide. Fill in the
-                details below.
+                Your contribution helps researchers worldwide. Fill in the details below.
               </p>
             </div>
 
@@ -412,9 +396,7 @@ export default function DatasetUploadPage() {
                           <File className="h-4 w-4 text-black" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-black truncate">
-                            {f.name}
-                          </p>
+                          <p className="text-xs font-medium text-black truncate">{f.name}</p>
                           <p className="text-xs text-grey-1">
                             {(f.size / (1024 * 1024)).toFixed(2)} MB
                           </p>
@@ -464,8 +446,7 @@ export default function DatasetUploadPage() {
               {/* Thumbnail */}
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-black">
-                  Cover image{" "}
-                  <span className="text-grey-2 font-normal">(optional)</span>
+                  Cover image <span className="text-grey-2 font-normal">(optional)</span>
                 </Label>
                 {!thumbnail ? (
                   <label
@@ -476,9 +457,7 @@ export default function DatasetUploadPage() {
                       <ImageIcon className="h-4 w-4 text-grey-1" />
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-black">
-                        Add a cover image
-                      </p>
+                      <p className="text-xs font-medium text-black">Add a cover image</p>
                       <p className="text-xs text-grey-2">PNG, JPG, WebP</p>
                     </div>
                     <input
@@ -503,9 +482,7 @@ export default function DatasetUploadPage() {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-black truncate">
-                        {thumbnail.name}
-                      </p>
+                      <p className="text-xs font-medium text-black truncate">{thumbnail.name}</p>
                       <p className="text-xs text-grey-1">
                         {(thumbnail.size / (1024 * 1024)).toFixed(2)} MB
                       </p>
@@ -533,8 +510,7 @@ export default function DatasetUploadPage() {
                   <div>
                     <p className="text-sm font-medium">Dataset shared!</p>
                     <p className="text-xs mt-0.5 text-success/80">
-                      Your contribution is now part of the Poneglyph ecosystem.
-                      Thank you.
+                      Your contribution is now part of the Poneglyph ecosystem. Thank you.
                     </p>
                   </div>
                 </div>
@@ -564,9 +540,7 @@ export default function DatasetUploadPage() {
               </button>
               <Button
                 onClick={handleUpload}
-                disabled={
-                  files.length === 0 || !title || !description || busy || done
-                }
+                disabled={files.length === 0 || !title || !description || busy || done}
                 className="bg-primary text-black hover:bg-primary/80 font-medium px-6 rounded-xl text-sm"
               >
                 {busy ? (

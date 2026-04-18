@@ -20,14 +20,11 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
   const fallbackGradient = gradients[gradientId];
 
   // Format the date
-  const formattedDate = new Date(dataset.createdAt).toLocaleDateString(
-    "en-US",
-    {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    },
-  );
+  const formattedDate = new Date(dataset.createdAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <Link
@@ -60,13 +57,9 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
 
         <div className="flex items-center text-xs text-muted-foreground mb-3">
           {dataset.publisher ? (
-            <span className="truncate max-w-[120px] font-medium">
-              {dataset.publisher}
-            </span>
+            <span className="truncate max-w-[120px] font-medium">{dataset.publisher}</span>
           ) : (
-            <span className="truncate max-w-[120px] font-medium text-foreground/50">
-              Community
-            </span>
+            <span className="truncate max-w-[120px] font-medium text-foreground/50">Community</span>
           )}
           <span className="mx-1.5">•</span>
           <span>{formattedDate}</span>
@@ -120,17 +113,11 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
         </div>
 
         <div className="flex items-center gap-3 text-muted-foreground">
-          <div
-            className="flex items-center gap-1"
-            title={`${dataset.viewCount} views`}
-          >
+          <div className="flex items-center gap-1" title={`${dataset.viewCount} views`}>
             <IconEye className="w-3.5 h-3.5" />
             <span className="text-xs font-medium">{dataset.viewCount}</span>
           </div>
-          <div
-            className="flex items-center gap-1"
-            title={`${dataset.downloadCount} downloads`}
-          >
+          <div className="flex items-center gap-1" title={`${dataset.downloadCount} downloads`}>
             <IconDownload className="w-3.5 h-3.5" />
             <span className="text-xs font-medium">{dataset.downloadCount}</span>
           </div>

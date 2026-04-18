@@ -38,8 +38,7 @@ const sampleArticles: Article[] = [
   {
     id: "1",
     heading: "Global Health Trends 2024",
-    imageUrl:
-      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=500&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=500&fit=crop",
     content:
       "Analysis of health survey data across 50 countries showing emerging health patterns and disease prevalence.",
     datasetIds: ["DS-001", "DS-002"],
@@ -47,8 +46,7 @@ const sampleArticles: Article[] = [
   {
     id: "2",
     heading: "Education Access Report",
-    imageUrl:
-      "https://images.unsplash.com/photo-1503676260728-1c00da1a496d?w=800&h=500&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da1a496d?w=800&h=500&fit=crop",
     content:
       "Insights on educational opportunities in developing regions based on collected survey data.",
     datasetIds: ["DS-003"],
@@ -56,35 +54,28 @@ const sampleArticles: Article[] = [
   {
     id: "3",
     heading: "Climate Impact Survey",
-    imageUrl:
-      "https://images.unsplash.com/photo-1569163139599-0f4517e36b51?w=800&h=500&fit=crop",
-    content:
-      "Data-driven analysis of climate change effects on local communities and agriculture.",
+    imageUrl: "https://images.unsplash.com/photo-1569163139599-0f4517e36b51?w=800&h=500&fit=crop",
+    content: "Data-driven analysis of climate change effects on local communities and agriculture.",
     datasetIds: ["DS-004", "DS-005", "DS-006"],
   },
   {
     id: "4",
     heading: "Poverty Alleviation Progress",
-    imageUrl:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop",
-    content:
-      "Tracking poverty indicators over the past decade using aggregated survey datasets.",
+    imageUrl: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop",
+    content: "Tracking poverty indicators over the past decade using aggregated survey datasets.",
     datasetIds: ["DS-007"],
   },
   {
     id: "5",
     heading: "Water Sanitation Study",
-    imageUrl:
-      "https://images.unsplash.com/photo-1541976590-713941481591?w=800&h=500&fit=crop",
-    content:
-      "Survey results on water and sanitation access in rural areas of developing nations.",
+    imageUrl: "https://images.unsplash.com/photo-1541976590-713941481591?w=800&h=500&fit=crop",
+    content: "Survey results on water and sanitation access in rural areas of developing nations.",
     datasetIds: ["DS-008", "DS-009"],
   },
   {
     id: "6",
     heading: "Gender Equality Index",
-    imageUrl:
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=500&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=500&fit=crop",
     content:
       "Comprehensive gender equality metrics derived from multiple survey sources worldwide.",
     datasetIds: ["DS-010"],
@@ -92,28 +83,22 @@ const sampleArticles: Article[] = [
   {
     id: "7",
     heading: "Youth Employment Survey",
-    imageUrl:
-      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=500&fit=crop",
-    content:
-      "Analysis of youth unemployment rates and employment trends across major economies.",
+    imageUrl: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=500&fit=crop",
+    content: "Analysis of youth unemployment rates and employment trends across major economies.",
     datasetIds: ["DS-011"],
   },
   {
     id: "8",
     heading: "Digital Inclusion Report",
-    imageUrl:
-      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=500&fit=crop",
-    content:
-      "Measuring digital literacy and internet access in underserved communities globally.",
+    imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=500&fit=crop",
+    content: "Measuring digital literacy and internet access in underserved communities globally.",
     datasetIds: ["DS-012", "DS-013"],
   },
   {
     id: "9",
     heading: "Food Security Analysis",
-    imageUrl:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop",
-    content:
-      "Comprehensive study on food accessibility and nutrition across different regions.",
+    imageUrl: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=500&fit=crop",
+    content: "Comprehensive study on food accessibility and nutrition across different regions.",
     datasetIds: ["DS-014"],
   },
 ];
@@ -192,7 +177,6 @@ interface Dataset {
 export default function ArticlePage() {
   const params = useParams<{ id: string }>();
   const [urlCopied, setUrlCopied] = useState(false);
-  const [embedCopied, setEmbedCopied] = useState(false);
   const [datasets, setDatasets] = useState<Dataset[]>([]);
   const [datasetsLoading, setDatasetsLoading] = useState(true);
 
@@ -236,17 +220,13 @@ export default function ArticlePage() {
   const category = ARTICLE_CATEGORIES[article.id] ?? "General";
   const body = ARTICLE_BODIES[article.id] ?? [article.content];
   const articleUrl = `https://poneglyph.org/dashboard/${article.id}`;
-  const embedCode = `<iframe src="https://poneglyph.org/embed/${article.id}" width="600" height="450" frameborder="0" allowfullscreen></iframe>`;
 
-  const copyToClipboard = async (
-    text: string,
-    setCopied: (v: boolean) => void,
-  ) => {
+  const copyToClipboard = async (text: string, setCopied: (v: boolean) => void) => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
+    } catch {
       setCopied(false);
     }
   };
@@ -256,10 +236,7 @@ export default function ArticlePage() {
       {/* ── NAV ── */}
       <header className="border-b border-grey-3 bg-white">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3">
-          <Link
-            href="/dashboard"
-            className="text-body-sm font-bold tracking-tight text-black"
-          >
+          <Link href="/dashboard" className="text-body-sm font-bold tracking-tight text-black">
             Poneglyph
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
@@ -286,10 +263,7 @@ export default function ArticlePage() {
       <div className="mx-auto max-w-[1200px] px-6 py-10">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-1.5 text-body-sm text-grey-1">
-          <Link
-            href="/dashboard"
-            className="transition-colors hover:text-black"
-          >
+          <Link href="/dashboard" className="transition-colors hover:text-black">
             Topics
           </Link>
           <ChevronRight className="size-3.5 text-grey-3" />
@@ -324,10 +298,7 @@ export default function ArticlePage() {
             {/* Body */}
             <div className="space-y-5">
               {body.map((paragraph, i) => (
-                <p
-                  key={i}
-                  className="max-w-[65ch] text-body leading-relaxed text-grey-1"
-                >
+                <p key={i} className="max-w-[65ch] text-body leading-relaxed text-grey-1">
                   {paragraph}
                 </p>
               ))}
@@ -336,9 +307,7 @@ export default function ArticlePage() {
             {/* Chart section */}
             <div className="mt-12 overflow-hidden rounded-md border border-grey-3">
               <div className="px-6 pt-6 pb-4">
-                <h2 className="mb-1 text-heading-6 font-bold text-black">
-                  {article.heading}
-                </h2>
+                <h2 className="mb-1 text-heading-6 font-bold text-black">{article.heading}</h2>
                 <p className="text-body-sm text-grey-1">{article.content}</p>
               </div>
 
@@ -372,10 +341,7 @@ export default function ArticlePage() {
           </article>
 
           {/* ── RIGHT: Sidebar ── */}
-          <aside
-            id="author"
-            className="flex flex-col gap-4 lg:sticky lg:top-8 lg:self-start"
-          >
+          <aside id="author" className="flex flex-col gap-4 lg:sticky lg:top-8 lg:self-start">
             {/* Author card */}
             <div className="rounded-md border border-grey-3 p-5">
               <div className="flex items-start gap-3">
@@ -385,12 +351,8 @@ export default function ArticlePage() {
                   className="size-12 shrink-0 rounded-full object-cover"
                 />
                 <div className="min-w-0">
-                  <p className="text-body-sm font-bold text-black">
-                    Dr. Amara Osei
-                  </p>
-                  <p className="mb-3 text-body-sm text-grey-1">
-                    Lead Data Journalist
-                  </p>
+                  <p className="text-body-sm font-bold text-black">Dr. Amara Osei</p>
+                  <p className="mb-3 text-body-sm text-grey-1">Lead Data Journalist</p>
                   <a
                     href="mailto:a.osei@poneglyph.org"
                     className="mb-1 flex items-center gap-1.5 text-body-sm text-blue transition-opacity hover:opacity-75"
@@ -414,9 +376,7 @@ export default function ArticlePage() {
               <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-grey-2">
                 Description
               </p>
-              <p className="mb-2 text-body-sm leading-relaxed text-grey-1">
-                {article.content}
-              </p>
+              <p className="mb-2 text-body-sm leading-relaxed text-grey-1">{article.content}</p>
               <a
                 href="#"
                 className="mb-5 inline-block text-body-sm text-blue transition-opacity hover:opacity-75"
@@ -432,27 +392,15 @@ export default function ArticlePage() {
 
               {/* Social share */}
               <div className="mb-5 flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 gap-1 px-2"
-                >
+                <Button variant="outline" size="sm" className="flex-1 gap-1 px-2">
                   <Facebook className="size-3.5" />
                   <span className="text-[11px]">Share</span>
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 gap-1 px-2"
-                >
+                <Button variant="outline" size="sm" className="flex-1 gap-1 px-2">
                   <Twitter className="size-3.5" />
                   <span className="text-[11px]">Tweet</span>
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 gap-1 px-2"
-                >
+                <Button variant="outline" size="sm" className="flex-1 gap-1 px-2">
                   <Linkedin className="size-3.5" />
                   <span className="text-[11px]">Post</span>
                 </Button>
@@ -464,11 +412,7 @@ export default function ArticlePage() {
                   URL to be used as reference link:
                 </p>
                 <div className="flex gap-1.5">
-                  <Input
-                    readOnly
-                    value={articleUrl}
-                    className="h-7 flex-1 truncate text-[11px]"
-                  />
+                  <Input readOnly value={articleUrl} className="h-7 flex-1 truncate text-[11px]" />
                   <button
                     onClick={() => copyToClipboard(articleUrl, setUrlCopied)}
                     className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-grey-3 text-grey-2 transition-colors hover:border-grey-2 hover:text-grey-1"
@@ -491,10 +435,7 @@ export default function ArticlePage() {
                 {datasetsLoading ? (
                   <div className="space-y-2">
                     {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="h-8 animate-pulse rounded-sm bg-grey-35"
-                      />
+                      <div key={i} className="h-8 animate-pulse rounded-sm bg-grey-35" />
                     ))}
                   </div>
                 ) : datasets.length > 0 ? (
@@ -511,9 +452,7 @@ export default function ArticlePage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-body-sm text-grey-2">
-                    No datasets available.
-                  </p>
+                  <p className="text-body-sm text-grey-2">No datasets available.</p>
                 )}
                 {datasets.length > 5 && (
                   <Link
