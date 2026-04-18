@@ -1,14 +1,10 @@
 import { embed } from "ai";
 import { google } from "@ai-sdk/google";
 import { redis } from "./redis";
-import { createHash } from "node:crypto";
+import { hashQuery } from "./hash";
 
 const EMBEDDING_MODEL = google.textEmbeddingModel("gemini-embedding-2-preview");
 const CACHE_TTL = 60 * 60 * 24; // 24 hours
-
-function hashQuery(query: string): string {
-  return createHash("sha256").update(query.trim().toLowerCase()).digest("hex");
-}
 
 /**
  * Embeds a query using Google's model. Results are cached in Redis for 24h

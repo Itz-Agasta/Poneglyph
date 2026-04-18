@@ -2,7 +2,12 @@ import { ToolLoopAgent, tool, stepCountIs } from "ai";
 import { groq } from "@ai-sdk/groq";
 import { tavilySearch, tavilyExtract } from "@tavily/ai-sdk";
 import { z } from "zod";
+import { redis } from "../../lib/redis";
+import { hashQuery } from "../../lib/hash";
 import { deepResearchSystemPrompt } from "../prompts/deep-research";
+
+const DEEP_CACHE_TTL = 60 * 60 * 2; // 2 hours
+const DEEP_CACHE_VERSION = "v1";
 
 // Non-streaming subagent — it's used as a tool by the parent orchestrator,
 // so it just returns the final compiled result, not a stream.
@@ -35,6 +40,13 @@ export const deepResearchTool = tool({
       .describe("Additional context from previous search results to refine the research"),
   }),
   execute: async ({ topic, context }) => {
+    const combinedTopic = context ? `${topic} ${context}` : topic;
+    const hash = hashQuery(combinedTopic);
+    const cacheKey = `tool:deep:${DEEP_CACHE_VERSION}:${hash}`;
+
+    const cached = await redis.get<string>(cacheKey);
+    if (cached) return cached;
+
     const prompt = context
       ? `Research topic: ${topic}\n\nAdditional context from prior searches:\n${context}\n\nConduct thorough research and provide a structured summary.`
       : `Research topic: ${topic}\n\nConduct thorough research and provide a structured summary.`;
@@ -42,6 +54,8 @@ export const deepResearchTool = tool({
     const result = await deepResearchAgent.generate({
       prompt,
     });
+
+    redis.set(cacheKey, result.text, { ex: DEEP_CACHE_TTL }).catch(() => {});
 
     return result.text;
   },

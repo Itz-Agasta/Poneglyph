@@ -1,6 +1,16 @@
 import { generateText, tool } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
+import { redis } from "../../lib/redis";
+import { hashQuery } from "../../lib/hash";
+
+const WEB_CACHE_TTL = 60 * 30; // 30 minutes
+const WEB_CACHE_VERSION = "v1";
+
+export interface CachedWebResult {
+  summary: string;
+  sources: any;
+}
 
 /**
  * Isolated generateText call using Gemini's native Google Search grounding.
@@ -12,14 +22,23 @@ import { z } from "zod";
  *
  * Ref: https://ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai#google-search-grounding
  */
-async function runGoogleGroundedSearch(query: string) {
+async function runGoogleGroundedSearch(query: string): Promise<CachedWebResult> {
+  const hash = hashQuery(query);
+  const cacheKey = `tool:web:${WEB_CACHE_VERSION}:${hash}`;
+
+  const cached = await redis.get<CachedWebResult>(cacheKey);
+  if (cached) return cached;
+
   const { text, sources } = await generateText({
     model: google("gemini-2.5-flash"),
     tools: { google_search: google.tools.googleSearch({}) },
     prompt: query,
   });
 
-  return { summary: text, sources };
+  const result: CachedWebResult = { summary: text, sources };
+  redis.set(cacheKey, result, { ex: WEB_CACHE_TTL }).catch(() => {});
+
+  return result;
 }
 
 export const webSearchTool = tool({
