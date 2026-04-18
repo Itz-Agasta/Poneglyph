@@ -40,8 +40,8 @@ export const deepResearchTool = tool({
       .describe("Additional context from previous search results to refine the research"),
   }),
   execute: async ({ topic, context }) => {
-    const combinedTopic = context ? `${topic} ${context}` : topic;
-    const hash = hashQuery(combinedTopic);
+    const input = context ? JSON.stringify({ topic, context }) : topic;
+    const hash = hashQuery(input);
     const cacheKey = `tool:deep:${DEEP_CACHE_VERSION}:${hash}`;
 
     let cached: string | null = null;
