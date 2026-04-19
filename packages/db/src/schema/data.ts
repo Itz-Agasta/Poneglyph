@@ -51,8 +51,6 @@ export const tags = pgTable("tags", {
   slug: varchar("slug", { length: 100 }).notNull().unique(),
 });
 
-<<<<<<< HEAD
-=======
 export const volunteer = pgTable(
   "volunteer",
   {
@@ -99,7 +97,6 @@ export const volunteerTags = pgTable(
   ],
 );
 
->>>>>>> 6e64379 (Refactored code)
 // Core pointer record table
 export const datasets = pgTable(
   "datasets",
