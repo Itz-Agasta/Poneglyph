@@ -71,7 +71,6 @@ export const volunteer = pgTable(
       .notNull(),
   },
   (table) => [
-    uniqueIndex("idx_volunteer_user_id").on(table.userId),
     index("idx_volunteer_city").on(table.city),
   ],
 );
@@ -89,7 +88,6 @@ export const volunteerTags = pgTable(
   },
   (table) => [
     index("idx_volunteer_tags_tag_id").on(table.tagId),
-    index("idx_volunteer_tags_volunteer_id").on(table.volunteerId),
     primaryKey({
       name: "volunteer_tags_pk",
       columns: [table.volunteerId, table.tagId],
