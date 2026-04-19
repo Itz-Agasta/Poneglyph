@@ -62,8 +62,7 @@ export const volunteer = pgTable(
     pastWorks: text("past_works").array().notNull().default([]),
     bio: text("bio"),
     isOpenToWork: boolean("is_open_to_work").default(false).notNull(),
-    wantsToStartOrg: boolean("wants_to_start_org").default(false).notNull(),
-    wantsToHire: boolean("wants_to_hire").default(false).notNull(),
+    wantsToStartOrg: boolean("wants_to_start_org").default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .defaultNow()
