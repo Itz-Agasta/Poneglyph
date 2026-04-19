@@ -187,6 +187,26 @@ export const sourcesRelations = relations(sources, ({ one, many }) => ({
 
 export const tagsRelations = relations(tags, ({ many }) => ({
   datasetTags: many(datasetTags),
+  volunteerTags: many(volunteerTags),
+}));
+
+export const volunteerRelations = relations(volunteer, ({ one, many }) => ({
+  user: one(user, {
+    fields: [volunteer.userId],
+    references: [user.id],
+  }),
+  volunteerTags: many(volunteerTags),
+}));
+
+export const volunteerTagsRelations = relations(volunteerTags, ({ one }) => ({
+  volunteer: one(volunteer, {
+    fields: [volunteerTags.volunteerId],
+    references: [volunteer.userId],
+  }),
+  tag: one(tags, {
+    fields: [volunteerTags.tagId],
+    references: [tags.id],
+  }),
 }));
 
 export const datasetsRelations = relations(datasets, ({ one, many }) => ({
