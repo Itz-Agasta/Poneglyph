@@ -11,6 +11,7 @@ import {
   uuid,
   pgEnum,
   vector,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
@@ -39,7 +40,7 @@ export const sources = pgTable("sources", {
     onDelete: "cascade",
   }), // Only for user-uploads
   name: varchar("name", { length: 50 }).notNull(),
-  url: text("url"), // Only for extranl sources
+  url: text("url"), // Only for external sources
   sourceType: sourceTypeEnum("source_type").notNull().default("upload"),
   isVerified: boolean("is_verified").default(false).notNull(),
 });
@@ -72,7 +73,7 @@ export const datasets = pgTable(
 
     language: varchar("language", { length: 10 }).default("en").notNull(),
 
-    s3Keys: text("s3_keys").array(), // Attchments
+    s3Keys: text("s3_keys").array(), // Attachments
     fileTypes: fileTypeEnum("file_types").array(),
     sourceUrl: text("source_url"), // On demand fetch
 
@@ -95,7 +96,7 @@ export const datasets = pgTable(
   ],
 );
 
-// junction table for filtering
+// Junction table for filtering
 export const datasetTags = pgTable(
   "dataset_tags",
   {
@@ -109,7 +110,7 @@ export const datasetTags = pgTable(
   },
   (table) => [
     index("dataset_tags_dataset_id_idx").on(table.datasetId),
-    index("dataset_tags_tag_id_idx").on(table.tagId), // for fast filtering
+    index("dataset_tags_tag_id_idx").on(table.tagId),
     uniqueIndex("dataset_tags_dataset_id_tag_id_unique").on(table.datasetId, table.tagId),
   ],
 );
@@ -132,11 +133,62 @@ export const syncLogs = pgTable("sync_logs", {
   error: text("error"),
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Organisation
+//
+// Presence of a row here IS the org identity check — no role column needed
+// on the user table. Checking "is this user an org?" is an O(1) PK lookup:
+//   SELECT user_id FROM organisation WHERE user_id = $1
+//
+// uploads: denormalized uuid[] of dataset IDs. Populated by the upload callback
+// when the Rust worker finishes processing. Enables fast "list this org's
+// datasets" queries (WHERE id = ANY(uploads)) without joining through sources.
+// ─────────────────────────────────────────────────────────────────────────────
+export const organisation = pgTable(
+  "organisation",
+  {
+    // 1:1 with user — PK doubles as FK, row deleted when user account is deleted
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    // Core identity
+    orgName: varchar("org_name", { length: 255 }).notNull(),
+    tagline: varchar("tagline", { length: 160 }),
+    description: text("description"),
+    logo: text("logo"), // R2 object key (not a URL — keys are stable, presigned URLs expire)
+
+    // Location & contact
+    country: varchar("country", { length: 100 }),
+    website: text("website"),
+    contactEmail: text("contact_email"), // public-facing contact, may differ from auth email
+
+    // Flexible social links — add keys without schema changes
+    // e.g. { "twitter": "https://x.com/org", "linkedin": "https://linkedin.com/org" }
+    socialLinks: jsonb("social_links").$type<Record<string, string>>(),
+
+    // Denormalized upload index — appended to by POST /api/upload/callback
+    uploads: uuid("uploads").array().default([]).notNull(),
+
+    // Admin verification
+    isVerified: boolean("is_verified").default(false).notNull(),
+    verifiedAt: timestamp("verified_at"), // null until an admin verifies
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("organisation_is_verified_idx").on(table.isVerified),
+  ],
+);
+
+// ─── Relations ───────────────────────────────────────────────────────────────
+
 export const sourcesRelations = relations(sources, ({ one, many }) => ({
-  user: one(user, {
-    fields: [sources.userId],
-    references: [user.id],
-  }),
+  user: one(user, { fields: [sources.userId], references: [user.id] }),
   datasets: many(datasets),
 }));
 
@@ -145,20 +197,15 @@ export const tagsRelations = relations(tags, ({ many }) => ({
 }));
 
 export const datasetsRelations = relations(datasets, ({ one, many }) => ({
-  source: one(sources, {
-    fields: [datasets.sourceId],
-    references: [sources.id],
-  }),
+  source: one(sources, { fields: [datasets.sourceId], references: [sources.id] }),
   datasetTags: many(datasetTags),
 }));
 
 export const datasetTagsRelations = relations(datasetTags, ({ one }) => ({
-  dataset: one(datasets, {
-    fields: [datasetTags.datasetId],
-    references: [datasets.id],
-  }),
-  tag: one(tags, {
-    fields: [datasetTags.tagId],
-    references: [tags.id],
-  }),
+  dataset: one(datasets, { fields: [datasetTags.datasetId], references: [datasets.id] }),
+  tag: one(tags, { fields: [datasetTags.tagId], references: [tags.id] }),
+}));
+
+export const organisationRelations = relations(organisation, ({ one }) => ({
+  user: one(user, { fields: [organisation.userId], references: [user.id] }),
 }));
