@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { uploadFile, getPresignedUrl } from "../lib/s3";
-import { publishUploadMessage } from "../lib/queue";
+import { uploadFile, getPresignedUrl } from "../../lib/s3";
+import { publishUploadMessage } from "../../lib/queue";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
-const upload = new Hono();
+export const uploadRouter = new Hono();
 
 // File type → mime type mapping matching the DB file_type enum
 const MIME_TO_FILE_TYPE: Record<string, string> = {
@@ -35,7 +35,7 @@ function resolveFileType(mime: string): string {
  *
  * Uploads files to R2 in parallel, enqueues processing job, returns upload_id.
  */
-upload.post("/", async (c) => {
+uploadRouter.post("/", async (c) => {
   // Better-auth session check
   const session = c.get("user" as never) as { id: string } | undefined;
   const userId = session?.id ?? "anonymous";
@@ -151,8 +151,8 @@ upload.post("/", async (c) => {
 });
 
 const callbackSchema = z.object({
-  upload_id: z.string().uuid(),
-  dataset_id: z.string().uuid(),
+  upload_id: z.uuid(),
+  dataset_id: z.uuid(),
   status: z.enum(["completed", "failed"]),
   error: z.string().optional(),
 });
@@ -162,7 +162,7 @@ const callbackSchema = z.object({
  * Called by the Rust worker when processing is done.
  * Extend this to push WebSocket/SSE events to the frontend.
  */
-upload.post("/callback", zValidator("json", callbackSchema), async (c) => {
+uploadRouter.post("/callback", zValidator("json", callbackSchema), async (c) => {
   const body = c.req.valid("json");
 
   if (body.status === "completed") {
@@ -174,5 +174,3 @@ upload.post("/callback", zValidator("json", callbackSchema), async (c) => {
   // TODO: push real-time notification to frontend (WebSocket/SSE)
   return c.json({ ok: true });
 });
-
-export default upload;

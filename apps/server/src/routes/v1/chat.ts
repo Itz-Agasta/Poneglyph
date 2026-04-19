@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import { createAgentUIStreamResponse } from "ai";
 // import { auth } from "@Poneglyph/auth"; // TODO: re-enable auth
-import { createOrchestratorAgent } from "../agents/orchestrator";
+import { createOrchestratorAgent } from "../../agents/orchestrator";
 
-const chat = new Hono();
+export const chatRouter = new Hono();
 
 /**
  * POST /api/chat
@@ -32,7 +32,7 @@ const chat = new Hono();
  */
 
 // TODO: will add zod validation on next pr
-chat.post("/", async (c) => {
+chatRouter.post("/", async (c) => {
   // Auth disabled for now — will add in next PR
   // const session = await auth.api.getSession({ headers: c.req.raw.headers });
   // if (!session?.user) return c.json({ error: "Authentication required" }, 401);
@@ -55,5 +55,3 @@ chat.post("/", async (c) => {
     uiMessages: messages,
   });
 });
-
-export default chat;

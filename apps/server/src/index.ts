@@ -3,31 +3,24 @@ import { env } from "@Poneglyph/env/server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import upload from "./routes/upload";
-import chat from "./routes/chat";
-
-// Parse the comma-separated CORS_ORIGINS string into an array.
-// e.g. "http://localhost:3001,http://localhost:3000" → ["http://localhost:3001", "http://localhost:3000"]
-const allowedOrigins = env.CORS_ORIGINS.split(",").map((o) => o.trim());
-
-import { datasetsRoute } from "./routes/datasets";
+import { apiRouter } from "./routes/router";
 
 const app = new Hono();
 
+// Middlewares
 app.use(logger());
 app.use(
   "/*",
   cors({
-    origin: allowedOrigins,
+    origin: env.CORS_ORIGIN,
     allowMethods: ["GET", "POST", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   }),
 );
 
+// Direct routes
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
-app.route("/api/upload", upload);
-app.route("/api/chat", chat);
 
 app.get("/", (c) => {
   c.header("Content-Type", "text/plain");
@@ -42,8 +35,18 @@ app.get("/health", (c) =>
   }),
 );
 
-const routes = app.route("/api/v1/datasets", datasetsRoute);
+// API sub-app
+// URLs: /api/chat/...
+const api = new Hono().basePath("/api");
+api.route("/", apiRouter);
+app.route("/", api);
 
-export type AppType = typeof routes;
+// Fallback handlers
+app.onError((err, c) => {
+  console.error(err); // TODO: use logger
+  return c.json({ error: "Internal Server Error" }, 500);
+});
+
+app.notFound((c) => c.json({ error: "Not Found" }, 404));
 
 export default app;
