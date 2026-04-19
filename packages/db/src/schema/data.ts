@@ -136,9 +136,6 @@ export const syncLogs = pgTable("sync_logs", {
 // ─────────────────────────────────────────────────────────────────────────────
 // Organisation
 //
-// Presence of a row here IS the org identity check — no role column needed
-// on the user table. Checking "is this user an org?" is an O(1) PK lookup:
-//   SELECT user_id FROM organisation WHERE user_id = $1
 //
 // uploads: denormalized uuid[] of dataset IDs. Populated by the upload callback
 // when the Rust worker finishes processing. Enables fast "list this org's
@@ -188,7 +185,10 @@ export const organisation = pgTable(
 // ─── Relations ───────────────────────────────────────────────────────────────
 
 export const sourcesRelations = relations(sources, ({ one, many }) => ({
-  user: one(user, { fields: [sources.userId], references: [user.id] }),
+  user: one(user, { 
+    fields: [sources.userId], 
+    references: [user.id] 
+  }),
   datasets: many(datasets),
 }));
 
@@ -197,15 +197,27 @@ export const tagsRelations = relations(tags, ({ many }) => ({
 }));
 
 export const datasetsRelations = relations(datasets, ({ one, many }) => ({
-  source: one(sources, { fields: [datasets.sourceId], references: [sources.id] }),
+  source: one(sources, { 
+    fields: [datasets.sourceId], 
+    references: [sources.id] 
+  }),
   datasetTags: many(datasetTags),
 }));
 
 export const datasetTagsRelations = relations(datasetTags, ({ one }) => ({
-  dataset: one(datasets, { fields: [datasetTags.datasetId], references: [datasets.id] }),
-  tag: one(tags, { fields: [datasetTags.tagId], references: [tags.id] }),
+  dataset: one(datasets, { 
+    fields: [datasetTags.datasetId], 
+    references: [datasets.id] 
+  }),
+  tag: one(tags, { 
+    fields: [datasetTags.tagId], 
+    references: [tags.id] 
+  }),
 }));
 
 export const organisationRelations = relations(organisation, ({ one }) => ({
-  user: one(user, { fields: [organisation.userId], references: [user.id] }),
+  user: one(user, { 
+    fields: [organisation.userId], 
+    references: [user.id] 
+  }),
 }));
