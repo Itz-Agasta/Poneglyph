@@ -5,16 +5,12 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import upload from "./routes/upload";
 import chat from "./routes/chat";
+import { datasetsRoute } from "./routes/datasets";
+import { discoverRoutes } from "./routes/discover";
 
 // Parse the comma-separated CORS_ORIGINS string into an array.
 // e.g. "http://localhost:3001,http://localhost:3000" → ["http://localhost:3001", "http://localhost:3000"]
 const allowedOrigins = env.CORS_ORIGINS.split(",").map((o) => o.trim());
-
-import { datasetsRoute } from "./routes/datasets";
-
-import { volunteerRoutes } from "./routes/volunteer";
-import upload from "./routes/upload";
-import chat from "./routes/chat";
 
 const app = new Hono();
 
@@ -46,7 +42,9 @@ app.get("/health", (c) =>
   }),
 );
 
-const routes = app.route("/api/v1/datasets", datasetsRoute);
+const routes = app
+  .route("/api/v1/datasets", datasetsRoute)
+  .route("/api/v1/discover", discoverRoutes);
 
 export type AppType = typeof routes;
 
