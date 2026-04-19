@@ -10,10 +10,7 @@ type DiscoverBindings = {
   };
 };
 
-async function requireAuthenticatedUser(
-  c: Context<DiscoverBindings>,
-  next: Next,
-): Promise<void> {
+async function requireAuthenticatedUser(c: Context<DiscoverBindings>, next: Next): Promise<void> {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   const userId = session?.user?.id;
 

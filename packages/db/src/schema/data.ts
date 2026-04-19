@@ -69,9 +69,7 @@ export const volunteer = pgTable(
       .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table) => [
-    index("idx_volunteer_city").on(table.city),
-  ],
+  (table) => [index("idx_volunteer_city").on(table.city)],
 );
 
 export const volunteerTags = pgTable(
