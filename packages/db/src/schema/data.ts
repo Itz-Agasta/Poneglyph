@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -11,7 +11,6 @@ import {
   uuid,
   pgEnum,
   vector,
-  jsonb,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
@@ -133,79 +132,61 @@ export const syncLogs = pgTable("sync_logs", {
   error: text("error"),
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Organisation
-//
-//
-// uploads: denormalized uuid[] of dataset IDs. Populated by the upload callback
-// when the Rust worker finishes processing. Enables fast "list this org's
-// datasets" queries (WHERE id = ANY(uploads)) without joining through sources.
-// ─────────────────────────────────────────────────────────────────────────────
-export const organisation = pgTable(
-  "organisation",
-  {
-    // 1:1 with user — PK doubles as FK, row deleted when user account is deleted
-    userId: text("user_id")
-      .primaryKey()
-      .references(() => user.id, { onDelete: "cascade" }),
+export const organisation = pgTable("organisation", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  // Core identity
+  tagline: varchar("tagline", { length: 160 }),
+  description: text("description"),
+  // Location & contact
+  country: varchar("country", { length: 100 }),
+  website: text("website"),
 
-    // Core identity
-    tagline: varchar("tagline", { length: 160 }),
-    description: text("description"),
+  socialLinks: text("social_links").array(),
 
-    // Location & contact
-    country: varchar("country", { length: 100 }),
-    website: text("website"),
-
-
-    // Flexible social links — add keys without schema changes
-    // e.g. { "twitter": "https://x.com/org", "linkedin": "https://linkedin.com/org" }
-    socialLinks: text("social_links").array(),
-
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-  },
-);
-
-// ─── Relations ───────────────────────────────────────────────────────────────
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
 
 export const sourcesRelations = relations(sources, ({ one, many }) => ({
-  user: one(user, { 
-    fields: [sources.userId], 
-    references: [user.id] 
+  user: one(user, {
+    fields: [sources.userId],
+    references: [user.id],
+  }),
+  organisation: one(organisation, {
+    fields: [sources.userId],
+    references: [organisation.userId],
   }),
   datasets: many(datasets),
 }));
 
-export const tagsRelations = relations(tags, ({ many }) => ({
-  datasetTags: many(datasetTags),
-}));
-
 export const datasetsRelations = relations(datasets, ({ one, many }) => ({
-  source: one(sources, { 
-    fields: [datasets.sourceId], 
-    references: [sources.id] 
+  source: one(sources, {
+    fields: [datasets.sourceId],
+    references: [sources.id],
   }),
   datasetTags: many(datasetTags),
 }));
 
 export const datasetTagsRelations = relations(datasetTags, ({ one }) => ({
-  dataset: one(datasets, { 
-    fields: [datasetTags.datasetId], 
-    references: [datasets.id] 
+  dataset: one(datasets, {
+    fields: [datasetTags.datasetId],
+    references: [datasets.id],
   }),
-  tag: one(tags, { 
-    fields: [datasetTags.tagId], 
-    references: [tags.id] 
+  tag: one(tags, {
+    fields: [datasetTags.tagId],
+    references: [tags.id],
   }),
 }));
 
-export const organisationRelations = relations(organisation, ({ one }) => ({
-  user: one(user, { 
-    fields: [organisation.userId], 
-    references: [user.id] 
+export const organisationRelations = relations(organisation, ({ one, many }) => ({
+  user: one(user, {
+    fields: [organisation.userId],
+    references: [user.id],
   }),
+  sources: many(sources),
 }));
