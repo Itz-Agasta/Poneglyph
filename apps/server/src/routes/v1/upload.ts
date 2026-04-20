@@ -1,29 +1,13 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { UploadCallbackSchema } from "@Poneglyph/schemas/upload";
+import { UploadCallbackSchema, UploadRequestSchema } from "@Poneglyph/schemas/upload";
 import { logger } from "@/lib/logger";
 import { uploadFile, getPresignedUrl } from "../../lib/s3";
 import { publishUploadMessage } from "../../lib/queue";
 
 const log = logger.getChild("upload");
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
-
 export const uploadRouter = new Hono();
-
-// File type -> mime type mapping matching the DB file_type enum
-const MIME_TO_FILE_TYPE: Record<string, string> = {
-  "application/pdf": "pdf",
-  "text/csv": "csv",
-  "application/json": "json",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
-  "application/vnd.ms-excel": "xls",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
-};
-
-function resolveFileType(mime: string): string {
-  return MIME_TO_FILE_TYPE[mime] ?? "other";
-}
 
 /**
  * POST /api/upload
@@ -38,67 +22,20 @@ function resolveFileType(mime: string): string {
  *
  * Uploads files to R2 in parallel, enqueues processing job, returns upload_id.
  */
-uploadRouter.post("/", async (c) => {
-  // Better-auth session check
+uploadRouter.post("/", zValidator("form", UploadRequestSchema), async (c) => {
   const session = c.get("user" as never) as { id: string } | undefined;
   const userId = session?.id ?? "anonymous";
-
-  let formData: FormData;
-  try {
-    formData = await c.req.formData();
-  } catch {
-    return c.json({ error: "Expected multipart/form-data" }, 400);
-  }
-
-  const title = formData.get("title");
-  const description = formData.get("description");
-  if (!title || !description) {
-    return c.json({ error: "title and description are required" }, 400);
-  }
-
-  const summary = formData.get("summary")?.toString() ?? undefined;
-  const publisher = formData.get("publisher")?.toString() ?? undefined;
-  const tagsRaw = formData.get("tags")?.toString() ?? "";
-  const tags = tagsRaw
-    ? tagsRaw
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean)
-    : [];
-
-  // Collect all uploaded files
-  const fileEntries = formData.getAll("files") as File[];
-  if (fileEntries.length === 0) {
-    return c.json({ error: "At least one file is required" }, 400);
-  }
-
-  // TODO: When switching to presigned URLs (Zero Wait approach), I will remove this guard.
-  // Currently using arrayBuffer() which holds entire file in memory - size guard
-  // prevents OOM. With presigned URLs, client uploads directly to R2.
-  //
-  // Issue: https://github.com/Itz-Agasta/Poneglyph/issues/8
-  for (const file of fileEntries) {
-    if (file.size > MAX_FILE_SIZE) {
-      return c.json(
-        {
-          error: `File ${file.name} is too large. Max limit is ${MAX_FILE_SIZE / 1024 / 1024}MB.`,
-        },
-        413,
-      );
-    }
-  }
+  const { title, description, summary, publisher, tags, files, thumbnail } = c.req.valid("form");
 
   const uploadId = crypto.randomUUID();
   log.info("Upload received: {fileCount} file(s), upload_id={uploadId}", {
-    fileCount: fileEntries.length,
+    fileCount: files.length,
     uploadId,
   });
 
-  // Parallel upload all attachments to R2
-  const attachmentPromises = fileEntries.map(async (file) => {
+  const attachmentPromises = files.map(async (file) => {
     const ext = file.name.split(".").pop() ?? "bin";
     const key = `uploads/${uploadId}/${crypto.randomUUID()}.${ext}`;
-    // TODO: Replace with presigned URLs - client uploads directly to R2 (Zero Wait)
     const buffer = await file.arrayBuffer();
 
     await uploadFile(key, buffer, file.type || "application/octet-stream");
@@ -108,33 +45,22 @@ uploadRouter.post("/", async (c) => {
       s3_key: key,
       presigned_url: presignedUrl,
       mime_type: file.type || "application/octet-stream",
-      file_type: resolveFileType(file.type),
+      file_type: file.type.split("/").pop() ?? "other",
     };
   });
 
-  // Upload thumbnail in parallel with attachments
-  const thumbnailFile = formData.get("thumbnail") as File | null;
-
-  if (thumbnailFile && thumbnailFile.size > MAX_FILE_SIZE) {
-    return c.json(
-      {
-        error: `Thumbnail ${thumbnailFile.name} is too large. Max limit is ${MAX_FILE_SIZE / 1024 / 1024}MB.`,
-      },
-      413,
-    );
-  }
-
-  const thumbnailPromise = thumbnailFile
+  const thumbnailPromise = thumbnail
     ? (async () => {
-        const thumbExt = thumbnailFile.name.split(".").pop() ?? "bin";
+        const thumbExt = thumbnail.name.split(".").pop() ?? "bin";
         const thumbKey = `uploads/${uploadId}/thumbnail.${thumbExt}`;
-        // TODO: Replace with presigned URLs - client uploads directly to R2 (Zero Wait)
-        const thumbBuffer = await thumbnailFile.arrayBuffer();
-        await uploadFile(thumbKey, thumbBuffer, thumbnailFile.type || "image/*");
+        const thumbBuffer = await thumbnail.arrayBuffer();
+        await uploadFile(thumbKey, thumbBuffer, thumbnail.type || "image/*");
         return thumbKey;
       })()
     : Promise.resolve(undefined);
 
+  // TODO: Replace with presigned URLs - client uploads directly to R2 (Zero Wait)
+  // Issue: https://github.com/Itz-Agasta/Poneglyph/issues/8
   const [attachments, thumbnailS3Key] = await Promise.all([
     Promise.all(attachmentPromises),
     thumbnailPromise,
@@ -144,8 +70,8 @@ uploadRouter.post("/", async (c) => {
   await publishUploadMessage({
     upload_id: uploadId,
     user_id: userId,
-    title: title.toString(),
-    description: description.toString(),
+    title,
+    description,
     summary,
     publisher,
     tags,
