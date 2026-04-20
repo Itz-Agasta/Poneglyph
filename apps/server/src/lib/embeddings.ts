@@ -13,13 +13,13 @@ const CACHE_TTL = 60 * 60 * 24; // 24 hours
 /**
  * Embeds a query using Google's model. Results are cached in Redis for 24h
  * since the same user queries (or repeated ones) are common in chat UX.
- * Cache miss → call API → cache result. Simple and effective.
+ * Cache miss -> call API -> cache result.
  */
 export async function embedQuery(query: string): Promise<number[]> {
   const normalized = query.trim().toLowerCase();
-  const cacheKey = `emb:${hashQuery(normalized)}`;
+  const hash = hashQuery(normalized);
+  const cacheKey = `emb:${hash}`;
 
-  // Check Redis cache first
   let cached: number[] | null = null;
   try {
     cached = await redis.get<number[]>(cacheKey);
