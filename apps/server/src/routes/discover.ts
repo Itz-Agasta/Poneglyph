@@ -87,7 +87,7 @@ discoverRoutes.get("/volunteers", async (c) => {
     );
 
     if (volunteerIds.length === 0) {
-      return c.json({ data: [], total: 0, page, limit, totalPages: 0 }, 200);
+      return c.json({ data: [], total: 0, page, limit: cappedLimit, totalPages: 0 }, 200);
     }
 
     filters.push(...volunteerIds);
