@@ -39,7 +39,7 @@ export const sources = pgTable("sources", {
     onDelete: "cascade",
   }), // Only for user-uploads
   name: varchar("name", { length: 50 }).notNull(),
-  url: text("url"), // Only for extranl sources
+  url: text("url"), // Only for external sources
   sourceType: sourceTypeEnum("source_type").notNull().default("upload"),
   isVerified: boolean("is_verified").default(false).notNull(),
 });
@@ -72,7 +72,7 @@ export const datasets = pgTable(
 
     language: varchar("language", { length: 10 }).default("en").notNull(),
 
-    s3Keys: text("s3_keys").array(), // Attchments
+    s3Keys: text("s3_keys").array(), // Attachments
     fileTypes: fileTypeEnum("file_types").array(),
     sourceUrl: text("source_url"), // On demand fetch
 
@@ -95,7 +95,7 @@ export const datasets = pgTable(
   ],
 );
 
-// junction table for filtering
+// Junction table for filtering
 export const datasetTags = pgTable(
   "dataset_tags",
   {
@@ -109,7 +109,7 @@ export const datasetTags = pgTable(
   },
   (table) => [
     index("dataset_tags_dataset_id_idx").on(table.datasetId),
-    index("dataset_tags_tag_id_idx").on(table.tagId), // for fast filtering
+    index("dataset_tags_tag_id_idx").on(table.tagId),
     uniqueIndex("dataset_tags_dataset_id_tag_id_unique").on(table.datasetId, table.tagId),
   ],
 );
@@ -132,10 +132,34 @@ export const syncLogs = pgTable("sync_logs", {
   error: text("error"),
 });
 
+export const organisation = pgTable("organisation", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  // Core identity
+  tagline: varchar("tagline", { length: 160 }),
+  description: text("description"),
+  // Location & contact
+  country: varchar("country", { length: 100 }),
+  website: text("website"),
+
+  socialLinks: text("social_links").array(),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
+
 export const sourcesRelations = relations(sources, ({ one, many }) => ({
   user: one(user, {
     fields: [sources.userId],
     references: [user.id],
+  }),
+  organisation: one(organisation, {
+    fields: [sources.userId],
+    references: [organisation.userId],
   }),
   datasets: many(datasets),
 }));
@@ -161,4 +185,12 @@ export const datasetTagsRelations = relations(datasetTags, ({ one }) => ({
     fields: [datasetTags.tagId],
     references: [tags.id],
   }),
+}));
+
+export const organisationRelations = relations(organisation, ({ one, many }) => ({
+  user: one(user, {
+    fields: [organisation.userId],
+    references: [user.id],
+  }),
+  sources: many(sources),
 }));
