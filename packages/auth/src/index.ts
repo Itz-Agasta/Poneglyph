@@ -3,7 +3,6 @@ import * as authSchema from "@Poneglyph/db/schema/auth";
 import { user } from "@Poneglyph/db/schema/users";
 import { env } from "@Poneglyph/env/server";
 import { betterAuth } from "better-auth";
-import { admin } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 const schema = {
@@ -20,7 +19,7 @@ export function createAuth() {
 
       schema: schema,
     }),
-    trustedOrigins: env.CORS_ORIGINS.split(",").map((o) => o.trim()),
+    trustedOrigins: [env.CORS_ORIGIN],
     emailAndPassword: {
       enabled: true,
     },
@@ -33,7 +32,7 @@ export function createAuth() {
         httpOnly: true,
       },
     },
-    plugins: [admin()],
+    plugins: [],
   });
 }
 

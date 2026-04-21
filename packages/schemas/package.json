@@ -1,0 +1,17 @@
+{
+  "name": "@Poneglyph/schemas",
+  "type": "module",
+  "exports": {
+    "./common": "./src/common.ts",
+    "./chat": "./src/chat.ts",
+    "./upload": "./src/upload.ts",
+    "./dataset": "./src/dataset.ts"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@Poneglyph/config": "workspace:*",
+    "typescript": "^5"
+  }
+}
