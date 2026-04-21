@@ -11,9 +11,8 @@ import {
   uuid,
   pgEnum,
   vector,
-  primaryKey,
 } from "drizzle-orm/pg-core";
-import { user } from "./auth";
+import { user, volunteerTags } from "./users";
 
 export const sourceTypeEnum = pgEnum("source_type", ["upload", "external_url", "api"]);
 
@@ -50,47 +49,6 @@ export const tags = pgTable("tags", {
   name: varchar("name", { length: 100 }).notNull().unique(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
 });
-
-export const volunteer = pgTable(
-  "volunteer",
-  {
-    userId: text("user_id")
-      .primaryKey()
-      .references(() => user.id, { onDelete: "cascade" }),
-    description: text("description"),
-    city: varchar("city", { length: 100 }),
-    pastWorks: text("past_works").array().notNull().default([]),
-    bio: text("bio"),
-    isOpenToWork: boolean("is_open_to_work").default(false).notNull(),
-    wantsToStartOrg: boolean("wants_to_start_org").default(false),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-  },
-  (table) => [index("idx_volunteer_city").on(table.city)],
-);
-
-export const volunteerTags = pgTable(
-  "volunteer_tags",
-  {
-    volunteerId: text("volunteer_id")
-      .notNull()
-      .references(() => volunteer.userId, { onDelete: "cascade" }),
-    tagId: uuid("tag_id")
-      .notNull()
-      .references(() => tags.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  },
-  (table) => [
-    index("idx_volunteer_tags_tag_id").on(table.tagId),
-    primaryKey({
-      name: "volunteer_tags_pk",
-      columns: [table.volunteerId, table.tagId],
-    }),
-  ],
-);
 
 // Core pointer record table
 export const datasets = pgTable(
@@ -185,25 +143,6 @@ export const sourcesRelations = relations(sources, ({ one, many }) => ({
 export const tagsRelations = relations(tags, ({ many }) => ({
   datasetTags: many(datasetTags),
   volunteerTags: many(volunteerTags),
-}));
-
-export const volunteerRelations = relations(volunteer, ({ one, many }) => ({
-  user: one(user, {
-    fields: [volunteer.userId],
-    references: [user.id],
-  }),
-  volunteerTags: many(volunteerTags),
-}));
-
-export const volunteerTagsRelations = relations(volunteerTags, ({ one }) => ({
-  volunteer: one(volunteer, {
-    fields: [volunteerTags.volunteerId],
-    references: [volunteer.userId],
-  }),
-  tag: one(tags, {
-    fields: [volunteerTags.tagId],
-    references: [tags.id],
-  }),
 }));
 
 export const datasetsRelations = relations(datasets, ({ one, many }) => ({

@@ -1,9 +1,15 @@
 import { createDb } from "@Poneglyph/db";
-import * as schema from "@Poneglyph/db/schema/auth";
+import * as authSchema from "@Poneglyph/db/schema/auth";
+import { user } from "@Poneglyph/db/schema/users";
 import { env } from "@Poneglyph/env/server";
 import { betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+
+const schema = {
+  ...authSchema,
+  user,
+};
 
 export function createAuth() {
   const db = createDb();
