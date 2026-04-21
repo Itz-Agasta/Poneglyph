@@ -1,6 +1,7 @@
 mod config;
 mod db;
 mod embed;
+mod resource_embed;
 mod sources;
 mod sync;
 

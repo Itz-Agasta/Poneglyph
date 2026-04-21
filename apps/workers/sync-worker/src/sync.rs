@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use sqlx::PgPool;
 
 use crate::db;
-use crate::embed;
+use crate::resource_embed;
 use crate::sources::{self, ckan};
 use crate::sources::types::{SourceDataset, SyncRequest, SyncResponse};
 
@@ -51,8 +51,9 @@ pub async fn run_sync(pool: &PgPool, req: &SyncRequest) -> Result<SyncResponse> 
     let mut added: usize = 0;
     let updated: usize = 0;
 
-    let mut embed_queue: Vec<(uuid::Uuid, String)> = Vec::new();
     let live_ids = all_external_ids;
+    let api_key = &crate::config::CONFIG.gemini_api_key;
+    let mut embedded: usize = 0;
 
     for ds in new_datasets {
         match db::upsert_dataset(pool, ds, source_id).await {
@@ -74,9 +75,23 @@ pub async fn run_sync(pool: &PgPool, req: &SyncRequest) -> Result<SyncResponse> 
                     }
                 }
 
-                let text = ckan::build_embedding_text(ds);
-                if !text.is_empty() {
-                    embed_queue.push((dataset_id, text));
+                let metadata_text = ckan::build_embedding_text(ds);
+                if !metadata_text.is_empty() {
+                    match resource_embed::build_dataset_embedding(ds, &metadata_text, api_key).await {
+                        Ok(vector) => match db::update_embedding(pool, dataset_id, &vector).await {
+                            Ok(()) => embedded += 1,
+                            Err(error) => errors.push(format!(
+                                "DB update embedding error for {}: {}",
+                                dataset_id, error
+                            )),
+                        },
+                        Err(error) => {
+                            errors.push(format!(
+                                "Embedding error for '{}': {}",
+                                ds.title, error
+                            ));
+                        }
+                    }
                 }
             }
             Err(e) => {
@@ -92,22 +107,6 @@ pub async fn run_sync(pool: &PgPool, req: &SyncRequest) -> Result<SyncResponse> 
             0
         }
     };
-
-    let api_key = &crate::config::CONFIG.gemini_api_key;
-    let embed_results = embed::embed_batch(embed_queue, api_key).await;
-
-    let mut embedded: usize = 0;
-    for (dataset_id, vector) in &embed_results {
-        match db::update_embedding(pool, *dataset_id, vector).await {
-            Ok(()) => embedded += 1,
-            Err(e) => {
-                errors.push(format!(
-                    "DB update embedding error for {}: {}",
-                    dataset_id, e
-                ));
-            }
-        }
-    }
 
     let error_count = errors.len() as i32;
 
