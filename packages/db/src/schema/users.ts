@@ -36,8 +36,8 @@ export const volunteer = pgTable(
     bio: text("bio"),
     isOpenToWork: boolean("is_open_to_work").default(false).notNull(),
     wantsToStartOrg: boolean("wants_to_start_org").default(false),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
       .defaultNow()
       .$onUpdate(() => new Date())
       .notNull(),
@@ -54,7 +54,7 @@ export const volunteerTags = pgTable(
     tagId: uuid("tag_id")
       .notNull()
       .references(() => tags.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
     index("idx_volunteer_tags_tag_id").on(table.tagId),

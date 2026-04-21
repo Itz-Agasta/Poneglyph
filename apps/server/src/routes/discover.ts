@@ -1,7 +1,7 @@
 import { auth } from "@Poneglyph/auth";
 import { db } from "@Poneglyph/db";
 import { volunteer } from "@Poneglyph/db/schema/users";
-import { count, and, ilike, inArray } from "drizzle-orm";
+import { count, and, inArray, eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Context, Next } from "hono";
@@ -26,6 +26,8 @@ async function requireAuthenticatedUser(c: Context<DiscoverBindings>, next: Next
 
 export const discoverRoutes = new Hono<DiscoverBindings>();
 
+const MAX_LIMIT = 100;
+
 discoverRoutes.use("/volunteers", requireAuthenticatedUser);
 discoverRoutes.use("/volunteers/*", requireAuthenticatedUser);
 
@@ -46,7 +48,8 @@ discoverRoutes.get("/volunteers", async (c) => {
     return c.json({ error: "Query param 'limit' must be a positive integer" }, 400);
   }
 
-  const offset = (page - 1) * limit;
+  const cappedLimit = Math.min(limit, MAX_LIMIT);
+  const offset = (page - 1) * cappedLimit;
   const filters: string[] = [];
 
   const tagSlugs = tagsRaw
@@ -91,7 +94,7 @@ discoverRoutes.get("/volunteers", async (c) => {
   }
 
   const conditions = [];
-  if (city) conditions.push(ilike(volunteer.city, city));
+  if (city) conditions.push(eq(sql`lower(${volunteer.city})`, city.toLowerCase()));
   if (filters.length > 0) conditions.push(inArray(volunteer.userId, filters));
   const condition =
     conditions.length === 0
@@ -103,7 +106,7 @@ discoverRoutes.get("/volunteers", async (c) => {
   const [rows, [{ total }]] = await Promise.all([
     db.query.volunteer.findMany({
       where: condition ? () => condition : undefined,
-      limit,
+      limit: cappedLimit,
       offset,
       with: {
         user: {
@@ -151,8 +154,8 @@ discoverRoutes.get("/volunteers", async (c) => {
       })),
       total,
       page,
-      limit,
-      totalPages: Math.ceil(total / limit),
+      limit: cappedLimit,
+      totalPages: Math.ceil(total / cappedLimit),
     },
     200,
   );
