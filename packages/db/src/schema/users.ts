@@ -1,6 +1,4 @@
-import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index, varchar } from "drizzle-orm/pg-core";
-import { sources, volunteerTags } from "./data";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -55,19 +53,3 @@ export const organisation = pgTable("organisation", {
     .$onUpdate(() => new Date())
     .notNull(),
 });
-
-export const volunteerRelations = relations(volunteer, ({ one, many }) => ({
-  user: one(user, {
-    fields: [volunteer.userId],
-    references: [user.id],
-  }),
-  volunteerTags: many(volunteerTags),
-}));
-
-export const organisationRelations = relations(organisation, ({ one, many }) => ({
-  user: one(user, {
-    fields: [organisation.userId],
-    references: [user.id],
-  }),
-  sources: many(sources),
-}));

@@ -53,10 +53,14 @@ discoverRoutes.get("/volunteers", async (c) => {
   const filters: string[] = [];
 
   const tagSlugs = tagsRaw
-    ? tagsRaw
-        .split(",")
-        .map((value) => value.trim().toLowerCase())
-        .filter(Boolean)
+    ? [
+        ...new Set(
+          tagsRaw
+            .split(",")
+            .map((value) => value.trim().toLowerCase())
+            .filter(Boolean),
+        ),
+      ]
     : [];
 
   if (tagSlugs.length > 0) {
@@ -108,6 +112,7 @@ discoverRoutes.get("/volunteers", async (c) => {
       where: condition ? () => condition : undefined,
       limit: cappedLimit,
       offset,
+      orderBy: (fields, { asc }) => [asc(fields.userId)],
       with: {
         user: {
           columns: {
