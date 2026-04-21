@@ -1,15 +1,6 @@
 import { relations } from "drizzle-orm";
-import {
-  pgTable,
-  text,
-  timestamp,
-  boolean,
-  index,
-  varchar,
-  uuid,
-  primaryKey,
-} from "drizzle-orm/pg-core";
-import { tags } from "./data";
+import { pgTable, text, timestamp, boolean, index, varchar } from "drizzle-orm/pg-core";
+import { sources, volunteerTags } from "./data";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -45,25 +36,25 @@ export const volunteer = pgTable(
   (table) => [index("idx_volunteer_city").on(table.city)],
 );
 
-export const volunteerTags = pgTable(
-  "volunteer_tags",
-  {
-    volunteerId: text("volunteer_id")
-      .notNull()
-      .references(() => volunteer.userId, { onDelete: "cascade" }),
-    tagId: uuid("tag_id")
-      .notNull()
-      .references(() => tags.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (table) => [
-    index("idx_volunteer_tags_tag_id").on(table.tagId),
-    primaryKey({
-      name: "volunteer_tags_pk",
-      columns: [table.volunteerId, table.tagId],
-    }),
-  ],
-);
+export const organisation = pgTable("organisation", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  // Core identity
+  tagline: varchar("tagline", { length: 160 }),
+  description: text("description"),
+  // Location & contact
+  country: varchar("country", { length: 100 }),
+  website: text("website"),
+
+  socialLinks: text("social_links").array(),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
 
 export const volunteerRelations = relations(volunteer, ({ one, many }) => ({
   user: one(user, {
@@ -73,13 +64,10 @@ export const volunteerRelations = relations(volunteer, ({ one, many }) => ({
   volunteerTags: many(volunteerTags),
 }));
 
-export const volunteerTagsRelations = relations(volunteerTags, ({ one }) => ({
-  volunteer: one(volunteer, {
-    fields: [volunteerTags.volunteerId],
-    references: [volunteer.userId],
+export const organisationRelations = relations(organisation, ({ one, many }) => ({
+  user: one(user, {
+    fields: [organisation.userId],
+    references: [user.id],
   }),
-  tag: one(tags, {
-    fields: [volunteerTags.tagId],
-    references: [tags.id],
-  }),
+  sources: many(sources),
 }));
