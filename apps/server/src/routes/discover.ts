@@ -1,35 +1,10 @@
-import { auth } from "@Poneglyph/auth";
 import { db } from "@Poneglyph/db";
 import { volunteer } from "@Poneglyph/db/schema/users";
 import { count, and, inArray, eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
-import type { Context, Next } from "hono";
-
-type DiscoverBindings = {
-  Variables: {
-    userId: string;
-  };
-};
-
-async function requireAuthenticatedUser(c: Context<DiscoverBindings>, next: Next): Promise<void> {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  const userId = session?.user?.id;
-
-  if (!userId) {
-    throw new HTTPException(401, { message: "Authentication required" });
-  }
-
-  c.set("userId", userId);
-  await next();
-}
-
-export const discoverRoutes = new Hono<DiscoverBindings>();
+export const discoverRoutes = new Hono();
 
 const MAX_LIMIT = 100;
-
-discoverRoutes.use("/volunteers", requireAuthenticatedUser);
-discoverRoutes.use("/volunteers/*", requireAuthenticatedUser);
 
 discoverRoutes.get("/volunteers", async (c) => {
   const pageRaw = c.req.query("page") ?? "1";
