@@ -539,12 +539,12 @@ async fn notify_server(callback_url: &str, upload_id: &str, dataset_id: Uuid, er
         error: error.map(str::to_string),
     };
 
-    let secret = std::env::var("UPLOAD_CALLBACK_SECRET").unwrap_or_default();
+    let secret = std::env::var("UPLOAD_CALLBACK_SECRET")
+        .ok()
+        .filter(|s| !s.is_empty())
+        .expect("UPLOAD_CALLBACK_SECRET must be set and non-empty");
 
-    let mut req = HTTP.post(callback_url).json(&payload);
-    if !secret.is_empty() {
-        req = req.header("x-upload-callback-secret", secret);
-    }
+    let mut req = HTTP.post(callback_url).json(&payload).header("x-upload-callback-secret", secret);
 
     match req.send().await {
         Ok(resp) if resp.status().is_success() => {

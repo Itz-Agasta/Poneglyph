@@ -50,7 +50,7 @@ function buildVerificationEmail({
                 Welcome, ${safeName} — one step left.
               </h1>
               <p style="margin:0;font-size:14px;color:#6b7280;line-height:1.7;">
-                You're joining a platform built for NGO workers, researchers, and journalists making decisions that matter.Verify your email to access Poneglyph’s open dataset repository.
+                You're joining a platform built for NGO workers, researchers, and journalists making decisions that matter. Verify your email to access Poneglyph’s open dataset repository.
               </p>
             </td>
           </tr>
@@ -96,7 +96,7 @@ function buildVerificationEmail({
               <p style="margin:0;font-size:12px;color:#9ca3af;line-height:1.6;">
                 If you didn't create an account, you can safely ignore this email.<br/>
                 No account will be activated without verification.<br/><br/>
-                <a href="https://poneglyph.vyse.tech" style="color:#6b7280;text-decoration:underline;">poneglyph.vyse.tech</a> · Open datasets for open minds
+                <a href="https://poneglyph.vyse.site" style="color:#6b7280;text-decoration:underline;">poneglyph.vyse.site</a> · Open datasets for open minds
               </p>
             </td>
           </tr>
