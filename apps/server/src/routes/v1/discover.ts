@@ -1,17 +1,20 @@
 import { db, sql } from "@Poneglyph/db";
 import { volunteer } from "@Poneglyph/db/schema/users";
-import { VolunteerListQuerySchema } from "@Poneglyph/schemas/volunteer";
+import { VolunteerListQuerySchema, VolunteerParamSchema } from "@Poneglyph/schemas/volunteer";
 import { zValidator } from "@hono/zod-validator";
-import { count, and, inArray, eq, desc } from "drizzle-orm";
+import { count, and, inArray, eq, desc, type SQL } from "drizzle-orm";
 import { Hono } from "hono";
-export const discoverRoutes = new Hono();
 
-discoverRoutes.get("/volunteers", zValidator("query", VolunteerListQuerySchema), async (c) => {
+export const discoverRouter = new Hono();
+
+discoverRouter.get("/volunteers", zValidator("query", VolunteerListQuerySchema), async (c) => {
   const { page, limit, city, tags } = c.req.valid("query");
   const offset = (page - 1) * limit;
   const filters: string[] = [];
 
-  const tagSlugs = tags;
+  const tagSlugs = tags
+    ? [...new Set(tags.split(",").map((tag) => tag.trim().toLowerCase()).filter(Boolean))]
+    : [];
 
   if (tagSlugs.length > 0) {
     const matchedVolunteerResult = await db.execute<{ volunteer_id: string }>(sql`
@@ -35,9 +38,12 @@ discoverRoutes.get("/volunteers", zValidator("query", VolunteerListQuerySchema),
     filters.push(...matchedVolunteerIDs);
   }
 
-  const conditions = [];
-  if (city) conditions.push(eq(sql`lower(${volunteer.city})`, city.toLowerCase()));
+  const conditions: SQL[] = [];
+  const normalizedCity = city?.trim().toLowerCase();
+
+  if (normalizedCity) conditions.push(eq(sql`lower(${volunteer.city})`, normalizedCity));
   if (filters.length > 0) conditions.push(inArray(volunteer.userId, filters));
+
   const condition =
     conditions.length === 0
       ? undefined
@@ -80,7 +86,7 @@ discoverRoutes.get("/volunteers", zValidator("query", VolunteerListQuerySchema),
     db.select({ total: count() }).from(volunteer).where(condition),
   ]);
 
-  const total = Number(totalRows[0]?.total ?? 0);
+  const total = totalRows[0]?.total ?? 0;
 
   return c.json(
     {
@@ -102,55 +108,55 @@ discoverRoutes.get("/volunteers", zValidator("query", VolunteerListQuerySchema),
   );
 });
 
-discoverRoutes.get("/volunteers/:targetUserId", async (c) => {
-  const targetUserId = c.req.param("targetUserId").trim();
+discoverRouter.get(
+  "/volunteers/:targetUserId",
+  zValidator("param", VolunteerParamSchema),
+  async (c) => {
+    const { targetUserId } = c.req.valid("param");
 
-  if (!targetUserId) {
-    return c.json({ error: "Target volunteer id is required" }, 400);
-  }
-
-  const volunteerRecord = await db.query.volunteer.findFirst({
-    where: (fields, { eq }) => eq(fields.userId, targetUserId),
-    with: {
-      user: {
-        columns: {
-          id: true,
-          name: true,
-          image: true,
+    const volunteerRecord = await db.query.volunteer.findFirst({
+      where: (fields, { eq }) => eq(fields.userId, targetUserId),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+            image: true,
+          },
         },
-      },
-      volunteerTags: {
-        with: {
-          tag: {
-            columns: {
-              id: true,
-              name: true,
-              slug: true,
+        volunteerTags: {
+          with: {
+            tag: {
+              columns: {
+                id: true,
+                name: true,
+                slug: true,
+              },
             },
           },
         },
       },
-    },
-    columns: {
-      description: true,
-      city: true,
-      pastWorks: true,
-    },
-  });
+      columns: {
+        description: true,
+        city: true,
+        pastWorks: true,
+      },
+    });
 
-  if (!volunteerRecord || !volunteerRecord.user) {
-    return c.json({ error: "Target volunteer not found" }, 404);
-  }
+    if (!volunteerRecord || !volunteerRecord.user) {
+      return c.json({ error: "Target volunteer not found" }, 404);
+    }
 
-  return c.json({
-    volunteer: {
-      userId: volunteerRecord.user.id,
-      name: volunteerRecord.user.name,
-      image: volunteerRecord.user.image,
-      description: volunteerRecord.description,
-      city: volunteerRecord.city,
-      pastWorks: volunteerRecord.pastWorks,
-      tags: volunteerRecord.volunteerTags.map((item) => item.tag),
-    },
-  });
-});
+    return c.json({
+      volunteer: {
+        userId: volunteerRecord.user.id,
+        name: volunteerRecord.user.name,
+        image: volunteerRecord.user.image,
+        description: volunteerRecord.description,
+        city: volunteerRecord.city,
+        pastWorks: volunteerRecord.pastWorks,
+        tags: volunteerRecord.volunteerTags.map((item) => item.tag),
+      },
+    });
+  },
+);
