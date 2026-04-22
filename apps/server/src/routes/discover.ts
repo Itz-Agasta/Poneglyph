@@ -86,15 +86,15 @@ discoverRoutes.get("/volunteers", async (c) => {
       tagCounts.set(row.volunteerId, (tagCounts.get(row.volunteerId) || 0) + 1);
     }
 
-    const volunteerIds = [...new Set(matchingVolunteerRows.map((row) => row.volunteerId))].filter(
-      (id) => (tagCounts.get(id) || 0) >= tagSlugs.length,
-    );
+    const matchedVolunteerIDs = [
+      ...new Set(matchingVolunteerRows.map((row) => row.volunteerId)),
+    ].filter((id) => (tagCounts.get(id) || 0) >= tagSlugs.length);
 
-    if (volunteerIds.length === 0) {
+    if (matchedVolunteerIDs.length === 0) {
       return c.json({ data: [], total: 0, page, limit: cappedLimit, totalPages: 0 }, 200);
     }
 
-    filters.push(...volunteerIds);
+    filters.push(...matchedVolunteerIDs);
   }
 
   const conditions = [];
