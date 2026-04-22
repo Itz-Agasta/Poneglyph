@@ -1,72 +1,35 @@
-import { db } from "@Poneglyph/db";
+import { db, sql } from "@Poneglyph/db";
 import { volunteer } from "@Poneglyph/db/schema/users";
-import { count, and, inArray, eq, sql } from "drizzle-orm";
+import { VolunteerListQuerySchema } from "@Poneglyph/schemas/volunteer";
+import { zValidator } from "@hono/zod-validator";
+import { count, and, inArray, eq, desc } from "drizzle-orm";
 import { Hono } from "hono";
 export const discoverRoutes = new Hono();
 
-const MAX_LIMIT = 100;
-
-discoverRoutes.get("/volunteers", async (c) => {
-  const pageRaw = c.req.query("page") ?? "1";
-  const limitRaw = c.req.query("limit") ?? "10";
-  const city = c.req.query("city")?.trim();
-  const tagsRaw = c.req.query("tags")?.trim();
-
-  const page = Number.parseInt(pageRaw, 10);
-  const limit = Number.parseInt(limitRaw, 10);
-
-  if (!Number.isInteger(page) || page < 1) {
-    return c.json({ error: "Query param 'page' must be a positive integer" }, 400);
-  }
-
-  if (!Number.isInteger(limit) || limit < 1) {
-    return c.json({ error: "Query param 'limit' must be a positive integer" }, 400);
-  }
-
-  const cappedLimit = Math.min(limit, MAX_LIMIT);
-  const offset = (page - 1) * cappedLimit;
+discoverRoutes.get("/volunteers", zValidator("query", VolunteerListQuerySchema), async (c) => {
+  const { page, limit, city, tags } = c.req.valid("query");
+  const offset = (page - 1) * limit;
   const filters: string[] = [];
 
-  const tagSlugs = tagsRaw
-    ? [
-        ...new Set(
-          tagsRaw
-            .split(",")
-            .map((value) => value.trim().toLowerCase())
-            .filter(Boolean),
-        ),
-      ]
-    : [];
+  const tagSlugs = tags;
 
   if (tagSlugs.length > 0) {
-    const matchingTags = await db.query.tags.findMany({
-      where: (fields, { inArray }) => inArray(fields.slug, tagSlugs),
-      with: {
-        volunteerTags: {
-          columns: {
-            volunteerId: true,
-          },
-        },
-      },
-      columns: {
-        slug: true,
-      },
-    });
+    const matchedVolunteerResult = await db.execute<{ volunteer_id: string }>(sql`
+      SELECT vt.volunteer_id
+      FROM volunteer_tags vt
+      INNER JOIN tags t ON vt.tag_id = t.id
+      WHERE t.slug IN (${sql.join(
+        tagSlugs.map((slug) => sql`${slug}`),
+        sql`, `,
+      )})
+      GROUP BY vt.volunteer_id
+      HAVING COUNT(DISTINCT t.slug) = ${tagSlugs.length}
+    `);
 
-    const matchingVolunteerRows: Array<{ volunteerId: string }> = matchingTags.flatMap(
-      (tag) => tag.volunteerTags as Array<{ volunteerId: string }>,
-    );
-    const tagCounts = new Map<string, number>();
-    for (const row of matchingVolunteerRows) {
-      tagCounts.set(row.volunteerId, (tagCounts.get(row.volunteerId) || 0) + 1);
-    }
-
-    const matchedVolunteerIDs = [
-      ...new Set(matchingVolunteerRows.map((row) => row.volunteerId)),
-    ].filter((id) => (tagCounts.get(id) || 0) >= tagSlugs.length);
+    const matchedVolunteerIDs = matchedVolunteerResult.rows.map((row) => row.volunteer_id);
 
     if (matchedVolunteerIDs.length === 0) {
-      return c.json({ data: [], total: 0, page, limit: cappedLimit, totalPages: 0 }, 200);
+      return c.json({ data: [], total: 0, page, limit, totalPages: 0 }, 200);
     }
 
     filters.push(...matchedVolunteerIDs);
@@ -82,12 +45,12 @@ discoverRoutes.get("/volunteers", async (c) => {
         ? conditions[0]
         : and(...conditions);
 
-  const [rows, [{ total }]] = await Promise.all([
+  const [rows, totalRows] = await Promise.all([
     db.query.volunteer.findMany({
-      where: condition ? () => condition : undefined,
-      limit: cappedLimit,
+      where: condition,
+      limit,
       offset,
-      orderBy: (fields, { asc }) => [asc(fields.userId)],
+      orderBy: (fields) => [desc(fields.createdAt)],
       with: {
         user: {
           columns: {
@@ -114,12 +77,10 @@ discoverRoutes.get("/volunteers", async (c) => {
         pastWorks: true,
       },
     }),
-    db
-      .select({ total: count() })
-      .from(volunteer)
-      .where(condition)
-      .then((result) => result as [{ total: number }]),
+    db.select({ total: count() }).from(volunteer).where(condition),
   ]);
+
+  const total = Number(totalRows[0]?.total ?? 0);
 
   return c.json(
     {
@@ -134,8 +95,8 @@ discoverRoutes.get("/volunteers", async (c) => {
       })),
       total,
       page,
-      limit: cappedLimit,
-      totalPages: Math.ceil(total / cappedLimit),
+      limit,
+      totalPages: Math.ceil(total / limit),
     },
     200,
   );
@@ -158,6 +119,17 @@ discoverRoutes.get("/volunteers/:targetUserId", async (c) => {
           image: true,
         },
       },
+      volunteerTags: {
+        with: {
+          tag: {
+            columns: {
+              id: true,
+              name: true,
+              slug: true,
+            },
+          },
+        },
+      },
     },
     columns: {
       description: true,
@@ -178,6 +150,7 @@ discoverRoutes.get("/volunteers/:targetUserId", async (c) => {
       description: volunteerRecord.description,
       city: volunteerRecord.city,
       pastWorks: volunteerRecord.pastWorks,
+      tags: volunteerRecord.volunteerTags.map((item) => item.tag),
     },
   });
 });

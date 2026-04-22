@@ -5,7 +5,8 @@
     "./common": "./src/common.ts",
     "./chat": "./src/chat.ts",
     "./upload": "./src/upload.ts",
-    "./dataset": "./src/dataset.ts"
+    "./dataset": "./src/dataset.ts",
+    "./volunteer": "./src/volunteer.ts"
   },
   "dependencies": {
     "zod": "catalog:"
