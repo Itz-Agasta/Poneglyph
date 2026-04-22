@@ -8,6 +8,14 @@ import { requireAuth } from "../../middleware/auth";
 
 export const discoverRouter = new Hono();
 
+/**
+ * GET /api/discover/volunteers
+ * Paginated volunteer listing with filters.
+ *   - page        (default: 1)
+ *   - limit       (default: 20, max: 100)
+ *   - city        (optional) filter by city
+ *   - tags        (optional) filter by tag slugs (comma-separated)
+ */
 discoverRouter.get(
   "/volunteers",
   requireAuth,
@@ -121,6 +129,11 @@ discoverRouter.get(
   },
 );
 
+/**
+ * GET /api/discover/volunteers/:targetUserId
+ * Volunteer detail by user ID.
+ * Returns full volunteer profile with tags.
+ */
 discoverRouter.get(
   "/volunteers/:targetUserId",
   requireAuth,
