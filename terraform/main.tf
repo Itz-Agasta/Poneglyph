@@ -4,10 +4,6 @@ terraform {
       source  = "hashicorp/google"
       version = ">= 6.0.0, < 8.0.0"
     }
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = ">= 6.0.0, < 8.0.0"
-    }
   }
 
   required_version = ">= 1.3"
@@ -16,4 +12,8 @@ terraform {
 provider "google" {
   project = var.project_id
   region  = var.region
+}
+
+data "google_project" "current" {
+  project_id = var.project_id
 }

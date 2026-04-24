@@ -1,5 +1,5 @@
 locals {
-  cloud_run_env_vars = [
+  server_env_vars = [
     {
       name  = "NODE_ENV"
       value = "production"
@@ -41,14 +41,6 @@ locals {
       value = var.s3_region
     },
     {
-      name  = "RABBITMQ_URL"
-      value = var.rabbitmq_url
-    },
-    {
-      name  = "RABBITMQ_QUEUE"
-      value = var.rabbitmq_queue
-    },
-    {
       name  = "GOOGLE_GENERATIVE_AI_API_KEY"
       value = var.google_generative_ai_api_key
     },
@@ -84,17 +76,35 @@ locals {
       name  = "UPLOAD_CALLBACK_SECRET"
       value = var.upload_callback_secret
     },
+    {
+      name  = "PUBSUB_PROJECT_ID"
+      value = var.project_id
+    },
+    {
+      name  = "PUBSUB_UPLOAD_TOPIC"
+      value = var.pubsub_upload_topic
+    },
   ]
 }
 
 resource "google_project_service" "required" {
   for_each = toset([
     "run.googleapis.com",
+    "pubsub.googleapis.com",
+    "iam.googleapis.com",
   ])
 
   project            = var.project_id
   service            = each.value
   disable_on_destroy = false
+}
+
+resource "google_project_iam_member" "server_pubsub_publisher" {
+  project = var.project_id
+  role    = "roles/pubsub.publisher"
+  member  = "serviceAccount:${data.google_project.current.number}-compute@developer.gserviceaccount.com"
+
+  depends_on = [google_project_service.required]
 }
 
 module "cloud_run" {
@@ -111,7 +121,7 @@ module "cloud_run" {
     port = var.container_port
   }
 
-  timeout_seconds = 120 # Maybe i have to chnage it depeending on my chat endpoint usgae
+  timeout_seconds = 120
   members         = ["allUsers"]
 
   limits = {
@@ -119,7 +129,7 @@ module "cloud_run" {
     memory = "512Mi"
   }
 
-  env_vars = local.cloud_run_env_vars
+  env_vars = local.server_env_vars
 
   template_annotations = {
     "autoscaling.knative.dev/minScale" = "0"
@@ -142,7 +152,10 @@ module "cloud_run" {
     "run.googleapis.com/ingress" = "all"
   }
 
-  depends_on = [google_project_service.required]
+  depends_on = [
+    google_project_service.required,
+    google_project_iam_member.server_pubsub_publisher,
+  ]
 }
 
 output "cloud_run_url" {

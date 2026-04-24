@@ -16,6 +16,12 @@ variable "service_name" {
   default     = "poneglyph-server"
 }
 
+variable "worker_service_name" {
+  description = "Cloud Run upload worker service name"
+  type        = string
+  default     = "poneglyph-upload-worker"
+}
+
 variable "container_port" {
   description = "Container port exposed to Cloud Run"
   type        = number
@@ -28,8 +34,42 @@ variable "max_scale" {
   default     = 2
 }
 
+variable "worker_max_scale" {
+  description = "Maximum Cloud Run worker instances"
+  type        = number
+  default     = 1
+}
+
 variable "image" {
   description = "Full container image reference to deploy"
+  type        = string
+}
+
+variable "worker_image" {
+  description = "Full upload worker container image reference to deploy"
+  type        = string
+}
+
+variable "worker_container_port" {
+  description = "Worker container port exposed to Cloud Run"
+  type        = number
+  default     = 8080
+}
+
+variable "pubsub_upload_topic" {
+  description = "Pub/Sub topic name for upload jobs"
+  type        = string
+  default     = "poneglyph-upload"
+}
+
+variable "pubsub_upload_subscription" {
+  description = "Pub/Sub push subscription name for upload worker"
+  type        = string
+  default     = "poneglyph-upload-worker-push"
+}
+
+variable "worker_callback_url" {
+  description = "Server callback URL used by the upload worker"
   type        = string
 }
 
@@ -76,15 +116,6 @@ variable "s3_endpoint" {
 variable "s3_region" {
   type    = string
   default = "auto"
-}
-
-variable "rabbitmq_url" {
-  type      = string
-  sensitive = true
-}
-
-variable "rabbitmq_queue" {
-  type = string
 }
 
 variable "google_generative_ai_api_key" {
