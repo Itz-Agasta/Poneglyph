@@ -70,7 +70,7 @@ module "upload_worker" {
   }
 
   service_annotations = {
-    "run.googleapis.com/ingress" = "all"
+    "run.googleapis.com/ingress" = "internal"
   }
 
   depends_on = [google_project_service.required]

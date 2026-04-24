@@ -57,10 +57,10 @@ async fn handle_upload(
     let msg: upload::UploadMessage = match serde_json::from_slice(&body) {
         Ok(msg) => msg,
         Err(error) => {
-            tracing::warn!(?error, "Invalid Pub/Sub upload payload");
+            tracing::warn!(?error, "Invalid Pub/Sub upload payload - acknowledging to skip retries");
             return (
-                StatusCode::BAD_REQUEST,
-                Json(json!({ "error": "invalid upload payload" })),
+                StatusCode::OK,
+                Json(json!({ "error": "invalid upload payload acknowledged" })),
             );
         }
     };
