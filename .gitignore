@@ -56,9 +56,18 @@ temp
 .Rhistory
 PR.md
 
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+
 # Reference directory
 raw/
 web_backup_temp/
 
 # Worktree directories
 crazy-ui/
+.tmp/
