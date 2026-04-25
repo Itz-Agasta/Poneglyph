@@ -9,7 +9,7 @@ export const applicationStatusEnum = z.enum(["applied", "shortlisted", "rejected
 export const CreateEventSchema = z.object({
   title: z.string().trim().min(3).max(255),
   description: z.string().trim().min(10),
-  pay: z.string().trim().max(100).optional(),
+  pay: z.coerce.number().int(),
   location: z.string().trim().max(255).optional(),
 });
 
@@ -40,13 +40,6 @@ export type EventListQuery = z.infer<typeof EventListQuerySchema>;
 export const EventParamSchema = z.object({
   eventId: z.uuid(),
 });
-
-// ---------------------------------------------------------------------------
-// Application
-// ---------------------------------------------------------------------------
-
-/** Body is empty – the volunteer is inferred from the authenticated session. */
-export const ApplyEventSchema = z.object({});
 
 export const ApplicationListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),

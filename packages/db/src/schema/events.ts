@@ -4,12 +4,13 @@ import {
   text,
   timestamp,
   uuid,
+  integer,
   varchar,
   index,
   pgEnum,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { user, volunteer, organisation } from "./users";
+import { volunteer, organisation } from "./users";
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -43,8 +44,8 @@ export const events = pgTable(
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description").notNull(),
 
-    /** Optional compensation description (e.g. "$20/hr", "Unpaid", "Stipend"). */
-    pay: varchar("pay", { length: 100 }),
+    /** Compensation amount per hour. */
+    pay: integer("pay").notNull(),
 
     /** Free-text location (city, region, remote, etc.) */
     location: varchar("location", { length: 255 }),
