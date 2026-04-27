@@ -19,8 +19,9 @@ import {
   Database,
 } from "lucide-react";
 import type { Article } from "../components/article-card";
-import { apiClient } from "@/lib/api-client";
-import type { DatasetListItem, PaginatedResponse } from "@/lib/types";
+import { env } from "@Poneglyph/env/web";
+import type { PaginatedResponse } from "@/lib/types";
+import type { DatasetListItem } from "@/lib/types";
 
 const ARTICLE_CATEGORIES: Record<string, string> = {
   "1": "Health",
@@ -183,8 +184,8 @@ export default function ArticlePage() {
   useEffect(() => {
     async function fetchDatasets() {
       try {
-        const res = await apiClient.api.v1.datasets.$get({
-          query: { limit: "10" },
+        const res = await fetch(`${env.NEXT_PUBLIC_SERVER_URL}/api/datasets?limit=10`, {
+          credentials: "include",
         });
         if (res.ok) {
           const json = (await res.json()) as PaginatedResponse<DatasetListItem>;
@@ -233,32 +234,6 @@ export default function ArticlePage() {
 
   return (
     <div className="min-h-screen bg-white font-onest">
-      {/* ── NAV ── */}
-      <header className="border-b border-grey-3 bg-white">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3">
-          <Link href="/dashboard" className="text-body-sm font-bold tracking-tight text-black">
-            Poneglyph
-          </Link>
-          <nav className="hidden items-center gap-6 md:flex">
-            {["Insights", "Datasets", "Researchers", "About"].map((item) => (
-              <a
-                key={item}
-                href="#"
-                className="text-body-sm text-grey-1 transition-colors hover:text-black"
-              >
-                {item}
-              </a>
-            ))}
-          </nav>
-          <a
-            href="#"
-            className="rounded-sm border border-grey-3 px-3 py-1 text-body-sm text-grey-1 transition-all hover:border-grey-2 hover:text-black"
-          >
-            Sign In
-          </a>
-        </div>
-      </header>
-
       {/* ── CONTENT ── */}
       <div className="mx-auto max-w-[1200px] px-6 py-10">
         {/* Breadcrumb */}

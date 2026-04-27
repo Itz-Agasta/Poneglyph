@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { apiClient } from "@/lib/api-client";
+import { apiClientWithCookies } from "@/lib/api-client-server";
 import type { DatasetDetail } from "@/lib/types";
 import { DatasetDetailHeader } from "./_components/dataset-detail-header";
 import { DatasetAttachments } from "./_components/dataset-attachments";
@@ -11,7 +11,8 @@ type Props = {
 export default async function DatasetDetailPage(props: Props) {
   const { id } = await props.params;
 
-  const res = await apiClient.api.datasets[":id"].$get({ param: { id } });
+  const client = await apiClientWithCookies();
+  const res = await client.get("/api/datasets/:id", { param: { id } });
 
   if (res.status === 404) {
     notFound();

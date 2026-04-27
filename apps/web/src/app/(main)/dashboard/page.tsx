@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { ArticleCard, type Article } from "./components/article-card";
 import { Button } from "@Poneglyph/ui/components/button";
 import { IconChevronLeft, IconChevronRight, IconMail, IconPhone } from "@tabler/icons-react";
@@ -134,35 +133,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background font-sans tracking-normal">
-      {/* ── NAV ────────────────────────────────────────────── */}
-      <header className="border-b border-border bg-background">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-3">
-          <Link
-            href="/dashboard"
-            className="text-body-sm font-semibold tracking-tight text-foreground"
-          >
-            Poneglyph
-          </Link>
-          <nav className="hidden items-center gap-6 md:flex">
-            {["Insights", "Datasets", "Researchers", "About"].map((item) => (
-              <a
-                key={item}
-                href="#"
-                className="text-body-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item}
-              </a>
-            ))}
-          </nav>
-          <a
-            href="#"
-            className="rounded-md border border-border px-3 py-1 text-body-sm text-muted-foreground shadow-sm transition-all hover:bg-muted hover:text-foreground"
-          >
-            Sign In
-          </a>
-        </div>
-      </header>
-
       {/* ── HERO ───────────────────────────────────────────── */}
       <section className="border-b border-border py-14 text-center">
         <div className="mx-auto max-w-[1200px] px-6">

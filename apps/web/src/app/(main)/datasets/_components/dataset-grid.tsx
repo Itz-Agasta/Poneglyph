@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/api-client";
+import { apiClientWithCookies } from "@/lib/api-client-server";
 import type { DatasetListItem, PaginatedResponse } from "@/lib/types";
 import { DatasetCard } from "./dataset-card";
 import Link from "next/link";
@@ -32,7 +32,8 @@ export async function DatasetGrid(props: DatasetGridProps) {
   if (props.tags && props.tags.length > 0) query.tags = props.tags;
 
   // Fetch data via typed RPC client
-  const res = await apiClient.api.v1.datasets.$get({ query });
+  const client = await apiClientWithCookies();
+  const res = await client.get("/api/datasets", { query });
 
   if (!res.ok) {
     return (

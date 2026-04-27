@@ -1,0 +1,409 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import {
+  IconMail,
+  IconCheck,
+  IconArrowRight,
+  IconBrandGoogleFilled,
+  IconBrandGithubFilled,
+  IconBrandAppleFilled,
+} from "@tabler/icons-react";
+import { Field, PasswordInput, scoreStrength, VisualPane } from "./auth-components";
+
+export function AuthForm({ initialTab }: { initialTab: "signin" | "signup" }) {
+  const router = useRouter();
+  const [tab, setTab] = useState<"signin" | "signup">(initialTab);
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  // Sign-in fields
+  const [siEmail, setSiEmail] = useState("");
+  const [siPwd, setSiPwd] = useState("");
+  const [siRemember, setSiRemember] = useState(true);
+
+  // Sign-up fields
+  const [suFirst, setSuFirst] = useState("");
+  const [suLast, setSuLast] = useState("");
+  const [suEmail, setSuEmail] = useState("");
+  const [suPwd, setSuPwd] = useState("");
+  const [suTerms, setSuTerms] = useState(false);
+
+  const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+  const siErrors = useMemo(() => {
+    if (!submitted) return {} as Record<string, string>;
+    const e = {} as Record<string, string>;
+    if (!siEmail) e.email = "Email is required";
+    else if (!emailOk(siEmail)) e.email = "Enter a valid email";
+    if (!siPwd) e.password = "Password is required";
+    return e;
+  }, [submitted, siEmail, siPwd]);
+
+  const suErrors = useMemo(() => {
+    if (!submitted) return {} as Record<string, string>;
+    const e = {} as Record<string, string>;
+    if (!suFirst.trim()) e.first = "Required";
+    if (!suLast.trim()) e.last = "Required";
+    if (!suEmail) e.email = "Email is required";
+    else if (!emailOk(suEmail)) e.email = "Enter a valid email";
+    if (!suPwd) e.password = "Create a password";
+    else if (suPwd.length < 8) e.password = "Use at least 8 characters";
+    if (!suTerms) e.terms = "Please accept the terms";
+    return e;
+  }, [submitted, suFirst, suLast, suEmail, suPwd, suTerms]);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+
+    const liveErrs = (() => {
+      if (tab === "signin") {
+        const o = {} as Record<string, string>;
+        if (!siEmail) o.email = "Email is required";
+        else if (!emailOk(siEmail)) o.email = "Enter a valid email";
+        if (!siPwd) o.password = "Password is required";
+        return o;
+      } else {
+        const o = {} as Record<string, string>;
+        if (!suFirst.trim()) o.first = "Required";
+        if (!suLast.trim()) o.last = "Required";
+        if (!suEmail) o.email = "Email is required";
+        else if (!emailOk(suEmail)) o.email = "Enter a valid email";
+        if (!suPwd) o.password = "Create a password";
+        else if (suPwd.length < 8) o.password = "Use at least 8 characters";
+        if (!suTerms) o.terms = "Please accept the terms";
+        return o;
+      }
+    })();
+
+    if (Object.keys(liveErrs).length > 0) return;
+    setLoading(true);
+
+    try {
+      if (tab === "signin") {
+        await authClient.signIn.email(
+          { email: siEmail, password: siPwd, rememberMe: siRemember },
+          {
+            onRequest: () => setLoading(true),
+            onSuccess: () => {
+              setSuccess(true);
+              setTimeout(() => {
+                router.push("/dashboard");
+                router.refresh();
+              }, 500);
+            },
+            onError: (ctx) => {
+              setLoading(false);
+              alert(ctx.error.message || "Invalid email or password");
+            },
+          }
+        );
+      } else {
+        await authClient.signUp.email(
+          { email: suEmail, password: suPwd, name: `${suFirst} ${suLast}`.trim() },
+          {
+            onRequest: () => setLoading(true),
+            onSuccess: () => {
+              setSuccess(true);
+              setTimeout(() => {
+                router.push("/dashboard");
+                router.refresh();
+              }, 1200);
+            },
+            onError: (ctx) => {
+              setLoading(false);
+              alert(ctx.error.message || "Failed to create account");
+            },
+          }
+        );
+      }
+    } catch (_err) {
+      setLoading(false);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
+  const switchTab = (t: "signin" | "signup") => {
+    setTab(t);
+    setSubmitted(false);
+    setSuccess(false);
+    window.history.pushState(null, "", t === "signin" ? "/sign-in" : "/sign-up");
+  };
+
+  const strength = scoreStrength(suPwd);
+
+  return (
+    <div className="stage" data-layout="split" data-accent="lime">
+      <div className="pane-form">
+        <div className="auth-card">
+          <div className="brand">
+            <div className="brand-mark">P</div>
+            <div className="brand-name">Poneglyph</div>
+          </div>
+
+          {success ? (
+            <div className="success">
+              <div className="success-icon">
+                <IconCheck width={28} height={28} />
+              </div>
+              <h2>{tab === "signin" ? "Welcome back" : "You're in"}</h2>
+              <p>
+                {tab === "signin"
+                  ? "Redirecting to your dashboard…"
+                  : "Check your inbox to verify your email."}
+              </p>
+            </div>
+          ) : (
+            <>
+              <h1 className="title">
+                {tab === "signin" ? (
+                  <>
+                    Welcome <em>back</em>
+                  </>
+                ) : (
+                  <>
+                    Create <em>your</em> account
+                  </>
+                )}
+              </h1>
+              <p className="subtitle">
+                {tab === "signin"
+                  ? "Sign in to continue exploring the archive."
+                  : "Start charting your own poneglyphs in minutes."}
+              </p>
+
+              <div className="tabs" role="tablist">
+                <div className="tab-pill" data-pos={tab === "signin" ? "signin" : "signup"} />
+                <button
+                  type="button"
+                  className="tab"
+                  data-active={tab === "signin"}
+                  onClick={() => switchTab("signin")}
+                  role="tab"
+                  aria-selected={tab === "signin"}
+                >
+                  Sign in
+                </button>
+                <button
+                  type="button"
+                  className="tab"
+                  data-active={tab === "signup"}
+                  onClick={() => switchTab("signup")}
+                  role="tab"
+                  aria-selected={tab === "signup"}
+                >
+                  Sign up
+                </button>
+              </div>
+
+              <form onSubmit={submit} noValidate>
+                <div className="forms">
+                  {/* SIGN IN */}
+                  <div className="form" data-hidden={tab !== "signin"}>
+                    <Field label="Email" error={siErrors.email}>
+                      <div className="input-wrap">
+                        <IconMail className="input-icon" />
+                        <input
+                          className="input"
+                          type="email"
+                          data-has-icon="true"
+                          value={siEmail}
+                          onChange={(e) => setSiEmail(e.target.value)}
+                          placeholder="you@poneglyph.dev"
+                          autoComplete="email"
+                          aria-invalid={!!siErrors.email || undefined}
+                        />
+                      </div>
+                    </Field>
+
+                    <Field
+                      label="Password"
+                      hint={
+                        <Link className="label-link" href="/forgot-password">
+                          Forgot?
+                        </Link>
+                      }
+                      error={siErrors.password}
+                    >
+                      <PasswordInput
+                        value={siPwd}
+                        onChange={setSiPwd}
+                        placeholder="Enter your password"
+                        invalid={!!siErrors.password}
+                        autoComplete="current-password"
+                      />
+                    </Field>
+
+                    <label className="check">
+                      <input
+                        type="checkbox"
+                        checked={siRemember}
+                        onChange={(e) => setSiRemember(e.target.checked)}
+                      />
+                      <span className="check-box">
+                        <IconCheck />
+                      </span>
+                      <span className="check-text">Keep me signed in for 30 days</span>
+                    </label>
+
+                    <button
+                      className="btn"
+                      type="submit"
+                      data-loading={loading}
+                      disabled={loading}
+                    >
+                      <span className="btn-spin" />
+                      <span className="btn-label">
+                        <span className="btn-label-row">Sign in</span>
+                        <IconArrowRight width={16} height={16} />
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* SIGN UP */}
+                  <div className="form" data-hidden={tab !== "signup"}>
+                    <div className="field-row">
+                      <Field label="First name" error={suErrors.first}>
+                        <div className="input-wrap">
+                          <input
+                            className="input"
+                            value={suFirst}
+                            onChange={(e) => setSuFirst(e.target.value)}
+                            placeholder="Monkey"
+                            autoComplete="given-name"
+                            aria-invalid={!!suErrors.first || undefined}
+                          />
+                        </div>
+                      </Field>
+                      <Field label="Last name" error={suErrors.last}>
+                        <div className="input-wrap">
+                          <input
+                            className="input"
+                            value={suLast}
+                            onChange={(e) => setSuLast(e.target.value)}
+                            placeholder="D. Luffy"
+                            autoComplete="family-name"
+                            aria-invalid={!!suErrors.last || undefined}
+                          />
+                        </div>
+                      </Field>
+                    </div>
+
+                    <Field label="Email" error={suErrors.email}>
+                      <div className="input-wrap">
+                        <IconMail className="input-icon" />
+                        <input
+                          className="input"
+                          type="email"
+                          data-has-icon="true"
+                          value={suEmail}
+                          onChange={(e) => setSuEmail(e.target.value)}
+                          placeholder="you@poneglyph.dev"
+                          autoComplete="email"
+                          aria-invalid={!!suErrors.email || undefined}
+                        />
+                      </div>
+                    </Field>
+
+                    <Field
+                      label="Password"
+                      hint={suPwd && <span className="label-hint">{strength.label}</span>}
+                      error={suErrors.password}
+                    >
+                      <PasswordInput
+                        value={suPwd}
+                        onChange={setSuPwd}
+                        placeholder="At least 8 characters"
+                        invalid={!!suErrors.password}
+                        autoComplete="new-password"
+                      />
+                      {suPwd && (
+                        <div className="strength" data-level={strength.level}>
+                          <span className="strength-seg" />
+                          <span className="strength-seg" />
+                          <span className="strength-seg" />
+                          <span className="strength-seg" />
+                        </div>
+                      )}
+                    </Field>
+
+                    <label className="check">
+                      <input
+                        type="checkbox"
+                        checked={suTerms}
+                        onChange={(e) => setSuTerms(e.target.checked)}
+                        aria-invalid={!!suErrors.terms || undefined}
+                      />
+                      <span className="check-box">
+                        <IconCheck />
+                      </span>
+                      <span className="check-text">
+                        I agree to the <Link href="#">Terms</Link> and <Link href="#">Privacy Policy</Link>.
+                        {suErrors.terms && (
+                          <span style={{ color: "var(--destructive)", display: "block", marginTop: 2 }}>
+                            {suErrors.terms}
+                          </span>
+                        )}
+                      </span>
+                    </label>
+
+                    <button
+                      className="btn"
+                      type="submit"
+                      data-loading={loading}
+                      disabled={loading}
+                    >
+                      <span className="btn-spin" />
+                      <span className="btn-label">
+                        <span className="btn-label-row">Create account</span>
+                        <IconArrowRight width={16} height={16} />
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+
+              <div className="divider">or continue with</div>
+              <div className="oauth-row">
+                <button className="btn btn-ghost" type="button" onClick={() => authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" })}>
+                  <IconBrandGoogleFilled size={16} color="#4285F4" />
+                </button>
+                <button className="btn btn-ghost" type="button" onClick={() => authClient.signIn.social({ provider: "github", callbackURL: "/dashboard" })}>
+                  <IconBrandGithubFilled size={16} />
+                </button>
+                <button className="btn btn-ghost" type="button" onClick={() => authClient.signIn.social({ provider: "apple", callbackURL: "/dashboard" })}>
+                  <IconBrandAppleFilled size={16} />
+                </button>
+              </div>
+
+              <div className="alt">
+                {tab === "signin" ? (
+                  <>
+                    New here?{" "}
+                    <button className="linklike" type="button" onClick={() => switchTab("signup")}>
+                      Create an account
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Already a member?{" "}
+                    <button className="linklike" type="button" onClick={() => switchTab("signin")}>
+                      Sign in
+                    </button>
+                  </>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <VisualPane _isSignup={tab === "signup"} />
+    </div>
+  );
+}

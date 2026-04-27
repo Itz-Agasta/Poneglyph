@@ -4,4 +4,4 @@ import { env } from "@Poneglyph/env/web";
 
 export type Client = ReturnType<typeof hc<AppType>>;
 
-export const apiClient = hc<AppType>(env.NEXT_PUBLIC_SERVER_URL);
+export const apiClient: Client = hc<AppType>(env.NEXT_PUBLIC_SERVER_URL);

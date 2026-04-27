@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/api-client";
+import { apiClientWithCookies } from "@/lib/api-client-server";
 import type { VolunteerListItem, PaginatedResponse } from "@/lib/types";
 import { VolunteerCard } from "./volunteer-card";
 import Link from "next/link";
@@ -20,7 +20,8 @@ export async function VolunteerGrid({ city, tags, page = 1, limit = 20 }: Volunt
   if (city) query.city = city;
   if (tags) query.tags = tags;
 
-  const res = await apiClient.api.discover.volunteers.$get({ query });
+  const client = await apiClientWithCookies();
+  const res = await client.get("/api/discover/volunteers", { query });
 
   if (!res.ok) {
     return (

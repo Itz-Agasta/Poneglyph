@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
+import { Account } from "@/components/account";
 
 function IconMenu() {
   return (
@@ -42,6 +44,46 @@ function IconX() {
   );
 }
 
+function IconUser() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="9" cy="5.5" r="3.25" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M3.5 15.5c0-3.038 2.463-5.5 5.5-5.5s5.5 2.462 5.5 5.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function IconChevronDown() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 5l4 4 4-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 const navLinks = [
   { label: "About", href: "/about" },
   { label: "Research", href: "/research" },
@@ -68,7 +110,14 @@ export function Navigation() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [mobileOpen, setMobileOpen] = useState(false);
-  // On non-home pages start dark; on home start light (sky bg)
+  const router = useRouter();
+ 
+  
+  const { data: session, isPending: _isPending } = authClient.useSession();
+  const user = session?.user;
+  const isAuthenticated = !!user;
+
+  
   const [dark, setDark] = useState(!isHome);
 
   useEffect(() => {
@@ -86,6 +135,16 @@ export function Navigation() {
     window.addEventListener("scroll", check, { passive: true });
     return () => window.removeEventListener("scroll", check);
   }, [isHome]);
+
+  
+  useEffect(() => {
+    //
+  }, []);
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    window.location.href = "/";
+  };
 
   const textColor = dark ? "text-black" : "text-white";
   const hoverBg = dark ? "hover:bg-black/5" : "hover:bg-white/10";
@@ -118,22 +177,7 @@ export function Navigation() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/datasets/upload"
-            className={`text-sm font-medium transition-colors duration-300 ${textColor}`}
-          >
-            Upload
-          </Link>
-          <Link
-            href="/login"
-            className={`px-4 py-1.5 text-sm font-medium rounded-xl transition-all duration-300 ${
-              dark
-                ? "bg-black text-white hover:bg-black/80"
-                : "bg-white text-black hover:bg-white/80"
-            }`}
-          >
-            Sign in
-          </Link>
+          <Account variant={isHome && !dark ? "transparent" : "default"} />
         </div>
 
         <button
@@ -159,20 +203,50 @@ export function Navigation() {
             </Link>
           ))}
           <div className="flex gap-2 mt-2 pt-3 border-t border-current/10">
-            <Link
-              href="/datasets/upload"
-              onClick={() => setMobileOpen(false)}
-              className={`flex-1 text-center px-4 py-2 text-sm font-medium rounded-xl border ${dark ? "border-black/20 text-black" : "border-white/20 text-white"}`}
-            >
-              Upload
-            </Link>
-            <Link
-              href="/login"
-              onClick={() => setMobileOpen(false)}
-              className={`flex-1 text-center px-4 py-2 text-sm font-medium rounded-xl ${dark ? "bg-black text-white" : "bg-white text-black"}`}
-            >
-              Sign in
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/datasets/upload"
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex-1 text-center px-4 py-2 text-sm font-medium rounded-xl border ${dark ? "border-black/20 text-black" : "border-white/20 text-white"}`}
+                >
+                  Upload
+                </Link>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex-1 text-center px-4 py-2 text-sm font-medium rounded-xl border ${dark ? "border-black/20 text-black" : "border-white/20 text-white"}`}
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    handleSignOut();
+                    setMobileOpen(false);
+                  }}
+                  className={`flex-1 text-center px-4 py-2 text-sm font-medium rounded-xl ${dark ? "bg-black text-white" : "bg-white text-black"}`}
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/datasets/upload"
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex-1 text-center px-4 py-2 text-sm font-medium rounded-xl border ${dark ? "border-black/20 text-black" : "border-white/20 text-white"}`}
+                >
+                  Upload
+                </Link>
+                <Link
+                  href="/sign-in"
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex-1 text-center px-4 py-2 text-sm font-medium rounded-xl ${dark ? "bg-black text-white" : "bg-white text-black"}`}
+                >
+                  Sign in
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

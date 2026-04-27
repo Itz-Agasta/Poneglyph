@@ -5,7 +5,7 @@ import { env } from "@Poneglyph/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { sendVerificationEmail } from "./mail";
-import { openAPI } from "better-auth/plugins";
+import { openAPI, bearer } from "better-auth/plugins";
 
 const schema = {
   ...authSchema,
@@ -21,7 +21,7 @@ export function createAuth() {
       provider: "pg",
       schema,
     }),
-    trustedOrigins: ["*"],
+    trustedOrigins: [env.CORS_ORIGIN || "http://localhost:3001", "http://localhost:3000", "http://localhost:3001"],
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
     emailAndPassword: {
@@ -49,11 +49,11 @@ export function createAuth() {
         httpOnly: true,
       },
       crossSubDomainCookies: {
-        enabled: true,
+        enabled: env.NODE_ENV === "production",
         domain: env.NODE_ENV === "production" ? ".vyse.site" : undefined,
       },
     },
-    plugins: [openAPI()],
+    plugins: [openAPI(), bearer()],
   });
 }
 
