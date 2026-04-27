@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { apiClientWithCookies } from "@/lib/api-client-server";
+import { apiClientWithCookies } from "@/lib/api-client";
 import type { DatasetDetail } from "@/lib/types";
 import { DatasetDetailHeader } from "./_components/dataset-detail-header";
 import { DatasetAttachments } from "./_components/dataset-attachments";

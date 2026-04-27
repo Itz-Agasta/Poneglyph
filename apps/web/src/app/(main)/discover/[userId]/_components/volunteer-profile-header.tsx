@@ -20,7 +20,9 @@ export function VolunteerProfileHeader({ volunteer }: VolunteerProfileHeaderProp
   return (
     <div className="flex flex-col sm:flex-row gap-6 items-start">
       <Avatar className="w-24 h-24 rounded-xl border border-border shrink-0">
-        {volunteer.image && <AvatarImage src={volunteer.image} alt={volunteer.name ?? "Volunteer"} />}
+        {volunteer.image && (
+          <AvatarImage src={volunteer.image} alt={volunteer.name ?? "Volunteer"} />
+        )}
         <AvatarFallback className="rounded-xl text-2xl font-bold bg-primary/10 text-primary">
           {initials}
         </AvatarFallback>

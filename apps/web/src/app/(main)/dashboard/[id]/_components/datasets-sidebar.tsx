@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/api-client";
+import { apiClientWithCookies } from "@/lib/api-client";
 import type { DatasetListItem, PaginatedResponse } from "@/lib/types";
 
 interface DatasetsSidebarProps {
@@ -6,7 +6,8 @@ interface DatasetsSidebarProps {
 }
 
 export async function DatasetsSidebar({ limit = 10 }: DatasetsSidebarProps) {
-  const res = await apiClient.api.datasets.$get({ query: { limit: limit.toString() } });
+  const apiClient = await apiClientWithCookies();
+  const res = await apiClient.get("/api/datasets", { query: { limit: limit.toString() } });
 
   if (!res.ok) {
     return null;

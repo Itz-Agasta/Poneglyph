@@ -26,7 +26,9 @@ export function VolunteerCard({ volunteer }: VolunteerCardProps) {
       <div className="flex flex-col flex-1 p-5 gap-4">
         <div className="flex items-center gap-3">
           <Avatar className="w-12 h-12 shrink-0">
-            {volunteer.image && <AvatarImage src={volunteer.image} alt={volunteer.name ?? "Volunteer"} />}
+            {volunteer.image && (
+              <AvatarImage src={volunteer.image} alt={volunteer.name ?? "Volunteer"} />
+            )}
             <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
               {initials}
             </AvatarFallback>

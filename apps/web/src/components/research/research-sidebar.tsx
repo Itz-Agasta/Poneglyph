@@ -24,41 +24,85 @@ function isThisMonth(date: Date) {
 // Nav SVGs inlined to avoid tabler dependency size for tiny icons
 const NavIcons = {
   research: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
     </svg>
   ),
   library: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 5h18M3 12h18M3 19h12"/>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 5h18M3 12h18M3 19h12" />
     </svg>
   ),
   spaces: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 7a3 3 0 0 1 3-3h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H7a3 3 0 0 1-3-3z"/>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 7a3 3 0 0 1 3-3h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H7a3 3 0 0 1-3-3z" />
     </svg>
   ),
   discover: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3" />
     </svg>
   ),
   clock: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
     </svg>
   ),
   plus: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 5v14M5 12h14"/>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 5v14M5 12h14" />
     </svg>
   ),
 };
 
 const navItems = [
   { key: "research", label: "Research", icon: NavIcons.research, active: true },
-  { key: "library",  label: "Library",  icon: NavIcons.library,  active: false },
-  { key: "spaces",   label: "Spaces",   icon: NavIcons.spaces,   active: false },
+  { key: "library", label: "Library", icon: NavIcons.library, active: false },
+  { key: "spaces", label: "Spaces", icon: NavIcons.spaces, active: false },
   { key: "discover", label: "Discover", icon: NavIcons.discover, active: false },
 ];
 
@@ -70,9 +114,9 @@ export function ResearchSidebar({
   userName = "User",
   userInitial = "U",
 }: ResearchSidebarProps) {
-  const thisWeek  = sessions.filter((s) => isThisWeek(s.createdAt));
+  const thisWeek = sessions.filter((s) => isThisWeek(s.createdAt));
   const thisMonth = sessions.filter((s) => !isThisWeek(s.createdAt) && isThisMonth(s.createdAt));
-  const earlier   = sessions.filter((s) => !isThisMonth(s.createdAt));
+  const earlier = sessions.filter((s) => !isThisMonth(s.createdAt));
 
   const renderSession = (session: ResearchSession) => {
     const isActive = session.id === activeSessionId;
@@ -80,7 +124,10 @@ export function ResearchSidebar({
       <a
         key={session.id}
         href="#"
-        onClick={(e) => { e.preventDefault(); onSelectSession(session.id); }}
+        onClick={(e) => {
+          e.preventDefault();
+          onSelectSession(session.id);
+        }}
         style={{
           display: "flex",
           alignItems: "center",
@@ -108,7 +155,9 @@ export function ResearchSidebar({
           }
         }}
       >
-        <span style={{ width: 14, height: 14, flexShrink: 0, display: "grid", placeItems: "center" }}>
+        <span
+          style={{ width: 14, height: 14, flexShrink: 0, display: "grid", placeItems: "center" }}
+        >
           {NavIcons.clock}
         </span>
         <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -180,7 +229,10 @@ export function ResearchSidebar({
       {/* New thread */}
       <a
         href="#"
-        onClick={(e) => { e.preventDefault(); onNewSession(); }}
+        onClick={(e) => {
+          e.preventDefault();
+          onNewSession();
+        }}
         style={{
           display: "flex",
           alignItems: "center",
@@ -197,8 +249,12 @@ export function ResearchSidebar({
           boxShadow: "0 1px 0 rgba(0,0,0,0.02)",
           textDecoration: "none",
         }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "var(--muted)"; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "var(--card)"; }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLAnchorElement).style.background = "var(--muted)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLAnchorElement).style.background = "var(--card)";
+        }}
       >
         <span style={{ width: 14, height: 14, display: "grid", placeItems: "center" }}>
           {NavIcons.plus}
@@ -253,7 +309,15 @@ export function ResearchSidebar({
               }
             }}
           >
-            <span style={{ width: 14, height: 14, flexShrink: 0, display: "grid", placeItems: "center" }}>
+            <span
+              style={{
+                width: 14,
+                height: 14,
+                flexShrink: 0,
+                display: "grid",
+                placeItems: "center",
+              }}
+            >
               {item.icon}
             </span>
             {item.label}
@@ -263,7 +327,15 @@ export function ResearchSidebar({
 
       {/* Recent sessions */}
       {sessions.length > 0 && (
-        <div style={{ marginTop: 6, flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        <div
+          style={{
+            marginTop: 6,
+            flex: 1,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <div
             style={{
               fontSize: "10.5px",

@@ -25,12 +25,7 @@ export default async function DiscoverPage(props: Props) {
       </div>
 
       <Suspense key={suspenseKey} fallback={<VolunteerGridSkeleton />}>
-        <VolunteerGrid
-          city={city}
-          tags={tags}
-          page={Number(page)}
-          limit={Number(limit)}
-        />
+        <VolunteerGrid city={city} tags={tags} page={Number(page)} limit={Number(limit)} />
       </Suspense>
     </div>
   );

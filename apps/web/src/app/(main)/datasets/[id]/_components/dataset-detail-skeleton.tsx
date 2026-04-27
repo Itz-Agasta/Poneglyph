@@ -66,7 +66,10 @@ export function DatasetDetailSkeleton() {
           <Skeleton className="h-4 w-32" />
         </div>
         {[0, 1, 2].map((i) => (
-          <div key={i} className="flex items-center justify-between px-5 py-3.5 border-b border-border/50 last:border-0">
+          <div
+            key={i}
+            className="flex items-center justify-between px-5 py-3.5 border-b border-border/50 last:border-0"
+          >
             <div className="flex items-center gap-3">
               <Skeleton className="h-5 w-10 rounded" />
               <Skeleton className="h-4 w-20" />

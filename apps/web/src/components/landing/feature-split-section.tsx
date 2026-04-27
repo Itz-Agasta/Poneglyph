@@ -107,8 +107,8 @@ export function FeatureSplitSection() {
               No more searching, waiting, or guessing.
             </h2>
             <p className="text-white/70 text-sm md:text-base leading-relaxed">
-              Poneglyph handles the heavy lifting — from raw field data to
-              AI-powered insights — so you can focus on impact.
+              Poneglyph handles the heavy lifting — from raw field data to AI-powered insights — so
+              you can focus on impact.
             </p>
           </div>
 
@@ -119,12 +119,8 @@ export function FeatureSplitSection() {
                 <div className="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center text-white mb-3">
                   {f.icon}
                 </div>
-                <h3 className="text-white font-medium text-sm mb-2">
-                  {f.title}
-                </h3>
-                <p className="text-white/60 text-xs leading-relaxed">
-                  {f.description}
-                </p>
+                <h3 className="text-white font-medium text-sm mb-2">{f.title}</h3>
+                <p className="text-white/60 text-xs leading-relaxed">{f.description}</p>
               </div>
             ))}
           </div>
@@ -136,13 +132,7 @@ export function FeatureSplitSection() {
               className="inline-flex items-center gap-3 px-6 py-3.5 bg-white text-black text-sm font-medium rounded-full hover:bg-white/90 transition-colors"
             >
               Explore datasets
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden="true"
-              >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path
                   d="M3 8h10M9 4l4 4-4 4"
                   stroke="currentColor"

@@ -96,26 +96,9 @@ export function VisualPane({ _isSignup = false }: { _isSignup?: boolean }) {
             strokeWidth="1"
             strokeDasharray="2 6"
           />
-          <circle
-            cx="300"
-            cy="300"
-            r="180"
-            stroke="rgba(0,0,0,0.16)"
-            strokeWidth="1"
-          />
-          <circle
-            cx="300"
-            cy="300"
-            r="120"
-            stroke="rgba(0,0,0,0.20)"
-            strokeWidth="1"
-          />
-          <g
-            stroke="rgba(0,0,0,0.65)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            fill="none"
-          >
+          <circle cx="300" cy="300" r="180" stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <circle cx="300" cy="300" r="120" stroke="rgba(0,0,0,0.20)" strokeWidth="1" />
+          <g stroke="rgba(0,0,0,0.65)" strokeWidth="2.5" strokeLinecap="round" fill="none">
             <path d="M240 240 L260 220 L280 240 L260 260 Z" />
             <path d="M340 240 L360 230 L380 250" />
             <path d="M250 320 L290 320 M260 340 L280 340" />

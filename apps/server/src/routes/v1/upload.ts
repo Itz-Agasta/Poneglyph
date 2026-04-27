@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { UploadCallbackSchema, UploadRequestSchema } from "@Poneglyph/schemas/upload";
 import { env } from "@Poneglyph/env/server";
-import { logger } from "@/lib/logger";
+import { logger } from "../../lib/logger";
 import { uploadFile, getPresignedUrl } from "../../lib/s3";
 import { publishUploadMessage } from "../../lib/queue";
 import { requireAuth } from "../../middleware/auth";

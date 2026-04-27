@@ -56,13 +56,7 @@ export function FooterCta() {
           className="inline-flex items-center gap-3 px-7 py-4 bg-white text-[#1a1a1a] text-sm font-medium rounded-full hover:bg-white/90 transition-colors"
         >
           Explore datasets
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            aria-hidden
-          >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
             <path
               d="M3 8h10M9 4l4 4-4 4"
               stroke="currentColor"

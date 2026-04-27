@@ -74,8 +74,7 @@ export function FooterWordmark() {
               poneglyph
             </span>
             <p className="text-white/40 text-xs leading-relaxed max-w-[200px]">
-              Open survey data for NGOs, researchers, journalists, and everyone
-              who needs it.
+              Open survey data for NGOs, researchers, journalists, and everyone who needs it.
             </p>
           </div>
 
@@ -83,9 +82,7 @@ export function FooterWordmark() {
           <div className="flex gap-16 md:gap-24">
             {NAV.map((col) => (
               <div key={col.label}>
-                <p className="text-white/40 text-xs uppercase tracking-widest mb-4">
-                  {col.label}
-                </p>
+                <p className="text-white/40 text-xs uppercase tracking-widest mb-4">{col.label}</p>
                 <ul className="space-y-2.5">
                   {col.links.map((l) => (
                     <li key={l}>
@@ -107,9 +104,7 @@ export function FooterWordmark() {
           <p className="text-white/30 text-xs">
             © {new Date().getFullYear()} Poneglyph. All rights reserved.
           </p>
-          <p className="text-white/30 text-xs">
-            Built for the world&apos;s data explorers.
-          </p>
+          <p className="text-white/30 text-xs">Built for the world&apos;s data explorers.</p>
         </div>
       </div>
     </footer>

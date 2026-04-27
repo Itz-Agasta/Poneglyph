@@ -284,13 +284,7 @@ export function WorldReachSection() {
       <div className="absolute right-[4%] top-1/2 -translate-y-[40%] z-10 pointer-events-none opacity-50">
         <svg viewBox="0 0 500 260" width="520" height="270" aria-hidden>
           {WORLD_DOTS.map(([x, y], i) => (
-            <circle
-              key={i}
-              cx={(x / 100) * 500}
-              cy={(y / 100) * 260}
-              r="1.6"
-              fill="white"
-            />
+            <circle key={i} cx={(x / 100) * 500} cy={(y / 100) * 260} r="1.6" fill="white" />
           ))}
         </svg>
       </div>
@@ -316,10 +310,7 @@ export function WorldReachSection() {
             { value: "2 days", label: "Average AI turnaround" },
             { value: "90+", label: "Countries covered" },
           ].map((stat, i) => (
-            <div
-              key={i}
-              className={`px-10 py-10 ${i < 3 ? "border-r border-white/30" : ""}`}
-            >
+            <div key={i} className={`px-10 py-10 ${i < 3 ? "border-r border-white/30" : ""}`}>
               <div
                 className="text-white text-5xl md:text-6xl font-light mb-3"
                 style={{ fontFamily: "var(--font-newsreader)" }}

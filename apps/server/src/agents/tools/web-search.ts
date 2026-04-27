@@ -1,7 +1,7 @@
 import { generateText, tool } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
-import { logger } from "@/lib/logger";
+import { logger } from "../../lib/logger";
 import { redis } from "../../lib/redis";
 import { hashQuery } from "../../lib/hash";
 
@@ -38,11 +38,15 @@ async function runGoogleGroundedSearch(query: string): Promise<CachedWebResult> 
     // Redis down -> fall back to API
   }
   if (cached) {
-    log.debug("Web search cache hit", { key: `tool:web:${WEB_CACHE_VERSION}:<hash>` });
+    log.debug("Web search cache hit", {
+      key: `tool:web:${WEB_CACHE_VERSION}:<hash>`,
+    });
     return cached;
   }
 
-  log.debug("Web search cache miss", { key: `tool:web:${WEB_CACHE_VERSION}:<hash>` });
+  log.debug("Web search cache miss", {
+    key: `tool:web:${WEB_CACHE_VERSION}:<hash>`,
+  });
   externalLog.debug("Gemini Google Search API call started");
 
   const start = Date.now();
@@ -58,7 +62,9 @@ async function runGoogleGroundedSearch(query: string): Promise<CachedWebResult> 
 
   const result: CachedWebResult = { summary: text, sources };
   redis.set(cacheKey, result, { ex: WEB_CACHE_TTL }).catch((err) => {
-    log.warn("Failed to cache web search result: {error}", { error: String(err) });
+    log.warn("Failed to cache web search result: {error}", {
+      error: String(err),
+    });
   });
 
   return result;

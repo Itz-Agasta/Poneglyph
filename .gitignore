@@ -72,6 +72,7 @@ web_backup_temp/
 crazy-ui/
 # Generated analysis output
 graphify-out/
+.graphify_cached.json
 
 # Local agent instructions
 AGENTS.md

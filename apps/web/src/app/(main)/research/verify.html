@@ -1,345 +1,459 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Poneglyph — Email verified</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.141 0.005 285.823);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.141 0.005 285.823);
-    --primary: oklch(0.841 0.238 128.85);
-    --primary-foreground: oklch(0.405 0.101 131.063);
-    --secondary: oklch(0.967 0.001 286.375);
-    --secondary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.967 0.001 286.375);
-    --muted-foreground: oklch(0.552 0.016 285.938);
-    --border: oklch(0.92 0.004 286.32);
-    --input: oklch(0.92 0.004 286.32);
-    --ring: oklch(0.705 0.015 286.067);
-    --radius: 0.875rem;
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-    --font-heading: "Instrument Serif", ui-serif, Georgia, serif;
-  }
-  .dark {
-    --background: oklch(0.141 0.005 285.823);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.21 0.006 285.885);
-    --card-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.768 0.233 130.85);
-    --primary-foreground: oklch(0.405 0.101 131.063);
-    --secondary: oklch(0.274 0.006 286.033);
-    --muted: oklch(0.274 0.006 286.033);
-    --muted-foreground: oklch(0.705 0.015 286.067);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.552 0.016 285.938);
-  }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Poneglyph — Email verified</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background: oklch(1 0 0);
+        --foreground: oklch(0.141 0.005 285.823);
+        --card: oklch(1 0 0);
+        --card-foreground: oklch(0.141 0.005 285.823);
+        --primary: oklch(0.841 0.238 128.85);
+        --primary-foreground: oklch(0.405 0.101 131.063);
+        --secondary: oklch(0.967 0.001 286.375);
+        --secondary-foreground: oklch(0.21 0.006 285.885);
+        --muted: oklch(0.967 0.001 286.375);
+        --muted-foreground: oklch(0.552 0.016 285.938);
+        --border: oklch(0.92 0.004 286.32);
+        --input: oklch(0.92 0.004 286.32);
+        --ring: oklch(0.705 0.015 286.067);
+        --radius: 0.875rem;
+        --radius-sm: calc(var(--radius) * 0.6);
+        --radius-md: calc(var(--radius) * 0.8);
+        --radius-xl: calc(var(--radius) * 1.4);
+        --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+        --font-heading: "Instrument Serif", ui-serif, Georgia, serif;
+      }
+      .dark {
+        --background: oklch(0.141 0.005 285.823);
+        --foreground: oklch(0.985 0 0);
+        --card: oklch(0.21 0.006 285.885);
+        --card-foreground: oklch(0.985 0 0);
+        --primary: oklch(0.768 0.233 130.85);
+        --primary-foreground: oklch(0.405 0.101 131.063);
+        --secondary: oklch(0.274 0.006 286.033);
+        --muted: oklch(0.274 0.006 286.033);
+        --muted-foreground: oklch(0.705 0.015 286.067);
+        --border: oklch(1 0 0 / 10%);
+        --input: oklch(1 0 0 / 15%);
+        --ring: oklch(0.552 0.016 285.938);
+      }
 
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  html { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
-  body {
-    background:
-      radial-gradient(80% 60% at 50% -10%, color-mix(in oklch, var(--primary) 18%, var(--background)), transparent 60%),
-      var(--background);
-    color: var(--foreground);
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    padding: 48px 24px;
-  }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        background:
+          radial-gradient(
+            80% 60% at 50% -10%,
+            color-mix(in oklch, var(--primary) 18%, var(--background)),
+            transparent 60%
+          ),
+          var(--background);
+        color: var(--foreground);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 48px 24px;
+      }
 
-  .stage {
-    width: 100%;
-    max-width: 460px;
-    text-align: center;
-  }
+      .stage {
+        width: 100%;
+        max-width: 460px;
+        text-align: center;
+      }
 
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 36px;
-  }
-  .brand-mark {
-    width: 32px; height: 32px;
-    border-radius: var(--radius-sm);
-    background: var(--primary);
-    color: var(--primary-foreground);
-    display: grid; place-items: center;
-    font-family: var(--font-heading);
-    font-size: 20px;
-    box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1);
-  }
-  .brand-name {
-    font-family: var(--font-heading);
-    font-size: 22px;
-    letter-spacing: -0.01em;
-  }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 36px;
+      }
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        background: var(--primary);
+        color: var(--primary-foreground);
+        display: grid;
+        place-items: center;
+        font-family: var(--font-heading);
+        font-size: 20px;
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+      }
+      .brand-name {
+        font-family: var(--font-heading);
+        font-size: 22px;
+        letter-spacing: -0.01em;
+      }
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 44px 36px 36px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.10);
-  }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        padding: 44px 36px 36px;
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.04),
+          0 24px 48px -24px rgba(0, 0, 0, 0.1);
+      }
 
-  .seal {
-    position: relative;
-    width: 96px;
-    height: 96px;
-    margin: 0 auto 24px;
-    display: grid;
-    place-items: center;
-  }
-  .seal-ring {
-    position: absolute; inset: 0;
-    border-radius: 50%;
-    border: 1px dashed color-mix(in oklch, var(--primary) 40%, var(--border));
-    animation: rotate 24s linear infinite;
-  }
-  .seal-ring.inner {
-    inset: 14px;
-    border: 1px solid color-mix(in oklch, var(--primary) 30%, var(--border));
-    animation-duration: 16s;
-    animation-direction: reverse;
-  }
-  @keyframes rotate { to { transform: rotate(360deg); } }
+      .seal {
+        position: relative;
+        width: 96px;
+        height: 96px;
+        margin: 0 auto 24px;
+        display: grid;
+        place-items: center;
+      }
+      .seal-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 1px dashed color-mix(in oklch, var(--primary) 40%, var(--border));
+        animation: rotate 24s linear infinite;
+      }
+      .seal-ring.inner {
+        inset: 14px;
+        border: 1px solid color-mix(in oklch, var(--primary) 30%, var(--border));
+        animation-duration: 16s;
+        animation-direction: reverse;
+      }
+      @keyframes rotate {
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
-  .seal-disc {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: var(--primary-foreground);
-    display: grid; place-items: center;
-    box-shadow:
-      0 0 0 6px color-mix(in oklch, var(--primary) 18%, transparent),
-      0 8px 24px -8px color-mix(in oklch, var(--primary) 60%, transparent);
-    animation: pop 520ms cubic-bezier(.34,1.56,.64,1) both;
-  }
-  @keyframes pop {
-    from { opacity: 0; transform: scale(0.4); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  .seal-disc svg {
-    width: 28px; height: 28px;
-    stroke-dasharray: 24;
-    stroke-dashoffset: 24;
-    animation: draw 420ms cubic-bezier(.65,0,.35,1) 360ms forwards;
-  }
-  @keyframes draw { to { stroke-dashoffset: 0; } }
+      .seal-disc {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        display: grid;
+        place-items: center;
+        box-shadow:
+          0 0 0 6px color-mix(in oklch, var(--primary) 18%, transparent),
+          0 8px 24px -8px color-mix(in oklch, var(--primary) 60%, transparent);
+        animation: pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: scale(0.4);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .seal-disc svg {
+        width: 28px;
+        height: 28px;
+        stroke-dasharray: 24;
+        stroke-dashoffset: 24;
+        animation: draw 420ms cubic-bezier(0.65, 0, 0.35, 1) 360ms forwards;
+      }
+      @keyframes draw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
 
-  h1 {
-    font-family: var(--font-heading);
-    font-weight: 400;
-    font-size: 36px;
-    line-height: 1.1;
-    letter-spacing: -0.015em;
-    margin: 0 0 10px;
-  }
-  h1 em { font-style: italic; color: color-mix(in oklch, var(--primary) 75%, var(--foreground)); }
+      h1 {
+        font-family: var(--font-heading);
+        font-weight: 400;
+        font-size: 36px;
+        line-height: 1.1;
+        letter-spacing: -0.015em;
+        margin: 0 0 10px;
+      }
+      h1 em {
+        font-style: italic;
+        color: color-mix(in oklch, var(--primary) 75%, var(--foreground));
+      }
 
-  .lede {
-    color: var(--muted-foreground);
-    font-size: 15px;
-    line-height: 1.55;
-    margin: 0 0 28px;
-    text-wrap: pretty;
-  }
-  .email-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: var(--muted);
-    color: var(--foreground);
-    font-size: 13px;
-    font-weight: 500;
-    margin: 0 2px;
-  }
-  .email-chip svg { width: 12px; height: 12px; color: var(--primary); }
+      .lede {
+        color: var(--muted-foreground);
+        font-size: 15px;
+        line-height: 1.55;
+        margin: 0 0 28px;
+        text-wrap: pretty;
+      }
+      .email-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--muted);
+        color: var(--foreground);
+        font-size: 13px;
+        font-weight: 500;
+        margin: 0 2px;
+      }
+      .email-chip svg {
+        width: 12px;
+        height: 12px;
+        color: var(--primary);
+      }
 
-  .meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    margin: 0 0 28px;
-  }
-  .meta-cell {
-    padding: 14px 6px;
-    text-align: left;
-  }
-  .meta-cell + .meta-cell { border-left: 1px solid var(--border); padding-left: 18px; }
-  .meta-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted-foreground);
-    margin-bottom: 4px;
-  }
-  .meta-value {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--foreground);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--primary);
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 22%, transparent);
-  }
+      .meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        margin: 0 0 28px;
+      }
+      .meta-cell {
+        padding: 14px 6px;
+        text-align: left;
+      }
+      .meta-cell + .meta-cell {
+        border-left: 1px solid var(--border);
+        padding-left: 18px;
+      }
+      .meta-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted-foreground);
+        margin-bottom: 4px;
+      }
+      .meta-value {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--foreground);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--primary);
+        box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 22%, transparent);
+      }
 
-  .actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .btn {
-    height: 44px;
-    width: 100%;
-    border: 1px solid transparent;
-    background: var(--primary);
-    color: var(--primary-foreground);
-    font: inherit;
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 160ms ease, transform 80ms ease;
-    text-decoration: none;
-  }
-  .btn:hover { background: color-mix(in oklch, var(--primary) 88%, black); }
-  .btn:active { transform: translateY(1px); }
-  .btn-ghost {
-    background: transparent;
-    color: var(--muted-foreground);
-    border: 0;
-    height: 36px;
-    font-weight: 500;
-  }
-  .btn-ghost:hover { color: var(--foreground); }
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .btn {
+        height: 44px;
+        width: 100%;
+        border: 1px solid transparent;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font: inherit;
+        font-weight: 600;
+        font-size: 14px;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition:
+          background 160ms ease,
+          transform 80ms ease;
+        text-decoration: none;
+      }
+      .btn:hover {
+        background: color-mix(in oklch, var(--primary) 88%, black);
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--muted-foreground);
+        border: 0;
+        height: 36px;
+        font-weight: 500;
+      }
+      .btn-ghost:hover {
+        color: var(--foreground);
+      }
 
-  .footnote {
-    margin-top: 28px;
-    font-size: 12.5px;
-    color: var(--muted-foreground);
-  }
-  .footnote a { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
+      .footnote {
+        margin-top: 28px;
+        font-size: 12.5px;
+        color: var(--muted-foreground);
+      }
+      .footnote a {
+        color: var(--foreground);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
 
-  /* Confetti-ish glyph specks */
-  .speck {
-    position: absolute;
-    border-radius: 1px;
-    animation: float 1200ms cubic-bezier(.2,.8,.2,1) 400ms both;
-    pointer-events: none;
-  }
-  @keyframes float {
-    from { opacity: 0; transform: translate(0,0) rotate(0); }
-    50%  { opacity: 1; }
-    to   { opacity: 0; transform: var(--end) rotate(180deg); }
-  }
-</style>
-</head>
-<body>
-  <main class="stage">
-    <div class="brand">
-      <div class="brand-mark">P</div>
-      <div class="brand-name">Poneglyph</div>
-    </div>
+      /* Confetti-ish glyph specks */
+      .speck {
+        position: absolute;
+        border-radius: 1px;
+        animation: float 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) 400ms both;
+        pointer-events: none;
+      }
+      @keyframes float {
+        from {
+          opacity: 0;
+          transform: translate(0, 0) rotate(0);
+        }
+        50% {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+          transform: var(--end) rotate(180deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="stage">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        <div class="brand-name">Poneglyph</div>
+      </div>
 
-    <div class="card">
-      <div class="seal" id="seal">
-        <div class="seal-ring"></div>
-        <div class="seal-ring inner"></div>
-        <div class="seal-disc">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m5 12 5 5L20 7"/>
-          </svg>
+      <div class="card">
+        <div class="seal" id="seal">
+          <div class="seal-ring"></div>
+          <div class="seal-ring inner"></div>
+          <div class="seal-disc">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m5 12 5 5L20 7" />
+            </svg>
+          </div>
+        </div>
+
+        <h1>Email <em>verified</em></h1>
+        <p class="lede">
+          Your email
+          <span class="email-chip">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m5 12 5 5L20 7" />
+            </svg>
+            <a
+              href="/cdn-cgi/l/email-protection"
+              class="__cf_email__"
+              data-cfemail="dca5b3a99cacb3b2b9bbb0a5acb4f2b8b9aa"
+              >[email&#160;protected]</a
+            >
+          </span>
+          is confirmed. The archive is open — you can sign in and start charting.
+        </p>
+
+        <div class="meta">
+          <div class="meta-cell">
+            <div class="meta-label">Status</div>
+            <div class="meta-value"><span class="dot"></span> Verified</div>
+          </div>
+          <div class="meta-cell">
+            <div class="meta-label">Verified at</div>
+            <div class="meta-value" id="ts">—</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a class="btn" href="Auth.html">
+            Continue to sign in
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          </a>
+          <button class="btn btn-ghost" type="button" onclick="window.close()">
+            Close this tab
+          </button>
         </div>
       </div>
 
-      <h1>Email <em>verified</em></h1>
-      <p class="lede">
-        Your email <span class="email-chip">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
-          <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dca5b3a99cacb3b2b9bbb0a5acb4f2b8b9aa">[email&#160;protected]</a>
-        </span> is confirmed. The archive is open — you can sign in and start charting.
-      </p>
+      <p class="footnote">Wasn't you? <a href="#">Secure your account</a>.</p>
+    </main>
 
-      <div class="meta">
-        <div class="meta-cell">
-          <div class="meta-label">Status</div>
-          <div class="meta-value"><span class="dot"></span> Verified</div>
-        </div>
-        <div class="meta-cell">
-          <div class="meta-label">Verified at</div>
-          <div class="meta-value" id="ts">—</div>
-        </div>
-      </div>
+    <script
+      data-cfasync="false"
+      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
+    ></script>
+    <script>
+      // Timestamp
+      const ts = document.getElementById("ts");
+      const now = new Date();
+      ts.textContent = now.toLocaleString(undefined, {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
 
-      <div class="actions">
-        <a class="btn" href="Auth.html">
-          Continue to sign in
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </a>
-        <button class="btn btn-ghost" type="button" onclick="window.close()">Close this tab</button>
-      </div>
-    </div>
-
-    <p class="footnote">
-      Wasn't you? <a href="#">Secure your account</a>.
-    </p>
-  </main>
-
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Timestamp
-    const ts = document.getElementById('ts');
-    const now = new Date();
-    ts.textContent = now.toLocaleString(undefined, {
-      month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
-    });
-
-    // Specks burst on the seal
-    const seal = document.getElementById('seal');
-    const colors = ['var(--primary)', 'color-mix(in oklch, var(--primary) 60%, white)', 'var(--foreground)'];
-    for (let i = 0; i < 14; i++) {
-      const s = document.createElement('span');
-      s.className = 'speck';
-      const angle = (Math.PI * 2 * i) / 14 + Math.random() * 0.4;
-      const dist = 60 + Math.random() * 40;
-      const x = Math.cos(angle) * dist;
-      const y = Math.sin(angle) * dist;
-      const w = 4 + Math.random() * 4;
-      const h = 2 + Math.random() * 2;
-      s.style.width = w + 'px';
-      s.style.height = h + 'px';
-      s.style.left = '50%';
-      s.style.top = '50%';
-      s.style.background = colors[i % colors.length];
-      s.style.setProperty('--end', `translate(${x}px, ${y}px)`);
-      s.style.animationDelay = (400 + Math.random() * 200) + 'ms';
-      seal.appendChild(s);
-    }
-  </script>
-</body>
+      // Specks burst on the seal
+      const seal = document.getElementById("seal");
+      const colors = [
+        "var(--primary)",
+        "color-mix(in oklch, var(--primary) 60%, white)",
+        "var(--foreground)",
+      ];
+      for (let i = 0; i < 14; i++) {
+        const s = document.createElement("span");
+        s.className = "speck";
+        const angle = (Math.PI * 2 * i) / 14 + Math.random() * 0.4;
+        const dist = 60 + Math.random() * 40;
+        const x = Math.cos(angle) * dist;
+        const y = Math.sin(angle) * dist;
+        const w = 4 + Math.random() * 4;
+        const h = 2 + Math.random() * 2;
+        s.style.width = w + "px";
+        s.style.height = h + "px";
+        s.style.left = "50%";
+        s.style.top = "50%";
+        s.style.background = colors[i % colors.length];
+        s.style.setProperty("--end", `translate(${x}px, ${y}px)`);
+        s.style.animationDelay = 400 + Math.random() * 200 + "ms";
+        seal.appendChild(s);
+      }
+    </script>
+  </body>
 </html>

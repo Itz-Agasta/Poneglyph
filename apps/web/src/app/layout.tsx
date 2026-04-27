@@ -3,7 +3,11 @@ import { Outfit, Newsreader, JetBrains_Mono, Geist, Instrument_Serif } from "nex
 import "./globals.css";
 import { cn } from "@Poneglyph/ui/lib/utils";
 
-const instrumentSerifHeading = Instrument_Serif({ weight: "400", subsets: ["latin"], variable: "--font-heading" });
+const instrumentSerifHeading = Instrument_Serif({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 

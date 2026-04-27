@@ -115,9 +115,7 @@ export function DatasetDetailHeader({ dataset }: Props) {
           <span className="font-medium text-foreground">{dataset.sourceName}</span>
           <span className="capitalize">({dataset.sourceType})</span>
         </span>
-        <span className="text-xs text-muted-foreground">
-          Added {formatDate(dataset.createdAt)}
-        </span>
+        <span className="text-xs text-muted-foreground">Added {formatDate(dataset.createdAt)}</span>
       </div>
     </div>
   );

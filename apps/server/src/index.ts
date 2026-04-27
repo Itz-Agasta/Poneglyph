@@ -1,4 +1,4 @@
-import { logger, honoLogger } from "@/lib/logger";
+import { logger, honoLogger } from "./lib/logger";
 import { auth } from "@Poneglyph/auth";
 import { env } from "@Poneglyph/env/server";
 import { Hono } from "hono";

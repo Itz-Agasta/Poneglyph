@@ -54,25 +54,15 @@ function FeatureCard({ card }: { card: (typeof CARDS)[number] }) {
 
       {/* Description + stats — bottom */}
       <div className="relative z-10 p-6 space-y-5">
-        <p className="text-white/75 text-sm leading-relaxed">
-          {card.description}
-        </p>
+        <p className="text-white/75 text-sm leading-relaxed">{card.description}</p>
         <div className="flex gap-8">
           <div>
-            <div className="text-white font-semibold text-xl">
-              {card.stat1.value}
-            </div>
-            <div className="text-white/50 text-xs mt-0.5">
-              {card.stat1.label}
-            </div>
+            <div className="text-white font-semibold text-xl">{card.stat1.value}</div>
+            <div className="text-white/50 text-xs mt-0.5">{card.stat1.label}</div>
           </div>
           <div>
-            <div className="text-white font-semibold text-xl">
-              {card.stat2.value}
-            </div>
-            <div className="text-white/50 text-xs mt-0.5">
-              {card.stat2.label}
-            </div>
+            <div className="text-white font-semibold text-xl">{card.stat2.value}</div>
+            <div className="text-white/50 text-xs mt-0.5">{card.stat2.label}</div>
           </div>
         </div>
       </div>
@@ -93,10 +83,7 @@ export function HowItWorksSection() {
             style={{ fontFamily: "var(--font-newsreader)" }}
           >
             How Poneglyph{" "}
-            <em
-              className="not-italic font-normal text-[#5C72B8]"
-              style={{ fontStyle: "italic" }}
-            >
+            <em className="not-italic font-normal text-[#5C72B8]" style={{ fontStyle: "italic" }}>
               works
             </em>
           </h2>

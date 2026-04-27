@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Separator } from "@Poneglyph/ui/components/separator";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { apiClientWithCookies } from "@/lib/api-client-server";
+import { apiClientWithCookies } from "@/lib/api-client";
 import { VolunteerProfileHeader } from "./_components/volunteer-profile-header";
 import { VolunteerPastWorks } from "./_components/volunteer-past-works";
 
@@ -14,7 +14,9 @@ export default async function VolunteerProfilePage(props: Props) {
   const { userId } = await props.params;
 
   const client = await apiClientWithCookies();
-  const res = await client.get("/api/discover/volunteers/:targetUserId", { param: { targetUserId: userId } });
+  const res = await client.get("/api/discover/volunteers/:targetUserId", {
+    param: { targetUserId: userId },
+  });
 
   if (res.status === 404) {
     notFound();
@@ -45,7 +47,9 @@ export default async function VolunteerProfilePage(props: Props) {
           <>
             <section>
               <h2 className="text-lg font-semibold text-foreground mb-3">About</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">{volunteer.description}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {volunteer.description}
+              </p>
             </section>
 
             <Separator className="bg-border" />

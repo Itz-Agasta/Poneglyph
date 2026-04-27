@@ -1,8 +1,13 @@
-import { apiClientWithCookies } from "@/lib/api-client-server";
+import { apiClientWithCookies } from "@/lib/api-client";
 import type { VolunteerListItem, PaginatedResponse } from "@/lib/types";
 import { VolunteerCard } from "./volunteer-card";
 import Link from "next/link";
-import { IconChevronLeft, IconChevronRight, IconAlertTriangle, IconUsers } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconAlertTriangle,
+  IconUsers,
+} from "@tabler/icons-react";
 import { Button } from "@Poneglyph/ui/components/button";
 
 interface VolunteerGridProps {
@@ -31,7 +36,9 @@ export async function VolunteerGrid({ city, tags, page = 1, limit = 20 }: Volunt
         </div>
         <div className="space-y-1">
           <h3 className="text-base font-semibold text-foreground">Failed to load volunteers</h3>
-          <p className="text-sm text-muted-foreground">Something went wrong. Please refresh the page.</p>
+          <p className="text-sm text-muted-foreground">
+            Something went wrong. Please refresh the page.
+          </p>
         </div>
       </div>
     );
@@ -50,7 +57,9 @@ export async function VolunteerGrid({ city, tags, page = 1, limit = 20 }: Volunt
         <IconUsers className="w-8 h-8 text-muted-foreground/40" />
         <div className="space-y-1">
           <h3 className="text-base font-semibold text-foreground">No volunteers found</h3>
-          <p className="text-sm text-muted-foreground">Try adjusting your filters to find who you're looking for.</p>
+          <p className="text-sm text-muted-foreground">
+            Try adjusting your filters to find who you're looking for.
+          </p>
         </div>
       </div>
     );

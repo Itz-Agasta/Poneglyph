@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { ChatRequestSchema } from "@Poneglyph/schemas/chat";
 import { createAgentUIStreamResponse } from "ai";
-import { logger } from "@/lib/logger";
+import { logger } from "../../lib/logger";
 import { createOrchestratorAgent } from "../../agents/orchestrator";
 import { requireAuth } from "../../middleware/auth";
 

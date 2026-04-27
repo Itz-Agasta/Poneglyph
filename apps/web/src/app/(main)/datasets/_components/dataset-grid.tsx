@@ -1,4 +1,4 @@
-import { apiClientWithCookies } from "@/lib/api-client-server";
+import { apiClientWithCookies } from "@/lib/api-client";
 import type { DatasetListItem, PaginatedResponse } from "@/lib/types";
 import { DatasetCard } from "./dataset-card";
 import Link from "next/link";
