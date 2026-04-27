@@ -1,9 +1,16 @@
-import { logger, honoLogger } from "@/lib/logger";
+import { logger, honoLogger } from "./lib/logger";
 import { auth } from "@Poneglyph/auth";
+import { env } from "@Poneglyph/env/server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { authMiddleware } from "./middleware/auth";
 import { apiRouter } from "./routes/router";
+
+// CORS_ORIGIN supports comma-separated values, e.g.:
+//   "https://poneglyph.vyse.site,http://localhost:3001"
+const allowedOrigins = env.CORS_ORIGIN.split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
 
 const app = new Hono();
 
@@ -18,7 +25,7 @@ app.use(
 app.use(
   "/api/auth/*",
   cors({
-    origin: "*",
+    origin: allowedOrigins,
     allowMethods: ["POST", "GET", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     exposeHeaders: ["Content-Length"],
@@ -30,7 +37,7 @@ app.use(
 app.use(
   "/api/*",
   cors({
-    origin: "*", // Have to change it later
+    origin: allowedOrigins,
     allowMethods: ["GET", "POST", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,

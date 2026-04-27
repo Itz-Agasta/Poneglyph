@@ -1,6 +1,6 @@
 import { embed } from "ai";
 import { google } from "@ai-sdk/google";
-import { logger } from "@/lib/logger";
+import { logger } from "./logger";
 import { redis } from "./redis";
 import { hashQuery } from "./hash";
 

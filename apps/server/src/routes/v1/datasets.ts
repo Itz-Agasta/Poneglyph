@@ -3,7 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db, sql } from "@Poneglyph/db";
 import { DatasetListQuerySchema } from "@Poneglyph/schemas/dataset";
-import { logger } from "@/lib/logger";
+import { logger } from "../../lib/logger";
 import {
   getDatasetAttachmentUrl,
   inferFileType,

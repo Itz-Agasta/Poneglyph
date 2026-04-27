@@ -17,7 +17,7 @@ const categories = [
 
 export function DataCategories() {
   return (
-    <section className="relative w-full py-24 px-4 bg-white/5">
+    <section className="relative w-full py-24 px-4 bg-[#e8eef5]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 px-4">
           <h2 className="text-4xl md:text-7xl font-light text-[#2d4a77] tracking-tight leading-tight">

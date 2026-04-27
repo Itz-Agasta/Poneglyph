@@ -1,7 +1,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 import { db, sql } from "@Poneglyph/db";
-import { logger } from "@/lib/logger";
+import { logger } from "../../lib/logger";
 import { embedQuery } from "../../lib/embeddings";
 import { getPresignedUrl } from "../../lib/s3";
 

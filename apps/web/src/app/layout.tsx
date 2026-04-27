@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Outfit, Newsreader, JetBrains_Mono, Geist, Space_Grotesk } from "next/font/google";
+import { Outfit, Newsreader, JetBrains_Mono, Geist, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { cn } from "@Poneglyph/ui/lib/utils";
-import { Navigation } from "@/components/navigation";
 
-const spaceGroteskHeading = Space_Grotesk({ subsets: ["latin"], variable: "--font-heading" });
+const instrumentSerifHeading = Instrument_Serif({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -34,11 +37,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable, spaceGroteskHeading.variable)}>
+    <html lang="en" className={cn("font-sans", geist.variable, instrumentSerifHeading.variable)}>
       <body
         className={`${outfit.variable} ${newsreader.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}
       >
-        <Navigation />
         {children}
       </body>
     </html>
