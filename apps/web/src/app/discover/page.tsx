@@ -1,8 +1,6 @@
-import { Suspense } from "react";
 import "./discover.css";
 import { VolunteerGrid } from "./_components/volunteer-grid";
 import { VolunteerFilters } from "./_components/volunteer-filters";
-import { VolunteerGridSkeleton } from "./_components/volunteer-grid-skeleton";
 import { DiscoverTabs } from "./_components/discover-tabs";
 
 type Props = {
@@ -39,9 +37,7 @@ export default async function DiscoverPage(props: Props) {
         </div>
 
         {currentTab === "volunteers" ? (
-          <Suspense key={suspenseKey} fallback={<VolunteerGridSkeleton />}>
-            <VolunteerGrid city={city} tags={tags} page={Number(page)} limit={Number(limit)} />
-          </Suspense>
+          <VolunteerGrid city={city} tags={tags} page={Number(page)} limit={Number(limit)} />
         ) : (
           <div className="discover-empty">
             <div className="discover-empty-title">Coming Soon</div>

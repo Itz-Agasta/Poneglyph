@@ -1,5 +1,6 @@
-import { db, sql } from "@Poneglyph/db";
+import { db } from "@Poneglyph/db";
 import { volunteer } from "@Poneglyph/db/schema/users";
+import { tags as tagsTable, volunteerTags } from "@Poneglyph/db/schema/data";
 import { VolunteerListQuerySchema, VolunteerParamSchema } from "@Poneglyph/schemas/volunteer";
 import { zValidator } from "@hono/zod-validator";
 import { count, and, inArray, eq, desc, type SQL } from "drizzle-orm";
@@ -23,7 +24,7 @@ discoverRouter.get(
   async (c) => {
     const { page, limit, city, tags } = c.req.valid("query");
     const offset = (page - 1) * limit;
-    const filters: string[] = [];
+    const matchedVolunteerIds: string[] = [];
 
     const tagSlugs = tags
       ? [
@@ -37,32 +38,38 @@ discoverRouter.get(
       : [];
 
     if (tagSlugs.length > 0) {
-      const matchedVolunteerResult = await db.execute<{ volunteer_id: string }>(sql`
-      SELECT vt.volunteer_id
-      FROM volunteer_tags vt
-      INNER JOIN tags t ON vt.tag_id = t.id
-      WHERE t.slug IN (${sql.join(
-        tagSlugs.map((slug) => sql`${slug}`),
-        sql`, `,
-      )})
-      GROUP BY vt.volunteer_id
-      HAVING COUNT(DISTINCT t.slug) = ${tagSlugs.length}
-    `);
+      // Step 1: resolve slugs → tag IDs (if any slug is unknown, no volunteer can match)
+      const matchedTagRows = await db
+        .select({ id: tagsTable.id })
+        .from(tagsTable)
+        .where(inArray(tagsTable.slug, tagSlugs));
 
-      const matchedVolunteerIDs = matchedVolunteerResult.rows.map((row) => row.volunteer_id);
-
-      if (matchedVolunteerIDs.length === 0) {
+      if (matchedTagRows.length !== tagSlugs.length) {
         return c.json({ data: [], total: 0, page, limit, totalPages: 0 }, 200);
       }
 
-      filters.push(...matchedVolunteerIDs);
+      const tagIds = matchedTagRows.map((t) => t.id);
+
+      // Step 2: volunteers that hold ALL the requested tags
+      const volunteerRows = await db
+        .select({ volunteerId: volunteerTags.volunteerId })
+        .from(volunteerTags)
+        .where(inArray(volunteerTags.tagId, tagIds))
+        .groupBy(volunteerTags.volunteerId)
+        .having(eq(count(volunteerTags.tagId), tagIds.length));
+
+      if (volunteerRows.length === 0) {
+        return c.json({ data: [], total: 0, page, limit, totalPages: 0 }, 200);
+      }
+
+      matchedVolunteerIds.push(...volunteerRows.map((r) => r.volunteerId));
     }
 
     const conditions: SQL[] = [];
     const normalizedCity = city?.trim().toLowerCase();
 
     if (normalizedCity) conditions.push(eq(sql`lower(${volunteer.city})`, normalizedCity));
-    if (filters.length > 0) conditions.push(inArray(volunteer.userId, filters));
+    if (matchedVolunteerIds.length > 0) conditions.push(inArray(volunteer.userId, matchedVolunteerIds));
 
     const condition =
       conditions.length === 0
