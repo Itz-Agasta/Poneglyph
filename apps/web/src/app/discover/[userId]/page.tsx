@@ -50,7 +50,7 @@ export default function VolunteerProfilePage() {
     );
   }
 
-  if (isError) {
+  if (isError || !volunteer) {
     const isNotFound = error instanceof Error && error.message === "NOT_FOUND";
     return (
       <div className="profile-page">

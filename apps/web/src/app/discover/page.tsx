@@ -1,12 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import "./discover.css";
 import { VolunteerGrid } from "./_components/volunteer-grid";
 import { VolunteerFilters } from "./_components/volunteer-filters";
 import { DiscoverTabs } from "./_components/discover-tabs";
 
-export default function DiscoverPage() {
+function DiscoverContent() {
   const searchParams = useSearchParams();
 
   const city = searchParams.get("city") ?? undefined;
@@ -45,5 +46,13 @@ export default function DiscoverPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function DiscoverPage() {
+  return (
+    <Suspense fallback={<div className="discover-page"><div className="discover-container">Loading...</div></div>}>
+      <DiscoverContent />
+    </Suspense>
   );
 }
