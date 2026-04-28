@@ -240,7 +240,7 @@ export function WorldReachSection() {
       <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#a8c1d8] to-[#a8c1d8]/0 z-10 pointer-events-none" />
 
       {/* Left tree — half cropped off screen */}
-      <div className="absolute -left-35 top-0 z-20 pointer-events-none h-[35%]">
+      <div className="absolute -left-45 top-0 z-20 pointer-events-none h-[35%]">
         <Image
           src="/assets/branches3.avif"
           alt=""
@@ -251,7 +251,7 @@ export function WorldReachSection() {
       </div>
 
       {/* Right tree — half cropped off screen */}
-      <div className="absolute -right-28 top-0 z-20 pointer-events-none h-[55%]">
+      <div className="absolute -right-35 top-0 z-20 pointer-events-none h-[55%]">
         <Image
           src="/assets/branches4.avif"
           alt=""

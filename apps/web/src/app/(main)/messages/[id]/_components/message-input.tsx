@@ -1,68 +1,66 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Button } from "@Poneglyph/ui/components/button";
-import { Input } from "@Poneglyph/ui/components/input";
 import { authClient } from "@/lib/auth-client";
 import { IconSend } from "@tabler/icons-react";
+import type { Message } from "@/lib/types";
 
 interface MessageInputProps {
-  onMessageSent: (message: {
-    id: string;
-    senderId: string;
-    content: string;
-    createdAt: string;
-    readAt: string | null;
-  }) => void;
+  onMessageSent: (message: Message) => void;
 }
 
 export function MessageInput({ onMessageSent }: MessageInputProps) {
   const [content, setContent] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const { data: session } = authClient.useSession();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!content.trim()) return;
 
-    if (!content.trim()) {
-      return;
-    }
+    const senderId = session?.user?.id ?? "unknown";
 
-    const { data: session } = authClient.useSession();
-    const senderId = session?.user?.id || "unknown";
-
-    // Simulate sending message - update UI only
-    const newMessage = {
+    onMessageSent({
       id: `local-${Date.now()}`,
       senderId,
       content: content.trim(),
       createdAt: new Date().toISOString(),
       readAt: null,
-    };
+    });
 
-    onMessageSent(newMessage);
     setContent("");
     inputRef.current?.focus();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="border-t border-border p-4 flex gap-2">
-      <Input
-        ref={inputRef}
-        placeholder="Type a message..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        maxLength={4000}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSubmit(e);
-          }
-        }}
-      />
-      <Button type="submit" disabled={!content.trim()} className="gap-2">
-        <IconSend className="w-4 h-4" />
-        Send
-      </Button>
+    <form onSubmit={handleSubmit} className="msg-input-bar">
+      <div className="msg-input-wrap">
+        <textarea
+          ref={inputRef}
+          rows={1}
+          placeholder="Write a message…"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          onKeyDown={handleKeyDown}
+          maxLength={4000}
+          className="msg-input"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={!content.trim()}
+        className="msg-send-btn"
+        aria-label="Send message"
+      >
+        <IconSend width={17} height={17} />
+      </button>
     </form>
   );
 }

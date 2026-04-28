@@ -1,0 +1,803 @@
+/* ══════════════════════════════════════
+   Discover — Page shell
+══════════════════════════════════════ */
+.discover-page {
+  min-height: 100vh;
+  background: var(--background);
+}
+
+.discover-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 36px 24px 72px;
+}
+
+/* ── Hero ── */
+.discover-hero {
+  margin-bottom: 28px;
+}
+
+.discover-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+  margin: 0 0 5px;
+}
+
+.discover-title em {
+  font-style: italic;
+  color: color-mix(in oklch, var(--primary) 70%, var(--foreground));
+}
+
+.discover-subtitle {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  margin: 0 0 24px;
+}
+
+/* ── Tabs (LinkedIn-style) ── */
+.discover-tabs {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  padding-bottom: 0;
+}
+
+.discover-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  padding: 10px 4px;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: color 160ms ease;
+  margin-bottom: -1px; /* Overlap the container border */
+}
+
+.discover-tab:hover {
+  color: var(--foreground);
+}
+
+.discover-tab-active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.discover-tab-active:hover {
+  color: color-mix(in oklch, var(--primary) 80%, black);
+}
+
+/* ── Search bar (LinkedIn-style integrated bar) ── */
+.discover-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 8px 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  flex-wrap: wrap;
+}
+
+.discover-search-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.discover-search-field {
+  position: relative;
+  flex: 1;
+  min-width: 160px;
+}
+
+.discover-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+  pointer-events: none;
+  width: 15px;
+  height: 15px;
+}
+
+.discover-search-input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid transparent;
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  padding: 0 10px 0 32px;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--foreground);
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.discover-search-input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.discover-search-input:focus-visible {
+  border-color: var(--ring);
+  background: var(--card);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 22%, transparent);
+}
+
+.discover-search-btn {
+  height: 36px;
+  padding: 0 16px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 160ms ease;
+}
+
+.discover-search-btn:hover {
+  background: color-mix(in oklch, var(--primary) 88%, black);
+}
+
+.discover-clear-btn {
+  height: 36px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.discover-clear-btn:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+/* ── Results meta ── */
+.discover-meta {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-bottom: 18px;
+}
+
+.discover-meta strong {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+/* ── Grid ── */
+.volunteer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 700px) {
+  .volunteer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1060px) {
+  .volunteer-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ══════════════════════════════════════
+   Volunteer Card  (LinkedIn-style)
+══════════════════════════════════════ */
+.volunteer-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    transform 220ms ease;
+}
+
+.volunteer-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 1px 4px rgba(0, 0, 0, 0.04);
+  border-color: color-mix(in oklch, var(--primary) 40%, var(--border));
+}
+
+/* Banner gradient */
+.volunteer-card-banner {
+  height: 72px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--primary) 18%, var(--background)),
+    color-mix(in oklch, var(--primary) 52%, var(--background))
+  );
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Avatar overlapping banner */
+.volunteer-card-avatar-wrap {
+  position: absolute;
+  bottom: -26px;
+  left: 20px;
+}
+
+.volunteer-card-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid var(--card);
+  background: color-mix(in oklch, var(--primary) 12%, var(--card));
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.volunteer-card-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Body */
+.volunteer-card-body {
+  padding: 36px 20px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.volunteer-card-name {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  margin: 0;
+  transition: color 160ms ease;
+}
+
+.volunteer-card:hover .volunteer-card-name {
+  color: var(--primary);
+}
+
+.volunteer-card-location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+}
+
+.volunteer-card-desc {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 2px 0 0;
+}
+
+.volunteer-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.volunteer-card-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  background: color-mix(in oklch, var(--primary) 10%, var(--muted));
+  color: color-mix(in oklch, var(--primary) 80%, var(--foreground));
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.volunteer-card-tag-more {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+/* Footer */
+.volunteer-card-footer {
+  border-top: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: color-mix(in oklch, var(--muted) 30%, var(--card));
+}
+
+.volunteer-card-works {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.volunteer-card-view {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 0.01em;
+}
+
+/* ══════════════════════════════════════
+   Empty / Error states
+══════════════════════════════════════ */
+.discover-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 14px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--card);
+}
+
+.discover-empty-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--muted);
+  display: grid;
+  place-items: center;
+  color: var(--muted-foreground);
+}
+
+.discover-empty-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.discover-empty-desc {
+  font-size: 13.5px;
+  color: var(--muted-foreground);
+  max-width: 340px;
+  margin: 0;
+}
+
+.discover-error-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--destructive) 12%, transparent);
+  display: grid;
+  place-items: center;
+  color: var(--destructive);
+}
+
+/* ══════════════════════════════════════
+   Pagination
+══════════════════════════════════════ */
+.discover-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 48px;
+}
+
+.discover-page-btn {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  text-decoration: none;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.discover-page-btn:hover:not(.discover-page-btn--disabled) {
+  background: var(--muted);
+}
+
+.discover-page-btn--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.discover-page-info {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  padding: 0 8px;
+}
+
+.discover-page-info strong {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════
+   Skeleton shimmer
+══════════════════════════════════════ */
+@keyframes shimmer {
+  from {
+    background-position: -600px 0;
+  }
+  to {
+    background-position: 600px 0;
+  }
+}
+
+.skel {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 25%,
+    color-mix(in oklch, var(--muted) 60%, var(--background)) 50%,
+    var(--muted) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ══════════════════════════════════════
+   Volunteer Profile  (LinkedIn-style)
+══════════════════════════════════════ */
+.profile-page {
+  min-height: 100vh;
+  background: color-mix(in oklch, var(--muted) 40%, var(--background));
+  padding: 24px 20px 72px;
+}
+
+.profile-container {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  margin-bottom: 6px;
+  transition: color 160ms ease;
+  width: fit-content;
+}
+
+.profile-back:hover {
+  color: var(--foreground);
+}
+
+/* Main identity card */
+.profile-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.profile-banner {
+  height: 140px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--primary) 18%, var(--background)),
+    color-mix(in oklch, var(--primary) 56%, var(--background)),
+    color-mix(in oklch, var(--primary) 28%, var(--background))
+  );
+  position: relative;
+}
+
+/* decorative pattern on banner */
+.profile-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 80% 50%,
+    color-mix(in oklch, var(--primary) 30%, transparent) 0%,
+    transparent 60%
+  );
+}
+
+.profile-avatar-wrap {
+  position: absolute;
+  bottom: -40px;
+  left: 28px;
+  z-index: 2;
+}
+
+.profile-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 4px solid var(--card);
+  background: color-mix(in oklch, var(--primary) 12%, var(--card));
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--primary);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-head {
+  padding: 52px 28px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.profile-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 27px;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--foreground);
+  margin: 0 0 7px;
+}
+
+.profile-location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13.5px;
+  color: var(--muted-foreground);
+  margin-bottom: 14px;
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.profile-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  background: color-mix(in oklch, var(--primary) 10%, var(--muted));
+  color: color-mix(in oklch, var(--primary) 75%, var(--foreground));
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.profile-btn-primary {
+  height: 36px;
+  padding: 0 18px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition:
+    background 160ms ease,
+    transform 80ms ease;
+  text-decoration: none;
+}
+
+.profile-btn-primary:hover {
+  background: color-mix(in oklch, var(--primary) 88%, black);
+}
+
+.profile-btn-primary:active {
+  transform: translateY(1px);
+}
+
+/* Content sections (below identity card, each its own card) */
+.profile-section-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px 28px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.profile-section-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: -0.008em;
+  color: var(--foreground);
+  margin: 0 0 16px;
+}
+
+.profile-about-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+/* Past works */
+.profile-works {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.profile-work-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-work-item:first-child {
+  padding-top: 0;
+}
+
+.profile-work-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.profile-work-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--primary) 10%, var(--muted));
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.profile-work-text {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--foreground);
+  margin: 0;
+  padding-top: 8px;
+}
+
+.profile-no-works {
+  font-size: 13.5px;
+  color: var(--muted-foreground);
+  padding: 4px 0;
+}
+
+/* Skills section */
+.profile-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-skill-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  background: color-mix(in oklch, var(--primary) 8%, var(--muted));
+  color: color-mix(in oklch, var(--primary) 75%, var(--foreground));
+  border: 1px solid color-mix(in oklch, var(--primary) 20%, var(--border));
+  border-radius: 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background 160ms ease;
+}
+
+.profile-skill-tag:hover {
+  background: color-mix(in oklch, var(--primary) 15%, var(--muted));
+}
+
+/* Profile skeleton */
+.profile-skel-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.profile-skel-banner {
+  height: 140px;
+}
+
+.profile-skel-head {
+  padding: 52px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-skel-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

@@ -178,11 +178,30 @@ export default function DatasetUploadPage() {
     setTags("");
     setUploadStatus("idle");
   };
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (files.length === 0 || !title || !description) return;
     setUploadStatus("uploading");
-    // TODO: replace with actual POST /api/upload multipart call
-    setTimeout(() => setUploadStatus("success"), 2000);
+
+    const form = new FormData();
+    form.append("title", title);
+    form.append("description", description);
+    if (summary) form.append("summary", summary);
+    if (publisher) form.append("publisher", publisher);
+    if (tags) form.append("tags", tags);
+    files.forEach((f) => form.append("files", f));
+    if (thumbnail) form.append("thumbnail", thumbnail);
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/upload`, {
+        method: "POST",
+        body: form,
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(await res.text());
+      setUploadStatus("success");
+    } catch {
+      setUploadStatus("error");
+    }
   };
 
   const busy = uploadStatus === "uploading";
@@ -373,7 +392,7 @@ export default function DatasetUploadPage() {
                         Drag & drop or click to upload
                       </p>
                       <p className="text-xs text-grey-1 mt-0.5">
-                        CSV, JSON, JSONL, Parquet — max 50 MB each
+                        CSV, JSON, JSONL, Parquet, PDF — max 50 MB each
                       </p>
                     </div>
                     <input
@@ -382,7 +401,7 @@ export default function DatasetUploadPage() {
                       multiple
                       className="hidden"
                       onChange={handleFileChange}
-                      accept=".csv,.json,.jsonl,.parquet"
+                      accept=".csv,.json,.jsonl,.parquet,.pdf"
                     />
                   </label>
                 ) : (
@@ -435,7 +454,7 @@ export default function DatasetUploadPage() {
                           multiple
                           className="hidden"
                           onChange={handleFileChange}
-                          accept=".csv,.json,.jsonl,.parquet"
+                          accept=".csv,.json,.jsonl,.parquet,.pdf"
                         />
                       </>
                     )}

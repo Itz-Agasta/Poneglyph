@@ -8,7 +8,6 @@ import {
   IconAlertTriangle,
   IconUsers,
 } from "@tabler/icons-react";
-import { Button } from "@Poneglyph/ui/components/button";
 
 interface VolunteerGridProps {
   city?: string;
@@ -30,16 +29,12 @@ export async function VolunteerGrid({ city, tags, page = 1, limit = 20 }: Volunt
 
   if (!res.ok) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 gap-4 text-center rounded-xl border border-border bg-card">
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-destructive/10">
-          <IconAlertTriangle className="w-6 h-6 text-destructive" />
+      <div className="discover-empty">
+        <div className="discover-error-icon">
+          <IconAlertTriangle width={24} height={24} />
         </div>
-        <div className="space-y-1">
-          <h3 className="text-base font-semibold text-foreground">Failed to load volunteers</h3>
-          <p className="text-sm text-muted-foreground">
-            Something went wrong. Please refresh the page.
-          </p>
-        </div>
+        <p className="discover-empty-title">Something went wrong</p>
+        <p className="discover-empty-desc">Failed to load volunteers. Please refresh the page.</p>
       </div>
     );
   }
@@ -53,14 +48,14 @@ export async function VolunteerGrid({ city, tags, page = 1, limit = 20 }: Volunt
 
   if (volunteers.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 gap-3 text-center border border-dashed border-border rounded-xl bg-card">
-        <IconUsers className="w-8 h-8 text-muted-foreground/40" />
-        <div className="space-y-1">
-          <h3 className="text-base font-semibold text-foreground">No volunteers found</h3>
-          <p className="text-sm text-muted-foreground">
-            Try adjusting your filters to find who you're looking for.
-          </p>
+      <div className="discover-empty">
+        <div className="discover-empty-icon">
+          <IconUsers width={24} height={24} />
         </div>
+        <p className="discover-empty-title">No volunteers found</p>
+        <p className="discover-empty-desc">
+          Try adjusting your filters to find who you&apos;re looking for.
+        </p>
       </div>
     );
   }
@@ -75,55 +70,37 @@ export async function VolunteerGrid({ city, tags, page = 1, limit = 20 }: Volunt
   };
 
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">
-        Showing <span className="font-medium text-foreground">{volunteers.length}</span> of{" "}
-        <span className="font-medium text-foreground">{total}</span> volunteers
+    <div>
+      <p className="discover-meta">
+        Showing <strong>{volunteers.length}</strong> of <strong>{total}</strong> volunteers
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="volunteer-grid">
         {volunteers.map((volunteer) => (
           <VolunteerCard key={volunteer.userId} volunteer={volunteer} />
         ))}
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-8">
+        <div className="discover-pagination">
           <Link
             href={currentPage <= 1 ? "#" : createPageUrl(currentPage - 1)}
             aria-label="Previous page"
-            className={currentPage <= 1 ? "pointer-events-none" : ""}
-            tabIndex={currentPage <= 1 ? -1 : undefined}
+            className={`discover-page-btn${currentPage <= 1 ? " discover-page-btn--disabled" : ""}`}
           >
-            <Button
-              variant="outline"
-              size="icon"
-              disabled={currentPage <= 1}
-              className={currentPage <= 1 ? "opacity-50" : ""}
-            >
-              <IconChevronLeft className="w-4 h-4" />
-            </Button>
+            <IconChevronLeft width={16} height={16} />
           </Link>
 
-          <div className="flex items-center gap-1">
-            <span className="text-sm font-medium text-foreground">Page {currentPage}</span>
-            <span className="text-sm text-muted-foreground">of {totalPages}</span>
-          </div>
+          <span className="discover-page-info">
+            <strong>{currentPage}</strong> / {totalPages}
+          </span>
 
           <Link
             href={currentPage >= totalPages ? "#" : createPageUrl(currentPage + 1)}
             aria-label="Next page"
-            className={currentPage >= totalPages ? "pointer-events-none" : ""}
-            tabIndex={currentPage >= totalPages ? -1 : undefined}
+            className={`discover-page-btn${currentPage >= totalPages ? " discover-page-btn--disabled" : ""}`}
           >
-            <Button
-              variant="outline"
-              size="icon"
-              disabled={currentPage >= totalPages}
-              className={currentPage >= totalPages ? "opacity-50" : ""}
-            >
-              <IconChevronRight className="w-4 h-4" />
-            </Button>
+            <IconChevronRight width={16} height={16} />
           </Link>
         </div>
       )}

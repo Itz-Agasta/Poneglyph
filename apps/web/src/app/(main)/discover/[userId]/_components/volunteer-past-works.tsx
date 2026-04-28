@@ -6,19 +6,19 @@ interface VolunteerPastWorksProps {
 
 export function VolunteerPastWorks({ pastWorks }: VolunteerPastWorksProps) {
   if (pastWorks.length === 0) {
-    return <div className="text-sm text-muted-foreground py-4">No past works listed yet.</div>;
+    return <p className="profile-no-works">No past work listed yet.</p>;
   }
 
   return (
-    <ul className="flex flex-col gap-3">
+    <div className="profile-works">
       {pastWorks.map((work, index) => (
-        <li key={index} className="flex gap-3 rounded-xl border border-border bg-card p-4">
-          <span className="mt-0.5 shrink-0">
-            <IconBriefcase className="w-4 h-4 text-primary" />
-          </span>
-          <p className="text-sm text-foreground leading-relaxed">{work}</p>
-        </li>
+        <div key={index} className="profile-work-item">
+          <div className="profile-work-icon-wrap">
+            <IconBriefcase width={16} height={16} />
+          </div>
+          <p className="profile-work-text">{work}</p>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }

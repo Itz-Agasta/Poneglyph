@@ -40,45 +40,51 @@ export function VolunteerFilters() {
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      applyFilters(cityInput, tagsInput);
-    }
+    if (e.key === "Enter") applyFilters(cityInput, tagsInput);
   };
 
   const hasFilters = !!searchParams.get("city") || !!searchParams.get("tags");
 
   return (
     <div
-      className={`flex flex-col sm:flex-row gap-3 ${isPending ? "opacity-70 pointer-events-none" : ""} transition-opacity duration-200`}
+      className="discover-search-bar"
+      style={{ opacity: isPending ? 0.65 : 1, pointerEvents: isPending ? "none" : undefined }}
     >
-      <div className="relative flex-1">
-        <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+      <div className="discover-search-field">
+        <IconSearch className="discover-search-icon" />
         <input
           type="text"
-          placeholder="Filter by city..."
+          placeholder="City or location..."
           value={cityInput}
           onChange={(e) => setCityInput(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={() => applyFilters(cityInput, tagsInput)}
-          className="w-full pl-9 pr-3 py-2 text-sm bg-card border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-muted-foreground"
+          className="discover-search-input"
         />
       </div>
 
-      <div className="relative flex-1">
-        <IconTag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+      <div className="discover-search-divider" />
+
+      <div className="discover-search-field">
+        <IconTag className="discover-search-icon" />
         <input
           type="text"
-          placeholder="Tags (comma-separated slugs)..."
+          placeholder="Skills, tags..."
           value={tagsInput}
           onChange={(e) => setTagsInput(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={() => applyFilters(cityInput, tagsInput)}
-          className="w-full pl-9 pr-3 py-2 text-sm bg-card border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-muted-foreground"
+          className="discover-search-input"
         />
       </div>
 
+      <button className="discover-search-btn" onClick={() => applyFilters(cityInput, tagsInput)}>
+        Search
+      </button>
+
       {hasFilters && (
         <button
+          className="discover-clear-btn"
           onClick={() => {
             setCityInput("");
             setTagsInput("");
@@ -86,7 +92,6 @@ export function VolunteerFilters() {
               router.push(pathname);
             });
           }}
-          className="px-4 py-2 text-sm font-medium text-muted-foreground bg-muted hover:bg-muted/80 rounded-lg transition-colors whitespace-nowrap"
         >
           Clear
         </button>

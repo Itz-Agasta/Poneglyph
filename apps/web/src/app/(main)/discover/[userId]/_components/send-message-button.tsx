@@ -1,26 +1,29 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Button } from "@Poneglyph/ui/components/button";
 import { IconMail } from "@tabler/icons-react";
 
 interface SendMessageButtonProps {
   targetUserId: string;
+  targetUserName?: string | null;
 }
 
-export function SendMessageButton({ targetUserId }: SendMessageButtonProps) {
+export function SendMessageButton({ targetUserId, targetUserName }: SendMessageButtonProps) {
   const router = useRouter();
 
   const handleStartConversation = () => {
-    // Navigate to a static conversation view
     const mockConversationId = `conv-${targetUserId}`;
-    router.push(`/messages/${mockConversationId}`);
+    let url = `/messages/${mockConversationId}`;
+    if (targetUserName) {
+      url += `?name=${encodeURIComponent(targetUserName)}`;
+    }
+    router.push(url);
   };
 
   return (
-    <Button onClick={handleStartConversation} className="gap-2">
-      <IconMail className="w-4 h-4" />
-      Send Message
-    </Button>
+    <button onClick={handleStartConversation} className="profile-btn-primary">
+      <IconMail width={15} height={15} />
+      Message
+    </button>
   );
 }

@@ -1,46 +1,43 @@
-import { Skeleton } from "@Poneglyph/ui/components/skeleton";
-import { Separator } from "@Poneglyph/ui/components/separator";
-
 export function VolunteerProfileSkeleton() {
   return (
-    <div className="flex flex-col gap-8">
-      {/* Profile header */}
-      <div className="flex flex-col sm:flex-row gap-6 items-start">
-        <Skeleton className="w-24 h-24 rounded-xl shrink-0" />
-        <div className="flex flex-col gap-3 flex-1">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-4 w-24" />
-          <div className="flex gap-2">
-            <Skeleton className="h-5 w-16 rounded-full" />
-            <Skeleton className="h-5 w-20 rounded-full" />
-            <Skeleton className="h-5 w-14 rounded-full" />
+    <div className="profile-container">
+      {/* Identity card */}
+      <div className="profile-skel-card">
+        <div className="profile-skel-banner skel" />
+        <div className="profile-skel-head">
+          <div className="skel" style={{ height: 28, width: 220, borderRadius: 6 }} />
+          <div className="skel" style={{ height: 14, width: 120, borderRadius: 6 }} />
+          <div style={{ display: "flex", gap: 6 }}>
+            <div className="skel" style={{ height: 24, width: 70, borderRadius: 12 }} />
+            <div className="skel" style={{ height: 24, width: 90, borderRadius: 12 }} />
+            <div className="skel" style={{ height: 24, width: 60, borderRadius: 12 }} />
           </div>
         </div>
       </div>
 
-      <Separator />
-
       {/* About section */}
-      <div className="space-y-3">
-        <Skeleton className="h-6 w-16" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
+      <div className="profile-skel-section">
+        <div className="skel" style={{ height: 20, width: 60, borderRadius: 6 }} />
+        <div className="skel" style={{ height: 13, width: "100%", borderRadius: 4 }} />
+        <div className="skel" style={{ height: 13, width: "95%", borderRadius: 4 }} />
+        <div className="skel" style={{ height: 13, width: "70%", borderRadius: 4 }} />
       </div>
 
-      <Separator />
-
-      {/* Past works */}
-      <div className="space-y-4">
-        <Skeleton className="h-6 w-24" />
+      {/* Experience section */}
+      <div className="profile-skel-section">
+        <div className="skel" style={{ height: 20, width: 100, borderRadius: 6 }} />
         {[0, 1, 2].map((i) => (
-          <div key={i} className="flex gap-3 rounded-xl border border-border bg-card p-4">
-            <Skeleton className="w-4 h-4 mt-0.5 shrink-0 rounded" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-4/5" />
+          <div
+            key={i}
+            style={{ display: "flex", gap: 14, alignItems: "flex-start", paddingTop: 4 }}
+          >
+            <div
+              className="skel"
+              style={{ width: 36, height: 36, borderRadius: 6, flexShrink: 0 }}
+            />
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+              <div className="skel" style={{ height: 13, width: "90%", borderRadius: 4 }} />
+              <div className="skel" style={{ height: 13, width: "60%", borderRadius: 4 }} />
             </div>
           </div>
         ))}

@@ -5,9 +5,13 @@ import { SendMessageButton } from "./send-message-button";
 
 interface SendMessageButtonWrapperProps {
   targetUserId: string;
+  targetUserName?: string | null;
 }
 
-export function SendMessageButtonWrapper({ targetUserId }: SendMessageButtonWrapperProps) {
+export function SendMessageButtonWrapper({
+  targetUserId,
+  targetUserName,
+}: SendMessageButtonWrapperProps) {
   const { data: session } = authClient.useSession();
   const currentUserId = session?.user?.id;
 
@@ -15,5 +19,5 @@ export function SendMessageButtonWrapper({ targetUserId }: SendMessageButtonWrap
     return null;
   }
 
-  return <SendMessageButton targetUserId={targetUserId} />;
+  return <SendMessageButton targetUserId={targetUserId} targetUserName={targetUserName} />;
 }
