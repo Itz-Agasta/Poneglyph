@@ -50,6 +50,7 @@ const navLinks = [
   { label: "About", href: "/about" },
   { label: "Research", href: "/research" },
   { label: "Datasets", href: "/datasets" },
+  { label: "Surveys", href: "/survey" },
   { label: "Contact", href: "/contact" },
 ];
 
