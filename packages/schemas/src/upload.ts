@@ -32,13 +32,19 @@ export const UploadRequestSchema = z.object({
     .string()
     .trim()
     .min(1, "Title is required")
-    .max(uploadFieldLimits.sourceName, `Title must be at most ${uploadFieldLimits.sourceName} characters`),
+    .max(
+      uploadFieldLimits.sourceName,
+      `Title must be at most ${uploadFieldLimits.sourceName} characters`,
+    ),
   description: z.string().min(1, "Description is required"),
   summary: z.string().optional(),
   publisher: z
     .string()
     .trim()
-    .max(uploadFieldLimits.publisher, `Publisher must be at most ${uploadFieldLimits.publisher} characters`)
+    .max(
+      uploadFieldLimits.publisher,
+      `Publisher must be at most ${uploadFieldLimits.publisher} characters`,
+    )
     .optional(),
   tags: z
     .string()

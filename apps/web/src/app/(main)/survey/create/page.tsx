@@ -42,8 +42,7 @@ export default function CreateSurveyPage() {
 
   const addQuestion = () => setQuestions((qs) => [...qs, newQuestion()]);
 
-  const removeQuestion = (id: string) =>
-    setQuestions((qs) => qs.filter((q) => q.id !== id));
+  const removeQuestion = (id: string) => setQuestions((qs) => qs.filter((q) => q.id !== id));
 
   const updateQuestion = (id: string, patch: Partial<Question>) =>
     setQuestions((qs) => qs.map((q) => (q.id === id ? { ...q, ...patch } : q)));
@@ -78,8 +77,7 @@ export default function CreateSurveyPage() {
     questions.every(
       (q) =>
         q.text.trim().length > 0 &&
-        (q.type !== "multiple_choice" ||
-          (q.options ?? []).filter((o) => o.trim()).length >= 2),
+        (q.type !== "multiple_choice" || (q.options ?? []).filter((o) => o.trim()).length >= 2),
     );
 
   const handleSubmit = () => {
@@ -92,9 +90,7 @@ export default function CreateSurveyPage() {
       questions: questions.map((q) => ({
         ...q,
         options:
-          q.type === "multiple_choice"
-            ? (q.options ?? []).filter((o) => o.trim())
-            : undefined,
+          q.type === "multiple_choice" ? (q.options ?? []).filter((o) => o.trim()) : undefined,
       })),
       createdAt: Date.now(),
       responseCount: 0,
@@ -118,9 +114,7 @@ export default function CreateSurveyPage() {
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
               Volunteer Tools
             </p>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-              Create survey
-            </h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Create survey</h1>
           </div>
         </div>
 
@@ -213,9 +207,7 @@ function QuestionEditor({
     <div className="rounded-xl border border-border bg-background p-5 shadow-xs">
       <div className="mb-3 flex items-center gap-2">
         <IconGripVertical className="size-4 shrink-0 text-muted-foreground/40" />
-        <span className="text-xs font-semibold text-muted-foreground">
-          Question {index + 1}
-        </span>
+        <span className="text-xs font-semibold text-muted-foreground">Question {index + 1}</span>
         <div className="ml-auto flex items-center gap-2">
           <label className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground">
             <input

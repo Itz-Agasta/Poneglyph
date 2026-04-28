@@ -44,9 +44,8 @@ export default function ParticipatePage() {
         <IconCircleCheck className="size-14 text-primary" />
         <h2 className="text-xl font-semibold text-foreground">Response submitted!</h2>
         <p className="max-w-xs text-sm text-muted-foreground">
-          Thanks for completing{" "}
-          <span className="font-medium text-foreground">{survey.title}</span>. Your response has
-          been recorded.
+          Thanks for completing <span className="font-medium text-foreground">{survey.title}</span>.
+          Your response has been recorded.
         </p>
         <div className="mt-2 flex gap-3">
           <Link href="/survey" className={buttonVariants({ variant: "outline", size: "sm" })}>
@@ -76,11 +75,7 @@ export default function ParticipatePage() {
     for (const q of survey.questions) {
       if (!q.required) continue;
       const ans = answers[q.id];
-      if (
-        !ans ||
-        (typeof ans === "string" && !ans.trim()) ||
-        (Array.isArray(ans) && !ans.length)
-      ) {
+      if (!ans || (typeof ans === "string" && !ans.trim()) || (Array.isArray(ans) && !ans.length)) {
         errs[q.id] = "This question is required.";
       }
     }

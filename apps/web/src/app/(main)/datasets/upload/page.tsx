@@ -391,9 +391,7 @@ export default function DatasetUploadPage() {
                       <p className="text-sm font-medium text-black">
                         Drag & drop or click to upload
                       </p>
-                      <p className="text-xs text-grey-1 mt-0.5">
-                        CSV, JSON, PDF — max 50 MB each
-                      </p>
+                      <p className="text-xs text-grey-1 mt-0.5">CSV, JSON, PDF — max 50 MB each</p>
                     </div>
                     <input
                       id="file-upload"

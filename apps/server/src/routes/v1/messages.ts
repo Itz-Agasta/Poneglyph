@@ -102,7 +102,7 @@ messagesRouter.post(
     const { otherUserId } = c.req.valid("json");
 
     // Sort IDs
-    const [one, two] = [authUser.id, otherUserId].sort();
+    const [one, two] = [authUser.id, otherUserId].sort() as [string, string];
 
     // Check if conversation exists
     let conv = await db.query.conversation.findFirst({

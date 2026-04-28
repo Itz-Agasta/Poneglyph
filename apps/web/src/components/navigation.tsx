@@ -94,8 +94,9 @@ export function Navigation() {
 
   return (
     <header
-      className={`fixed top-5 left-24 right-24 z-50 rounded-xl transition-all duration-500 ${dark ? "backdrop-blur-2xl bg-white/20" : "bg-transparent"
-        }`}
+      className={`fixed top-5 left-24 right-24 z-50 rounded-xl transition-all duration-500 ${
+        dark ? "backdrop-blur-2xl bg-white/20" : "bg-transparent"
+      }`}
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link

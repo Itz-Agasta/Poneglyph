@@ -51,7 +51,13 @@ function DiscoverContent() {
 
 export default function DiscoverPage() {
   return (
-    <Suspense fallback={<div className="discover-page"><div className="discover-container">Loading...</div></div>}>
+    <Suspense
+      fallback={
+        <div className="discover-page">
+          <div className="discover-container">Loading...</div>
+        </div>
+      }
+    >
       <DiscoverContent />
     </Suspense>
   );

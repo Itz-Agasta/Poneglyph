@@ -12,7 +12,13 @@ export default function ContactPage() {
       <section className="border-b border-[var(--border)] py-20 text-center">
         <div className="mx-auto max-w-[1200px] px-6">
           <h1 className="font-heading font-normal text-[34px] leading-[1.1] tracking-[-0.015em] text-foreground md:text-[42px]">
-            Contact <em className="italic" style={{ color: "color-mix(in oklch, var(--primary) 75%, var(--foreground))" }}>Us</em>
+            Contact{" "}
+            <em
+              className="italic"
+              style={{ color: "color-mix(in oklch, var(--primary) 75%, var(--foreground))" }}
+            >
+              Us
+            </em>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-[14.5px] text-muted-foreground">
             Have questions or want to collaborate? We would love to hear from you.
@@ -45,16 +51,32 @@ export default function ContactPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="label mb-2 block text-[13px] font-medium text-foreground">Email</label>
-                  <Input type="email" placeholder="john@example.com" className="h-10 rounded-[var(--radius-md)]" />
+                  <label className="label mb-2 block text-[13px] font-medium text-foreground">
+                    Email
+                  </label>
+                  <Input
+                    type="email"
+                    placeholder="john@example.com"
+                    className="h-10 rounded-[var(--radius-md)]"
+                  />
                 </div>
                 <div>
-                  <label className="label mb-2 block text-[13px] font-medium text-foreground">Subject</label>
-                  <Input placeholder="How can we help?" className="h-10 rounded-[var(--radius-md)]" />
+                  <label className="label mb-2 block text-[13px] font-medium text-foreground">
+                    Subject
+                  </label>
+                  <Input
+                    placeholder="How can we help?"
+                    className="h-10 rounded-[var(--radius-md)]"
+                  />
                 </div>
                 <div>
-                  <label className="label mb-2 block text-[13px] font-medium text-foreground">Message</label>
-                  <Textarea placeholder="Tell us about your inquiry..." className="min-h-[150px] rounded-[var(--radius-md)]" />
+                  <label className="label mb-2 block text-[13px] font-medium text-foreground">
+                    Message
+                  </label>
+                  <Textarea
+                    placeholder="Tell us about your inquiry..."
+                    className="min-h-[150px] rounded-[var(--radius-md)]"
+                  />
                 </div>
                 <Button type="submit" className="btn w-full gap-2 h-11">
                   <IconSend className="h-4 w-4" />
@@ -98,7 +120,9 @@ export default function ContactPage() {
                       <item.icon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-heading font-normal text-[18px] text-foreground">{item.title}</h3>
+                      <h3 className="font-heading font-normal text-[18px] text-foreground">
+                        {item.title}
+                      </h3>
                       {item.details.map((detail) => (
                         <p key={detail} className="text-[13px] text-muted-foreground">
                           {detail}
@@ -111,7 +135,9 @@ export default function ContactPage() {
 
               {/* FAQ Link */}
               <div className="rounded-[var(--radius-xl)] border border-border bg-muted/30 p-6">
-                <h3 className="font-heading font-normal text-[18px] text-foreground mb-2">Frequently Asked Questions</h3>
+                <h3 className="font-heading font-normal text-[18px] text-foreground mb-2">
+                  Frequently Asked Questions
+                </h3>
                 <p className="text-[13px] text-muted-foreground mb-4">
                   Find quick answers to common questions in our FAQ section.
                 </p>

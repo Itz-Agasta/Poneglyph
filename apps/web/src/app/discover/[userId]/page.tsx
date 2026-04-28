@@ -29,14 +29,19 @@ async function fetchVolunteerProfile(userId: string): Promise<VolunteerProfile> 
   if (res.status === 404) throw new Error("NOT_FOUND");
   if (!res.ok) throw new Error("Failed to load volunteer profile");
 
-  const data = await res.json() as { volunteer: VolunteerProfile };
+  const data = (await res.json()) as { volunteer: VolunteerProfile };
   return data.volunteer;
 }
 
 export default function VolunteerProfilePage() {
   const { userId } = useParams<{ userId: string }>();
 
-  const { data: volunteer, isLoading, isError, error } = useQuery({
+  const {
+    data: volunteer,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["volunteer-profile", userId],
     queryFn: () => fetchVolunteerProfile(userId),
     retry: (count, err) => err instanceof Error && err.message !== "NOT_FOUND" && count < 2,
