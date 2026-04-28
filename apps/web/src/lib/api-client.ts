@@ -17,7 +17,7 @@ function buildUrl(path: string, query?: Record<string, string | string[]>): URL 
 
 export async function apiClientWithCookies() {
   const cookieStore = await getCookies();
-  const cookieHeader = cookieStore.toString();
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
 
   const headers: Record<string, string> = {};
   if (cookieHeader) headers["Cookie"] = cookieHeader;
