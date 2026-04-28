@@ -392,7 +392,7 @@ export default function DatasetUploadPage() {
                         Drag & drop or click to upload
                       </p>
                       <p className="text-xs text-grey-1 mt-0.5">
-                        CSV, JSON, JSONL, Parquet, PDF — max 50 MB each
+                        CSV, JSON, PDF — max 50 MB each
                       </p>
                     </div>
                     <input
@@ -401,7 +401,7 @@ export default function DatasetUploadPage() {
                       multiple
                       className="hidden"
                       onChange={handleFileChange}
-                      accept=".csv,.json,.jsonl,.parquet,.pdf"
+                      accept=".csv,.json,.pdf"
                     />
                   </label>
                 ) : (
@@ -454,7 +454,7 @@ export default function DatasetUploadPage() {
                           multiple
                           className="hidden"
                           onChange={handleFileChange}
-                          accept=".csv,.json,.jsonl,.parquet,.pdf"
+                          accept=".csv,.json,.pdf"
                         />
                       </>
                     )}

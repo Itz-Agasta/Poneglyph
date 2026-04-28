@@ -40,7 +40,7 @@ export default async function PDFViewerPage({ params, searchParams }: Props) {
                 </span>
               </div>
             </div>
-            <a href={`${decodedSrc}?download=true`} download={displayTitle}>
+            <a href={decodedSrc} target="_blank" rel="noopener noreferrer">
               <Button size="sm" className="gap-2">
                 <IconDownload className="h-4 w-4" />
                 Download
