@@ -84,6 +84,13 @@ resource "google_cloud_run_service_iam_member" "upload_worker_invoker" {
   member   = "serviceAccount:${google_service_account.pubsub_push_invoker.email}"
 }
 
+resource "google_pubsub_topic" "upload_dead_letter" {
+  name    = "${var.pubsub_upload_topic}-dead-letter"
+  project = var.project_id
+
+  depends_on = [google_project_service.required]
+}
+
 module "upload_pubsub" {
   source  = "terraform-google-modules/pubsub/google"
   version = "~> 8.7"
@@ -102,13 +109,17 @@ module "upload_pubsub" {
       audience                   = module.upload_worker.service_url
       no_wrapper                 = true
       write_metadata             = false
+      dead_letter_topic          = "projects/${var.project_id}/topics/${var.pubsub_upload_topic}-dead-letter"
       max_delivery_attempts      = 5
       minimum_backoff            = "10s"
       maximum_backoff            = "300s"
     }
   ]
 
-  depends_on = [google_cloud_run_service_iam_member.upload_worker_invoker]
+  depends_on = [
+    google_cloud_run_service_iam_member.upload_worker_invoker,
+    google_pubsub_topic.upload_dead_letter,
+  ]
 }
 
 output "upload_worker_url" {

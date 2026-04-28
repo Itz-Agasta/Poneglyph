@@ -22,7 +22,11 @@ COPY packages/config ./packages/config
 COPY packages/db ./packages/db
 COPY packages/env ./packages/env
 COPY packages/schemas ./packages/schemas
-RUN bun run --filter server build
+WORKDIR /usr/src/app/apps/server
+RUN mkdir -p ./node_modules \
+ && rm -rf ./node_modules/tsdown \
+ && ln -s /usr/src/app/node_modules/tsdown ./node_modules/tsdown \
+ && /usr/src/app/node_modules/.bin/tsdown --config tsdown.config.ts
 
 FROM base AS prod-deps
 COPY package.json bun.lock ./
@@ -40,9 +44,7 @@ FROM oven/bun:1.3.5-slim AS release
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
 COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
-COPY --from=prod-deps /usr/src/app/apps/server/node_modules ./apps/server/node_modules
-COPY --from=build /usr/src/app/apps/server/dist ./apps/server/dist
-WORKDIR /usr/src/app/apps/server
+COPY --from=build /usr/src/app/apps/server/dist ./dist
 USER bun
-EXPOSE 8080/tcp
+EXPOSE 3000/tcp
 CMD ["bun", "dist/index.mjs"]

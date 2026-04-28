@@ -34,12 +34,20 @@ export const fileTypeEnum = pgEnum("file_type", [
   "other",
 ]);
 
+export const uploadFieldLimits = {
+  sourceName: 50,
+  datasetTitle: 500,
+  publisher: 255,
+  tagName: 100,
+  tagSlug: 100,
+} as const;
+
 export const sources = pgTable("sources", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id").references(() => user.id, {
     onDelete: "cascade",
   }), // Only for user-uploads
-  name: varchar("name", { length: 50 }).notNull(),
+  name: varchar("name", { length: uploadFieldLimits.sourceName }).notNull(),
   url: text("url"), // Only for external sources
   sourceType: sourceTypeEnum("source_type").notNull().default("upload"),
   isVerified: boolean("is_verified").default(false).notNull(),
@@ -47,8 +55,8 @@ export const sources = pgTable("sources", {
 
 export const tags = pgTable("tags", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 100 }).notNull().unique(),
-  slug: varchar("slug", { length: 100 }).notNull().unique(),
+  name: varchar("name", { length: uploadFieldLimits.tagName }).notNull().unique(),
+  slug: varchar("slug", { length: uploadFieldLimits.tagSlug }).notNull().unique(),
 });
 
 // Core pointer record table
@@ -63,13 +71,13 @@ export const datasets = pgTable(
       .notNull()
       .references(() => sources.id, { onDelete: "cascade" }),
 
-    title: varchar("title", { length: 500 }).notNull(),
+    title: varchar("title", { length: uploadFieldLimits.datasetTitle }).notNull(),
     description: text("description"), // for thumbnail card
     thumbnailS3Key: text("thumbnail_s3_key"),
     summary: text("summary"),
 
     publicationDate: timestamp("publication_date"),
-    publisher: varchar("publisher", { length: 255 }),
+    publisher: varchar("publisher", { length: uploadFieldLimits.publisher }),
 
     language: varchar("language", { length: 10 }).default("en").notNull(),
 
