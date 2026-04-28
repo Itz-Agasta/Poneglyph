@@ -241,14 +241,22 @@ function VerifyPageContent() {
         <p className={styles.footnote}>
           Wasn't you? <Link href="/contact">Secure your account</Link>.
         </p>
-       </main>
-     </div>
-   );
+      </main>
+    </div>
+  );
 }
 
 export default function VerifyPage() {
   return (
-    <Suspense fallback={<div className={styles.verifyWrapper}><div className={styles.stage}><p>Loading...</p></div></div>}>
+    <Suspense
+      fallback={
+        <div className={styles.verifyWrapper}>
+          <div className={styles.stage}>
+            <p>Loading...</p>
+          </div>
+        </div>
+      }
+    >
       <VerifyPageContent />
     </Suspense>
   );

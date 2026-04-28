@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import {
   DropdownMenu,
@@ -18,6 +19,29 @@ export function Account({ variant = "default" }: { variant?: "default" | "transp
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
   const isAuthenticated = !!user;
+
+  useEffect(() => {
+    if (isPending) return;
+    const cookies = document.cookie;
+    const sessionCookies = cookies
+      .split(";")
+      .map((c) => c.trim())
+      .filter(
+        (c) => c.startsWith("better-auth") || c.startsWith("session") || c.startsWith("__Secure"),
+      );
+    console.group("[Account] Session state on", window.location.pathname);
+    console.log("isPending:", isPending);
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("user email:", user?.email ?? "none");
+    console.log("user id:", user?.id ?? "none");
+    console.log("session expires:", session?.session?.expiresAt ?? "none");
+    console.log(
+      "session cookies visible to JS:",
+      sessionCookies.length ? sessionCookies : "none (httpOnly or absent)",
+    );
+    console.log("all document.cookie:", cookies || "empty");
+    console.groupEnd();
+  }, [isPending, isAuthenticated]);
 
   const handleSignOut = async () => {
     await authClient.signOut();
