@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -41,16 +42,14 @@ const navLinks = [
 
 function PoneglyphLogo({ dark }: { dark: boolean }) {
   return (
-    <div
-      className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors duration-300 ${dark ? "bg-black" : "bg-white/20"}`}
-    >
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <rect x="1" y="1" width="5" height="5" rx="0.5" fill="white" />
-        <rect x="8" y="1" width="5" height="5" rx="0.5" fill="white" />
-        <rect x="1" y="8" width="5" height="5" rx="0.5" fill="white" />
-        <rect x="8" y="8" width="5" height="5" rx="0.5" fill="white" />
-      </svg>
-    </div>
+    <Image
+      src={dark ? "/poneg_logo_white.png" : "/poneg_logo_black.png"}
+      alt="Poneglyph logo"
+      width={50}
+      height={50}
+      className="shrink-0"
+      priority
+    />
   );
 }
 

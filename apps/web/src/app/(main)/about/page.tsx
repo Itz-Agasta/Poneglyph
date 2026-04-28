@@ -1,16 +1,28 @@
 import Link from "next/link";
 import { Button } from "@Poneglyph/ui/components/button";
 import "../../(auth)/auth.css";
-import { IconArrowRight, IconBuilding, IconUsers, IconDatabase, IconBrain } from "@tabler/icons-react";
+import {
+  IconArrowRight,
+  IconBuilding,
+  IconUsers,
+  IconDatabase,
+  IconBrain,
+} from "@tabler/icons-react";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-background" data-accent="lime">
+    <div data-accent="lime">
       {/* Hero Section */}
       <section className="border-b border-[var(--border)] py-20 text-center">
         <div className="mx-auto max-w-[1200px] px-6">
           <h1 className="font-heading font-normal text-[34px] leading-[1.1] tracking-[-0.015em] text-foreground md:text-[42px]">
-            About <em className="italic" style={{ color: "color-mix(in oklch, var(--primary) 75%, var(--foreground))" }}>Poneglyph</em>
+            About{" "}
+            <em
+              className="italic"
+              style={{ color: "color-mix(in oklch, var(--primary) 75%, var(--foreground))" }}
+            >
+              Poneglyph
+            </em>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-[14.5px] text-muted-foreground">
             Empowering NGOs, researchers, and journalists with AI-driven insights from survey data
@@ -24,7 +36,9 @@ export default function AboutPage() {
         <div className="mx-auto max-w-[1200px] px-6">
           <div className="grid gap-12 md:grid-cols-2">
             <div>
-              <h2 className="font-heading font-normal text-[28px] leading-tight tracking-tight text-foreground">Our Mission</h2>
+              <h2 className="font-heading font-normal text-[28px] leading-tight tracking-tight text-foreground">
+                Our Mission
+              </h2>
               <p className="mt-4 text-[14.5px] leading-relaxed text-muted-foreground">
                 Poneglyph bridges the gap between raw survey data and actionable insights. We
                 provide a platform where volunteers can share datasets, NGOs can access extracted
@@ -32,7 +46,9 @@ export default function AboutPage() {
               </p>
             </div>
             <div>
-              <h2 className="font-heading font-normal text-[28px] leading-tight tracking-tight text-foreground">Our Vision</h2>
+              <h2 className="font-heading font-normal text-[28px] leading-tight tracking-tight text-foreground">
+                Our Vision
+              </h2>
               <p className="mt-4 text-[14.5px] leading-relaxed text-muted-foreground">
                 A world where data-driven decision making is accessible to every organization
                 working for social good. We believe that quality survey data, when properly analyzed
@@ -55,8 +71,12 @@ export default function AboutPage() {
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <stat.icon className="mx-auto mb-3 h-8 w-8 text-primary" />
-                <p className="font-heading font-normal text-[30px] leading-tight text-foreground">{stat.value}</p>
-                <p className="mt-1 text-[12px] text-muted-foreground uppercase tracking-widest">{stat.label}</p>
+                <p className="font-heading font-normal text-[30px] leading-tight text-foreground">
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-[12px] text-muted-foreground uppercase tracking-widest">
+                  {stat.label}
+                </p>
               </div>
             ))}
           </div>
@@ -90,12 +110,19 @@ export default function AboutPage() {
                   "NGOs, researchers, and journalists access insights to drive impactful decision-making.",
               },
             ].map((item) => (
-              <div key={item.step} className="relative rounded-[var(--radius-xl)] border border-border bg-card p-6 transition-all hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_48px_-24px_rgba(0,0,0,0.1)]">
+              <div
+                key={item.step}
+                className="relative rounded-[var(--radius-xl)] border border-border bg-card p-6 transition-all hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_48px_-24px_rgba(0,0,0,0.1)]"
+              >
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold">
                   {item.step}
                 </div>
-                <h3 className="font-heading font-normal text-[22px] leading-tight tracking-tight text-foreground">{item.title}</h3>
-                <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{item.description}</p>
+                <h3 className="font-heading font-normal text-[22px] leading-tight tracking-tight text-foreground">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>

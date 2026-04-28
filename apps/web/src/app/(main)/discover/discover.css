@@ -3,13 +3,10 @@
 ══════════════════════════════════════ */
 .discover-page {
   min-height: 100vh;
-  background: var(--background);
 }
 
 .discover-container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 36px 24px 72px;
+  padding: 4px 0 72px;
 }
 
 /* ── Hero ── */

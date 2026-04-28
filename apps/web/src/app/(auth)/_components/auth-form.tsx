@@ -307,7 +307,7 @@ export function AuthForm({ initialTab }: { initialTab: "signin" | "signup" }) {
                             className="input"
                             value={suFirst}
                             onChange={(e) => setSuFirst(e.target.value)}
-                            placeholder="Monkey"
+                            placeholder="Sarah"
                             autoComplete="given-name"
                             aria-invalid={!!suErrors.first || undefined}
                           />
@@ -319,7 +319,7 @@ export function AuthForm({ initialTab }: { initialTab: "signin" | "signup" }) {
                             className="input"
                             value={suLast}
                             onChange={(e) => setSuLast(e.target.value)}
-                            placeholder="D. Luffy"
+                            placeholder="Chen"
                             autoComplete="family-name"
                             aria-invalid={!!suErrors.last || undefined}
                           />

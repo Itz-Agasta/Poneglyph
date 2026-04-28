@@ -1,5 +1,5 @@
 import { env } from "@Poneglyph/env/web";
-import { cookies as getCookies } from "next/headers";
+import { headers as getHeaders } from "next/headers";
 
 const BASE_URL = env.NEXT_PUBLIC_SERVER_URL;
 const CREDENTIALS: RequestCredentials = "include";
@@ -16,8 +16,8 @@ function buildUrl(path: string, query?: Record<string, string | string[]>): URL 
 }
 
 export async function apiClientWithCookies() {
-  const cookieStore = await getCookies();
-  const cookieHeader = cookieStore.toString();
+  const headerStore = await getHeaders();
+  const cookieHeader = headerStore.get("cookie") ?? "";
 
   const headers: Record<string, string> = {};
   if (cookieHeader) headers["Cookie"] = cookieHeader;

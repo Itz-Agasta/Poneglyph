@@ -1,9 +1,9 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useRef } from "react";
+import * as XLSX from "xlsx";
+import { IconFile, IconX } from "@tabler/icons-react";
 
 interface ResearchInputProps {
-  onSubmit: (text: string) => void;
+  onSubmit: (text: string, dataContext?: string, rawData?: any[]) => void;
   onStop?: () => void;
   disabled?: boolean;
   placeholder?: string;
@@ -106,12 +106,74 @@ export function ResearchInput({
 }: ResearchInputProps) {
   const [value, setValue] = useState("");
   const [deepActive, setDeepActive] = useState(true);
+  const [attachedFile, setAttachedFile] = useState<{
+    name: string;
+    dataContext: string;
+    rawData: any[];
+  } | null>(null);
+  const [isParsing, setIsParsing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsParsing(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: "binary" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+
+        // Parse headers and row count from the 2D array form
+        const dataRows = XLSX.utils.sheet_to_json(ws, { header: 1 }) as any[][];
+        const headers = (dataRows[0] ?? []) as string[];
+        const totalRows = dataRows.length - 1;
+
+        // CSV is the most compact/readable format for the AI's context window
+        const csvData = XLSX.utils.sheet_to_csv(ws);
+        const csvSample = csvData.split("\n").slice(0, 50).join("\n"); // headers + 49 rows
+
+        // Full array of row objects — passed to D3Renderer as `data`
+        const rawData = XLSX.utils.sheet_to_json(ws);
+
+        const dataContext = `
+[ATTACHED_DATASET: ${file.name}]
+Total Rows: ${totalRows}
+Columns: ${headers.join(", ")}
+
+SAMPLE_CSV_DATA (first 50 lines, including header):
+${csvSample}
+
+INSTRUCTIONS:
+1. Use the column names and sample rows above to understand the dataset structure.
+2. If the user asks for a chart, respond with a \`\`\`d3 code block.
+3. In your D3 code, a variable called 'data' is pre-injected containing the FULL array of row objects (e.g. [{ "${headers[0]}": ..., "${headers[1]}": ... }, ...]).
+4. Do NOT redefine 'data' inside the code block — it is already available.
+`.trim();
+
+        setAttachedFile({ name: file.name, dataContext, rawData });
+        setIsParsing(false);
+      };
+      reader.onerror = () => {
+        console.error("FileReader error");
+        setIsParsing(false);
+      };
+      reader.readAsBinaryString(file);
+    } catch (err) {
+      console.error("File parsing error:", err);
+      setIsParsing(false);
+    }
+  };
 
   const handleSubmit = () => {
     const trimmed = value.trim();
     if (!trimmed || disabled) return;
-    onSubmit(trimmed);
+    onSubmit(trimmed, attachedFile?.dataContext, attachedFile?.rawData);
     setValue("");
+    setAttachedFile(null);
   };
 
   const chipBase: React.CSSProperties = {
@@ -220,14 +282,19 @@ export function ResearchInput({
 
           {/* Static chips */}
           {[
-            { icon: ChipIcons.web, label: "Web" },
-            { icon: ChipIcons.workspace, label: "Workspace" },
-            { icon: ChipIcons.charts, label: "Charts" },
-            { icon: ChipIcons.attach, label: undefined },
-          ].map(({ icon, label }) => (
+            { icon: ChipIcons.web, label: "Web", onClick: () => {} },
+            { icon: ChipIcons.workspace, label: "Workspace", onClick: () => {} },
+            { icon: ChipIcons.charts, label: "Charts", onClick: () => {} },
+            {
+              icon: ChipIcons.attach,
+              label: undefined,
+              onClick: () => fileInputRef.current?.click(),
+            },
+          ].map(({ icon, label, onClick }) => (
             <button
               key={label ?? "attach"}
               title={label ?? "Attach"}
+              onClick={onClick}
               style={chipBase}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.color = "var(--foreground)";
@@ -242,6 +309,68 @@ export function ResearchInput({
               {label}
             </button>
           ))}
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".csv,.xlsx,.xls"
+            style={{ display: "none" }}
+          />
+
+          {attachedFile && (
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: "color-mix(in oklch, var(--primary) 10%, var(--card))",
+                border: "1px solid color-mix(in oklch, var(--primary) 20%, var(--border))",
+                color: "var(--foreground)",
+                fontSize: "12px",
+              }}
+            >
+              <IconFile style={{ width: 14, height: 14 }} />
+              <span
+                style={{
+                  maxWidth: 120,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {attachedFile.name}
+              </span>
+              <button
+                onClick={() => setAttachedFile(null)}
+                style={{
+                  border: 0,
+                  background: "transparent",
+                  color: "var(--muted-foreground)",
+                  cursor: "pointer",
+                  padding: 2,
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                <IconX style={{ width: 12, height: 12 }} />
+              </button>
+            </div>
+          )}
+
+          {isParsing && (
+            <span
+              style={{
+                fontSize: "12px",
+                color: "var(--muted-foreground)",
+                animation: "pulse 2s infinite",
+              }}
+            >
+              Parsing...
+            </span>
+          )}
 
           {/* Send / Stop */}
           <button

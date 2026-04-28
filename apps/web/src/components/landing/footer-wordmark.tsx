@@ -12,7 +12,7 @@ const NAV = [
 
 export function FooterWordmark() {
   return (
-    <footer className="relative w-full overflow-hidden bg-transparent">
+    <footer className="relative w-full overflow-visible bg-transparent">
       {/* big_tree_long — extends from above, canopy fills upper portion */}
       <div className="absolute z-50 -right-10 -top-[30vh] pointer-events-none w-[60%]">
         <Image
@@ -26,7 +26,7 @@ export function FooterWordmark() {
       {/* Wordmark section */}
       <div className="relative min-h-[70vh] flex items-end pb-0 overflow-hidden">
         {/* Flower bed — bottom, full width */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none flex items-end">
+        <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none flex items-end overflow-visible">
           <Image
             src="/assets/flower_bed_with_rocks.avif"
             alt=""
@@ -37,7 +37,7 @@ export function FooterWordmark() {
         </div>
 
         {/* Yellow flowers — right side of bed */}
-        <div className="absolute bottom-0 right-[5%] z-20 pointer-events-none w-48 md:w-64">
+        <div className="absolute bottom-0 right-[50%] z-40 pointer-events-none w-48 md:w-64">
           <Image
             src="/assets/yellow_flowers.avif"
             alt=""
@@ -48,13 +48,12 @@ export function FooterWordmark() {
         </div>
 
         {/* Giant wordmark */}
-        <div className="relative z-10 w-full overflow-hidden">
+        <div className="relative z-30 w-full overflow-visible">
           <p
-            className="text-white font-light leading-none tracking-tight select-none text-center"
+            className="text-white leading-[0.7] tracking-tighter select-none text-center"
             style={{
               fontFamily: "var(--font-newsreader)",
-              fontSize: "clamp(80px, 11vw, 200px)",
-              opacity: 0.95,
+              fontSize: "clamp(140px, 23vw, 640px)",
             }}
           >
             poneglyph

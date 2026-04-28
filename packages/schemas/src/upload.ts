@@ -4,9 +4,15 @@ import { uploadFieldLimits } from "@Poneglyph/db/schema/data";
 const ACCEPTED_DOCUMENT_MIME = [
   "application/pdf",
   "text/csv",
+  "application/csv",
+  "application/x-csv",
+  "text/x-csv",
+  "text/comma-separated-values",
+  "text/x-comma-separated-values",
+  "application/vnd.ms-excel",
+  "text/plain",
   "application/json",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ] as const;
 
@@ -32,13 +38,19 @@ export const UploadRequestSchema = z.object({
     .string()
     .trim()
     .min(1, "Title is required")
-    .max(uploadFieldLimits.sourceName, `Title must be at most ${uploadFieldLimits.sourceName} characters`),
+    .max(
+      uploadFieldLimits.sourceName,
+      `Title must be at most ${uploadFieldLimits.sourceName} characters`,
+    ),
   description: z.string().min(1, "Description is required"),
   summary: z.string().optional(),
   publisher: z
     .string()
     .trim()
-    .max(uploadFieldLimits.publisher, `Publisher must be at most ${uploadFieldLimits.publisher} characters`)
+    .max(
+      uploadFieldLimits.publisher,
+      `Publisher must be at most ${uploadFieldLimits.publisher} characters`,
+    )
     .optional(),
   tags: z
     .string()

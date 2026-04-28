@@ -18,26 +18,13 @@ export function FooterCta() {
       {/* Big tree — right side, starts at top, extends well below section */}
       <div className="absolute -right-16 -top-10 z-10 pointer-events-none w-[52%]">
         <Image
-          src="/assets/big_tree.avif"
+          src="/assets/big_tree_long.avif"
           alt=""
           width={800}
-          height={900}
+          height={600}
           className="w-full h-auto object-contain object-right-top"
         />
       </div>
-
-      {/* House — at base of tree, right side
-      <div className="absolute right-[4%] bottom-[10%] z-20 pointer-events-none w-28 md:w-36">
-        <Image
-          src="/assets/house.avif"
-          alt=""
-          width={160}
-          height={140}
-          className="w-full h-auto object-contain"
-        />
-      </div>
-      */}
-
       {/* CTA — center */}
       <div className="relative z-30 flex flex-col items-center justify-center min-h-screen text-center px-6">
         <h2

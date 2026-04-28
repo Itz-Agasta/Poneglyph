@@ -168,7 +168,9 @@ export function DatasetFilters() {
 
       {/* Language */}
       <div className="space-y-3">
-        <h3 className="text-[13px] font-medium tracking-wide text-foreground uppercase">Language</h3>
+        <h3 className="text-[13px] font-medium tracking-wide text-foreground uppercase">
+          Language
+        </h3>
         <select
           className="w-full bg-transparent border border-input text-[14px] rounded-[var(--radius-md)] px-3 h-10 focus:border-ring focus:ring-3 focus:ring-ring/35 outline-none text-foreground transition-all"
           value={currentLanguage}

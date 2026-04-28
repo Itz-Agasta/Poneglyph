@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@Poneglyph/ui/components/badge";
 import { Separator } from "@Poneglyph/ui/components/separator";
 import {
@@ -36,6 +37,19 @@ export function DatasetDetailHeader({ dataset }: Props) {
 
   return (
     <div className="space-y-4">
+      {dataset.thumbnailUrl && (
+        <div className="relative w-full h-52 rounded-xl overflow-hidden bg-muted">
+          <Image
+            src={dataset.thumbnailUrl}
+            alt={dataset.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 896px"
+            priority
+          />
+        </div>
+      )}
+
       <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
         <Link href="/datasets" className="hover:text-foreground transition-colors">
           Datasets

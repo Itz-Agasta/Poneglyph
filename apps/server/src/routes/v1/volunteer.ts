@@ -118,7 +118,7 @@ volunteerRouter.post("/me", requireAuth, zValidator("json", VolunteerUpsertSchem
           })
           .returning({ id: tags.id });
 
-        if (result.length > 0) {
+        if (result[0]) {
           tagIds.push(result[0].id);
         }
       }
