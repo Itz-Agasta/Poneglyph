@@ -54,13 +54,13 @@ export function createAuth() {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       },
     },
-    // advanced: {
-    //   defaultCookieAttributes: {
-    //     sameSite: env.NODE_ENV === "production" ? "none" : "lax",
-    //     secure: env.NODE_ENV === "production",
-    //     httpOnly: true,
-    //   },
-    // },
+    advanced: {
+      defaultCookieAttributes: {
+        sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+        secure: env.NODE_ENV === "production",
+        httpOnly: true,
+      },
+    },
     plugins: [openAPI(), bearer()],
   });
 }
