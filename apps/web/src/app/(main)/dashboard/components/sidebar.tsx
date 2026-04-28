@@ -11,7 +11,6 @@ import {
   IconFolder,
   IconSettings,
 } from "@tabler/icons-react";
-import { cn } from "@Poneglyph/ui/lib/utils";
 
 interface SidebarProps {
   userName: string;
