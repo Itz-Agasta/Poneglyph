@@ -100,84 +100,79 @@ export default function CreateSurveyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-2xl px-6 py-14">
-        {/* Header */}
-        <div className="mb-8 flex items-center gap-3">
-          <Link
-            href="/survey"
-            className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
-          >
-            <IconChevronLeft className="size-4" />
-          </Link>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Volunteer Tools
-            </p>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Create survey</h1>
+    <div className="dashboard-main max-w-2xl">
+      {/* Header */}
+      <div className="mb-8 flex items-center gap-3">
+        <Link href="/survey" className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}>
+          <IconChevronLeft className="size-4" />
+        </Link>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            Volunteer Tools
+          </p>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Create survey</h1>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        {/* Survey details */}
+        <div className="rounded-xl border border-border bg-background p-5 shadow-xs">
+          <h2 className="mb-4 text-sm font-semibold text-foreground">Survey details</h2>
+          <div className="space-y-3">
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-foreground">
+                Title <span className="text-destructive">*</span>
+              </label>
+              <Input
+                placeholder="e.g. Community Health Assessment"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-foreground">
+                Description
+              </label>
+              <Textarea
+                placeholder="Brief description of this survey's purpose..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="min-h-20 resize-none"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="space-y-6">
-          {/* Survey details */}
-          <div className="rounded-xl border border-border bg-background p-5 shadow-xs">
-            <h2 className="mb-4 text-sm font-semibold text-foreground">Survey details</h2>
-            <div className="space-y-3">
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-foreground">
-                  Title <span className="text-destructive">*</span>
-                </label>
-                <Input
-                  placeholder="e.g. Community Health Assessment"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-foreground">
-                  Description
-                </label>
-                <Textarea
-                  placeholder="Brief description of this survey's purpose..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="min-h-20 resize-none"
-                />
-              </div>
-            </div>
-          </div>
+        {/* Questions */}
+        <div className="space-y-3">
+          {questions.map((q, idx) => (
+            <QuestionEditor
+              key={q.id}
+              question={q}
+              index={idx}
+              onUpdate={(patch) => updateQuestion(q.id, patch)}
+              onRemove={() => removeQuestion(q.id)}
+              onUpdateOption={(i, val) => updateOption(q.id, i, val)}
+              onAddOption={() => addOption(q.id)}
+              onRemoveOption={(i) => removeOption(q.id, i)}
+              canRemove={questions.length > 1}
+            />
+          ))}
+        </div>
 
-          {/* Questions */}
-          <div className="space-y-3">
-            {questions.map((q, idx) => (
-              <QuestionEditor
-                key={q.id}
-                question={q}
-                index={idx}
-                onUpdate={(patch) => updateQuestion(q.id, patch)}
-                onRemove={() => removeQuestion(q.id)}
-                onUpdateOption={(i, val) => updateOption(q.id, i, val)}
-                onAddOption={() => addOption(q.id)}
-                onRemoveOption={(i) => removeOption(q.id, i)}
-                canRemove={questions.length > 1}
-              />
-            ))}
-          </div>
+        <Button variant="outline" onClick={addQuestion} className="w-full">
+          <IconPlus className="size-4" />
+          Add question
+        </Button>
 
-          <Button variant="outline" onClick={addQuestion} className="w-full">
-            <IconPlus className="size-4" />
-            Add question
+        <div className="flex justify-end gap-3 border-t border-border pt-4">
+          <Link href="/survey" className={buttonVariants({ variant: "outline" })}>
+            Cancel
+          </Link>
+          <Button onClick={handleSubmit} disabled={!canSubmit || submitted}>
+            <IconCheck className="size-4" />
+            {submitted ? "Creating..." : "Create survey"}
           </Button>
-
-          <div className="flex justify-end gap-3 border-t border-border pt-4">
-            <Link href="/survey" className={buttonVariants({ variant: "outline" })}>
-              Cancel
-            </Link>
-            <Button onClick={handleSubmit} disabled={!canSubmit || submitted}>
-              <IconCheck className="size-4" />
-              {submitted ? "Creating..." : "Create survey"}
-            </Button>
-          </div>
         </div>
       </div>
     </div>

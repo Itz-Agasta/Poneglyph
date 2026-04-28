@@ -11,7 +11,7 @@ import {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-background" data-accent="lime">
+    <div data-accent="lime">
       {/* Hero Section */}
       <section className="border-b border-[var(--border)] py-20 text-center">
         <div className="mx-auto max-w-[1200px] px-6">

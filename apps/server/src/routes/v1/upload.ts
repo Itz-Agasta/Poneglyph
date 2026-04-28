@@ -17,9 +17,15 @@ export const uploadRouter = new Hono<{ Variables: AuthContext }>();
 const MIME_TO_EXT: Record<string, string> = {
   "application/pdf": "pdf",
   "text/csv": "csv",
+  "application/csv": "csv",
+  "application/x-csv": "csv",
+  "text/x-csv": "csv",
+  "text/comma-separated-values": "csv",
+  "text/x-comma-separated-values": "csv",
+  "application/vnd.ms-excel": "csv", // Often used for CSV files opened in Excel
+  "text/plain": "csv", // Fallback for simple text files which might be CSVs
   "application/json": "json",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
-  "application/vnd.ms-excel": "xls",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
   "image/jpeg": "jpg",
   "image/jpg": "jpg",

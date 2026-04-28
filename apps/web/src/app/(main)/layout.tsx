@@ -1,10 +1,25 @@
-import { SimpleNavigation } from "@/components/simple-navigation";
+"use client";
+
+import { usePathname } from "next/navigation";
+import { Sidebar } from "@/components/layout/sidebar";
+import { cn } from "@Poneglyph/ui/lib/utils";
+import "./layout.css";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isResearch = pathname.startsWith("/research");
+
   return (
-    <>
-      <SimpleNavigation />
-      <div className="min-h-[calc(100vh-4rem)]">{children}</div>
-    </>
+    <div className={cn("dashboard-container", isResearch && "no-sidebar")}>
+      {!isResearch && <Sidebar />}
+      <main
+        className={cn(
+          "dashboard-main min-h-screen overflow-y-auto",
+          isResearch && "research-layout",
+        )}
+      >
+        {children}
+      </main>
+    </div>
   );
 }

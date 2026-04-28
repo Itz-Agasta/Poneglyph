@@ -8,7 +8,7 @@ export type DatasetListItem = {
   id: string;
   title: string;
   description: string | null;
-  thumbnailS3Key: string | null;
+  thumbnailUrl: string | null;
   publisher: string | null;
   language: string;
   fileTypes: string[] | null;

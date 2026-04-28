@@ -466,13 +466,17 @@ label.label {
 
 .btn-label {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 3px;
+  gap: 6px;
   line-height: 1.2;
+  white-space: nowrap;
 }
 .btn-label-row {
   display: inline-block;
+}
+.btn-label svg {
+  flex-shrink: 0;
 }
 
 .btn-ghost {

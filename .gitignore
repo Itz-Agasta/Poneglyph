@@ -73,8 +73,8 @@ crazy-ui/
 # Generated analysis output
 graphify-out/
 .graphify_cached.json
+.graphify_uncached.txt
 
 # Local agent instructions
 AGENTS.md
-
 .tmp/

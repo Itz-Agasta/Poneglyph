@@ -1,85 +1,85 @@
 "use client";
 
 import "./dashboard.css";
-import { Sidebar } from "./components/sidebar";
+
 import { ReportCard, type Report } from "./components/report-card";
 import { SurveyItem, type Survey } from "./components/survey-item";
 import { DatasetItem, type Dataset } from "./components/dataset-item";
 import { ActivityItem, type Activity } from "./components/activity-item";
-import { 
-  IconSearch, 
-  IconBell, 
-  IconPlus, 
-  IconArrowRight, 
-  IconChevronRight 
-} from "@tabler/icons-react";
+import { IconSearch, IconBell, IconPlus, IconArrowRight } from "@tabler/icons-react";
 import Link from "next/link";
 
 const MOCK_REPORTS: Report[] = [
   {
     id: "1",
-    title: "Mapping the four Road Poneglyphs: a 2026 triangulation atlas",
-    summary: "An updated cartographic synthesis of all four confirmed Road stones, with bearings, custodianship history, and the resulting intersection field.",
+    title: "Post-Flood Sanitation Assessment: Northern Region 2026",
+    summary:
+      "Comprehensive survey of water and sanitation infrastructure across 42 villages affected by the January floods, with immediate remediation priorities.",
     category: "Geography",
-    tags: ["Cartography", "Lore", "Field study"],
-    author: "Nico Robin",
-    authorInitial: "N",
+    tags: ["WASH", "Assessment", "Disaster Recovery"],
+    author: "Sarah Chen",
+    authorInitial: "S",
     readTime: "12 min read",
     date: "Apr 24",
     trending: true,
   },
   {
     id: "2",
-    title: "Sea-level oscillation across the Grand Line, Q1 2026",
-    summary: "Three-month buoy network readings analyzed against historical baselines. Anomalies clustered around Calm Belt boundaries.",
-    category: "Climate",
-    tags: ["Climate", "Time series", "Quarterly"],
-    author: "Dr. Vegapunk",
-    authorInitial: "V",
+    title: "Regional Food Security Outlook — Q1 2026 Report",
+    summary:
+      "Quarterly analysis of crop yields and market price fluctuations across the semi-arid belt. Trends indicate rising vulnerability in western districts.",
+    category: "Economy",
+    tags: ["Agriculture", "Economic", "Quarterly"],
+    author: "David Miller",
+    authorInitial: "D",
     readTime: "8 min read",
     date: "Apr 22",
   },
   {
     id: "3",
-    title: "Berry circulation: tracking 14 markets after Onigashima",
-    summary: "Cross-market flow study on currency velocity, with case notes on Wano's reopening and post-conflict trade routes.",
-    category: "Economy",
-    tags: ["Economy", "Markets"],
-    author: "Trafalgar D.",
-    authorInitial: "T",
+    title: "Mobile Health Clinic Efficacy in Remote Border Areas",
+    summary:
+      "Evaluation of patient outcomes and supply chain resilience for mobile health units operating in the high-altitude frontier zones.",
+    category: "Demographics",
+    tags: ["Public Health", "Supply Chain"],
+    author: "Elena Rodriguez",
+    authorInitial: "E",
     readTime: "15 min read",
     date: "Apr 19",
   },
   {
     id: "4",
-    title: "Mink tribe migration patterns, 1500 – present",
-    summary: "Long-arc historical view of relocation cycles, with newly indexed Zou records.",
+    title: "Displaced Population Dynamics: Seasonal Migration Patterns",
+    summary:
+      "Historical analysis of cross-border movement patterns, integrated with recent biometric tracking data from refugee reception centers.",
     category: "Demographics",
-    tags: ["History", "Migration"],
-    author: "Pedro",
-    authorInitial: "P",
+    tags: ["Demographics", "Migration"],
+    author: "Marcus Thorne",
+    authorInitial: "M",
     readTime: "6 min read",
     date: "Apr 16",
   },
   {
     id: "5",
-    title: "Devil fruit family tree: a structural review",
-    summary: "Reclassifying 312 cataloged fruits using the new Vegapunk-Ohara joint taxonomy, with visualization keys.",
+    title: "Childhood Immunization Gap Analysis: Urban Slum Review",
+    summary:
+      "Identifying missing cohorts in the 2025-2026 vaccination drive using heatmaps of healthcare access points and population density.",
     category: "Taxonomy",
-    tags: ["Taxonomy", "Methodology"],
-    author: "Vegapunk Lilith",
-    authorInitial: "V",
+    tags: ["Vaccination", "Urban Development"],
+    author: "Anita Gupta",
+    authorInitial: "A",
     readTime: "22 min read",
     date: "Apr 12",
   },
   {
     id: "6",
-    title: "Reverse Mountain freight volume — 5-year retrospective",
-    summary: "Shipping log analysis from 2021–2026, including the post-Reverie disruption window and recovery curve.",
+    title: "Cross-Border Trade Logistics — 5-year Volume Retrospective",
+    summary:
+      "Analysis of humanitarian corridor usage and logistics bottlenecks from 2021–2026, focusing on the impact of infrastructure upgrades.",
     category: "Trade",
-    tags: ["Trade", "Shipping"],
-    author: "Franky",
-    authorInitial: "F",
+    tags: ["Trade", "Logistics"],
+    author: "James Wilson",
+    authorInitial: "J",
     readTime: "9 min read",
     date: "Apr 09",
   },
@@ -88,8 +88,8 @@ const MOCK_REPORTS: Report[] = [
 const MOCK_SURVEYS: Survey[] = [
   {
     id: "s1",
-    title: "Sanitation in Coastal Communities, follow-up wave",
-    responses: "2.4k",
+    title: "Coastal Community Sanitation follow-up",
+    responses: "2,482",
     progress: 88,
     status: "closing",
     questions: 14,
@@ -97,8 +97,8 @@ const MOCK_SURVEYS: Survey[] = [
   },
   {
     id: "s2",
-    title: "Devil fruit user demographics, wave 2",
-    responses: "12k",
+    title: "Community Resilience Baseline — Eastern Districts",
+    responses: "1,240",
     progress: 42,
     status: "active",
     questions: 28,
@@ -106,8 +106,8 @@ const MOCK_SURVEYS: Survey[] = [
   },
   {
     id: "s3",
-    title: "Smallholder Farmer Income assessment",
-    responses: "5.1k",
+    title: "Smallholder Farmer Income Assessment",
+    responses: "5,102",
     progress: 15,
     status: "active",
     questions: 32,
@@ -115,19 +115,19 @@ const MOCK_SURVEYS: Survey[] = [
   },
   {
     id: "s4",
-    title: "Reverse Mountain shipping log — captains' panel",
-    responses: "156 / 500",
+    title: "Primary Healthcare Utilization Survey",
+    responses: "456",
     progress: 31,
     status: "paused",
     questions: 9,
-    subText: "Paused for review",
-  }
+    subText: "Paused for audit",
+  },
 ];
 
 const MOCK_DATASETS: Dataset[] = [
   {
     id: "d1",
-    name: "grand-line-bearings.csv",
+    name: "regional-health-outcomes.csv",
     size: "1.2 MB",
     updatedAt: "2h ago",
     extension: "csv",
@@ -137,16 +137,16 @@ const MOCK_DATASETS: Dataset[] = [
   },
   {
     id: "d2",
-    name: "poneglyph-rubbings.parquet",
+    name: "refugee-camp-biometrics.parquet",
     size: "48 MB",
     updatedAt: "yesterday",
     extension: "parquet",
     bars: [60, 40, 75, 30, 85, 55, 65],
-    records: "312",
+    records: "12,450",
   },
   {
     id: "d3",
-    name: "grand-line-bathymetry.geojson",
+    name: "northern-watersheds.geojson",
     size: "22 MB",
     updatedAt: "3d ago",
     extension: "geo",
@@ -155,153 +155,152 @@ const MOCK_DATASETS: Dataset[] = [
   },
   {
     id: "d4",
-    name: "devil-fruit-taxonomy.json",
+    name: "commodity-price-index.json",
     size: "0.6 MB",
     updatedAt: "5d ago",
     extension: "json",
     bars: [30, 35, 50, 60, 55, 70, 75],
-    records: "312",
+    records: "4,200",
   },
-  {
-    id: "d5",
-    name: "marine-postings-2026.csv",
-    size: "0.9 MB",
-    updatedAt: "1w ago",
-    extension: "csv",
-    bars: [55, 60, 40, 70, 35, 65, 50],
-    cols: "8",
-    rows: "4,210",
-  }
 ];
 
 const MOCK_ACTIVITIES: Activity[] = [
   {
     id: "a1",
-    user: "Vegapunk Lilith",
+    user: "Sarah Chen",
     action: "published",
-    target: "Devil fruit family tree",
+    target: "Post-Flood Sanitation Assessment",
     time: "2 hours ago",
-    initial: "V",
+    initial: "S",
+    href: "/dashboard/1",
   },
   {
     id: "a2",
-    user: "Trafalgar D.",
+    user: "David Miller",
     action: "commented on",
-    target: "Berry circulation",
+    target: "Regional Food Security Outlook",
     time: "5 hours ago",
-    initial: "T",
+    initial: "D",
+    href: "/dashboard/2",
   },
   {
     id: "a3",
     user: "You",
     action: "uploaded",
-    target: "poneglyph-rubbings.parquet",
+    target: "refugee-camp-biometrics.parquet",
     time: "yesterday",
-    initial: "N",
+    initial: "Y",
+    href: "/datasets/d2",
   },
 ];
 
 export default function DashboardPage() {
   return (
-    <div className="dashboard-container">
-      <Sidebar userName="Nico Robin" userPlan="Archaeologist" />
+    <main className="dashboard-main">
+      {/* Top Section */}
+      <header className="top">
+        <div>
+          <h1 className="hello">
+            Good afternoon, <em>Sarah</em>
+          </h1>
+          <p className="lede">
+            3 reports published this week, 4 surveys collecting responses, 12 datasets indexed.
+          </p>
+        </div>
 
-      <main className="dashboard-main">
-        {/* Top Section */}
-        <header className="top">
-          <div>
-            <h1 className="hello">Good afternoon, <em>Robin</em></h1>
-            <p className="lede">3 reports published this week, 4 surveys collecting responses, 12 datasets indexed.</p>
+        <div className="top-actions">
+          <div className="search">
+            <IconSearch />
+            <input type="text" placeholder="Search reports, datasets..." />
           </div>
+          <button className="icon-btn" aria-label="Notifications">
+            <IconBell />
+            <div className="dot"></div>
+          </button>
+          <Link href="/survey/create" className="btn">
+            <IconPlus />
+            Create New
+          </Link>
+        </div>
+      </header>
 
-          <div className="top-actions">
-            <div className="search">
-              <IconSearch />
-              <input type="text" placeholder="Search reports, datasets..." />
-            </div>
-            <button className="icon-btn" aria-label="Notifications">
-              <IconBell />
-              <div className="dot"></div>
-            </button>
-            <Link href="/create" className="btn">
-              <IconPlus />
-              Create New
+      {/* Featured Reports Grid Section */}
+      <section>
+        <div className="sec-head">
+          <div>
+            <h2>
+              Trending reports <span className="sub">curated this week</span>
+            </h2>
+          </div>
+          <div className="right">
+            <Link href="/dashboard" className="btn btn-ghost">
+              View all reports <IconArrowRight className="ml-1" />
             </Link>
           </div>
-        </header>
+        </div>
 
-        {/* Featured Reports Grid Section */}
+        <div className="reports">
+          {MOCK_REPORTS.map((report) => (
+            <ReportCard key={report.id} report={report} />
+          ))}
+        </div>
+      </section>
+
+      {/* Lower Grid Section: Surveys + (Datasets & Activity) */}
+      <div className="grid-2 mt-12">
+        {/* Ongoing Surveys */}
         <section>
           <div className="sec-head">
             <div>
-              <h2>Trending reports <span className="sub">curated this week</span></h2>
+              <h2>
+                Ongoing surveys <span className="sub">4 collecting</span>
+              </h2>
             </div>
             <div className="right">
-              <Link href="/reports" className="btn btn-ghost">
-                View all reports <IconArrowRight className="ml-1" />
+              <Link href="/survey" className="btn btn-ghost">
+                All surveys <IconArrowRight className="ml-1" />
               </Link>
             </div>
           </div>
 
-          <div className="reports">
-            {MOCK_REPORTS.map(report => (
-              <ReportCard key={report.id} report={report} />
+          <div className="survey-list">
+            {MOCK_SURVEYS.map((survey) => (
+              <SurveyItem key={survey.id} survey={survey} />
             ))}
           </div>
         </section>
 
-        {/* Lower Grid Section: Surveys + (Datasets & Activity) */}
-        <div className="grid-2 mt-12">
-          {/* Ongoing Surveys */}
-          <section>
-            <div className="sec-head">
-              <div>
-                <h2>Ongoing surveys <span className="sub">4 collecting</span></h2>
-              </div>
-              <div className="right">
-                <Link href="/surveys" className="btn btn-ghost">
-                  All surveys <IconArrowRight className="ml-1" />
-                </Link>
-              </div>
+        {/* Datasets & Activity */}
+        <section>
+          <div className="sec-head">
+            <div>
+              <h2>
+                Datasets <span className="sub">recently updated</span>
+              </h2>
             </div>
+            <div className="right">
+              <Link href="/datasets" className="btn btn-ghost">
+                All datasets <IconArrowRight className="ml-1" />
+              </Link>
+            </div>
+          </div>
 
-            <div className="survey-list">
-              {MOCK_SURVEYS.map(survey => (
-                <SurveyItem key={survey.id} survey={survey} />
+          <div className="dataset-list">
+            {MOCK_DATASETS.map((dataset) => (
+              <DatasetItem key={dataset.id} dataset={dataset} />
+            ))}
+          </div>
+
+          <div className="activity mt-4">
+            <h3>Recent activity</h3>
+            <div className="flex flex-col">
+              {MOCK_ACTIVITIES.map((activity) => (
+                <ActivityItem key={activity.id} activity={activity} />
               ))}
             </div>
-          </section>
-
-          {/* Datasets & Activity */}
-          <section>
-            <div className="sec-head">
-              <div>
-                <h2>Datasets <span className="sub">recently updated</span></h2>
-              </div>
-              <div className="right">
-                <Link href="/datasets" className="btn btn-ghost">
-                  All datasets <IconArrowRight className="ml-1" />
-                </Link>
-              </div>
-            </div>
-
-            <div className="dataset-list">
-              {MOCK_DATASETS.map(dataset => (
-                <DatasetItem key={dataset.id} dataset={dataset} />
-              ))}
-            </div>
-
-            <div className="activity mt-4">
-              <h3>Recent activity</h3>
-              <div className="flex flex-col">
-                {MOCK_ACTIVITIES.map(activity => (
-                  <ActivityItem key={activity.id} activity={activity} />
-                ))}
-              </div>
-            </div>
-          </section>
-        </div>
-      </main>
-    </div>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }

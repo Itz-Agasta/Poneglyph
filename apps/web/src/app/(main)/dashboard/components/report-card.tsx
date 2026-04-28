@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { IconTrendingUp } from "@tabler/icons-react";
 
-export type ReportCategory = "Geography" | "Climate" | "Economy" | "Demographics" | "Taxonomy" | "Trade";
+export type ReportCategory =
+  | "Geography"
+  | "Climate"
+  | "Economy"
+  | "Demographics"
+  | "Taxonomy"
+  | "Trade";
 
 export interface Report {
   id: string;

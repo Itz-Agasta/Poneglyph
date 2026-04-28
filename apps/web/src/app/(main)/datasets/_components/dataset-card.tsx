@@ -33,9 +33,9 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
     >
       {/* Thumbnail Area */}
       <div className="relative h-24 w-full overflow-hidden bg-muted">
-        {dataset.thumbnailS3Key ? (
+        {dataset.thumbnailUrl ? (
           <img
-            src={`/api/images/${dataset.thumbnailS3Key}`} // Assuming some image proxy or direct URL
+            src={dataset.thumbnailUrl}
             alt={dataset.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />

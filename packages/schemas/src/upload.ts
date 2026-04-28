@@ -4,9 +4,15 @@ import { uploadFieldLimits } from "@Poneglyph/db/schema/data";
 const ACCEPTED_DOCUMENT_MIME = [
   "application/pdf",
   "text/csv",
+  "application/csv",
+  "application/x-csv",
+  "text/x-csv",
+  "text/comma-separated-values",
+  "text/x-comma-separated-values",
+  "application/vnd.ms-excel",
+  "text/plain",
   "application/json",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ] as const;
 

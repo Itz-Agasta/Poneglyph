@@ -7,6 +7,7 @@ import { authClient } from "@/lib/auth-client";
 import { env } from "@Poneglyph/env/web";
 import { ResearchSidebar, type ResearchSession } from "@/components/research/research-sidebar";
 import { ResearchInput } from "@/components/research/research-input";
+import { D3Renderer } from "@/components/research/d3-renderer";
 import {
   IconSparkles,
   IconShare,
@@ -40,6 +41,8 @@ interface ChatMessage {
   text: string;
   steps: ResearchStep[];
   isStreaming: boolean;
+  data?: any[];
+  dataContext?: string;
 }
 
 interface Session extends ResearchSession {
@@ -513,7 +516,34 @@ function ThreadPair({
           >
             {assistantMsg.text ? (
               <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-3 prose-headings:mt-6 prose-headings:mb-2 prose-headings:font-semibold prose-headings:text-base prose-li:my-1 prose-code:text-xs prose-pre:text-xs prose-a:text-primary hover:prose-a:underline prose-li:marker:text-primary">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{assistantMsg.text}</ReactMarkdown>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    code(props) {
+                      const { children, className, ...rest } = props;
+                      const match = /language-(\w+)/.exec(className || "");
+                      const isD3 = match?.[1] === "d3";
+
+                      if (isD3) {
+                        return (
+                          <D3Renderer
+                            code={String(children).replace(/\n$/, "")}
+                            data={assistantMsg?.data}
+                            className="my-6"
+                          />
+                        );
+                      }
+
+                      return (
+                        <code {...rest} className={className}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
+                  {assistantMsg.text}
+                </ReactMarkdown>
               </div>
             ) : null}
             {assistantMsg.isStreaming && (
@@ -635,7 +665,7 @@ export default function ResearchPage() {
   );
 
   const sendMessage = useCallback(
-    async (text: string) => {
+    async (text: string, dataContext?: string, rawData?: any[]) => {
       let sessionId = activeSessionId;
       const prevMessages = sessionsRef.current.find((s) => s.id === sessionId)?.messages ?? [];
 
@@ -654,6 +684,9 @@ export default function ResearchPage() {
         setActiveSessionId(sessionId);
       }
 
+      const prevData = prevMessages.findLast((m) => m.data)?.data;
+      const currentRawData = rawData ?? prevData;
+
       const userMsgId = genId();
       const assistantMsgId = genId();
 
@@ -665,8 +698,23 @@ export default function ResearchPage() {
             title: s.messages.length === 0 ? text.slice(0, 60) : s.title,
             messages: [
               ...s.messages,
-              { id: userMsgId, role: "user", text, steps: [], isStreaming: false },
-              { id: assistantMsgId, role: "assistant", text: "", steps: [], isStreaming: true },
+              {
+                id: userMsgId,
+                role: "user",
+                text,
+                steps: [],
+                isStreaming: false,
+                data: currentRawData,
+                dataContext,
+              },
+              {
+                id: assistantMsgId,
+                role: "assistant",
+                text: "",
+                steps: [],
+                isStreaming: true,
+                data: currentRawData,
+              },
             ],
           };
         }),
@@ -682,9 +730,19 @@ export default function ResearchPage() {
         ...prevMessages.map((m) => ({
           id: m.id,
           role: m.role,
-          parts: [{ type: "text" as const, text: m.text }],
+          parts: [
+            { type: "text" as const, text: m.text },
+            ...(m.dataContext ? [{ type: "text" as const, text: m.dataContext }] : []),
+          ],
         })),
-        { id: userMsgId, role: "user" as const, parts: [{ type: "text" as const, text }] },
+        {
+          id: userMsgId,
+          role: "user" as const,
+          parts: [
+            { type: "text" as const, text },
+            ...(dataContext ? [{ type: "text" as const, text: dataContext }] : []),
+          ],
+        },
       ];
 
       try {
@@ -800,6 +858,7 @@ export default function ResearchPage() {
       style={{
         display: "grid",
         gridTemplateColumns: "240px 1fr",
+        alignItems: "start",
         minHeight: "100vh",
         background: "var(--background)",
         color: "var(--foreground)",

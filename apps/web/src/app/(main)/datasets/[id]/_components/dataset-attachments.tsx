@@ -11,9 +11,12 @@ interface Props {
   attachments: DatasetAttachment[];
 }
 
-function toAbsoluteUrl(url: string) {
-  if (url.startsWith("http")) return url;
-  return `${env.NEXT_PUBLIC_SERVER_URL}${url}`;
+/** Route file access through the Next.js proxy so session cookies are forwarded to the backend. */
+function toProxiedUrl(relativeOrAbsolute: string) {
+  const absolute = relativeOrAbsolute.startsWith("http")
+    ? relativeOrAbsolute
+    : `${env.NEXT_PUBLIC_SERVER_URL}${relativeOrAbsolute}`;
+  return `/api/proxy/file?url=${encodeURIComponent(absolute)}`;
 }
 
 export function DatasetAttachments({ datasetId, attachments }: Props) {
@@ -41,8 +44,17 @@ export function DatasetAttachments({ datasetId, attachments }: Props) {
             ext === "other"
               ? `file-${attachment.index + 1}`
               : `file-${attachment.index + 1}.${ext}`;
-          const absoluteUrl = toAbsoluteUrl(attachment.url);
-          const encodedParams = `src=${encodeURIComponent(absoluteUrl)}&title=${encodeURIComponent(fileName)}`;
+
+          // All file access goes through the Next.js proxy to carry auth cookies
+          const proxiedUrl = toProxiedUrl(attachment.url);
+          const downloadUrl = `${proxiedUrl}&download=true`;
+
+          // Pass the raw URL as src — each viewer proxies it internally.
+          // Do NOT pass proxiedUrl here or the viewer will double-proxy.
+          const rawUrl = attachment.url.startsWith("http")
+            ? attachment.url
+            : `${env.NEXT_PUBLIC_SERVER_URL}${attachment.url}`;
+          const encodedParams = `src=${encodeURIComponent(rawUrl)}&title=${encodeURIComponent(fileName)}`;
           const previewHref =
             ext === "pdf"
               ? `/pdf/${datasetId}?${encodedParams}`
@@ -70,13 +82,13 @@ export function DatasetAttachments({ datasetId, attachments }: Props) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                <a href={previewHref ?? absoluteUrl} target="_blank" rel="noopener noreferrer">
+                <a href={previewHref ?? proxiedUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="sm" className="gap-1.5">
                     <IconEye className="size-3.5" />
                     {previewHref ? "Preview" : "Open"}
                   </Button>
                 </a>
-                <a href={absoluteUrl} target="_blank" rel="noopener noreferrer">
+                <a href={downloadUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="sm" className="gap-1.5">
                     <IconDownload className="size-3.5" />
                     Download

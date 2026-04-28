@@ -3,6 +3,11 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "framerusercontent.com" },
       { protocol: "https", hostname: "5882781ece200a2569a97977dd163e36.r2.cloudflarestorage.com" },
+      {
+        protocol: "https",
+        hostname: "poneglyph.5882781ece200a2569a97977dd163e36.r2.cloudflarestorage.com",
+      },
+      { protocol: "https", hostname: "*.r2.cloudflarestorage.com" },
     ],
   },
 };

@@ -101,8 +101,12 @@ messagesRouter.post(
     const authUser = c.get("user")!;
     const { otherUserId } = c.req.valid("json");
 
+    if (authUser.id === otherUserId) {
+      return c.json({ error: "Cannot start a conversation with yourself" }, 400);
+    }
+
     // Sort IDs
-    const [one, two] = [authUser.id, otherUserId].sort();
+    const [one, two] = [authUser.id, otherUserId].sort() as [string, string];
 
     // Check if conversation exists
     let conv = await db.query.conversation.findFirst({
@@ -231,10 +235,10 @@ messagesRouter.post(
     return c.json(
       {
         message: {
-          id: result[0]!.id,
+          id: result[0]?.id,
           senderId: authUser.id,
           content,
-          createdAt: result[0]!.createdAt.toISOString(),
+          createdAt: result[0]?.createdAt.toISOString(),
         },
       },
       201,

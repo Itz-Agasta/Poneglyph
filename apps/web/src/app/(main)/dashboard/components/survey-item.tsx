@@ -1,6 +1,7 @@
 "use client";
 
 import { IconChevronRight } from "@tabler/icons-react";
+import Link from "next/link";
 
 export interface Survey {
   id: string;
@@ -20,7 +21,7 @@ interface SurveyItemProps {
 
 export function SurveyItem({ survey }: SurveyItemProps) {
   return (
-    <div className="survey">
+    <Link href={`/survey/${survey.id}`} className="survey">
       <div className="survey-status" data-state={survey.status}></div>
       <div className="survey-main">
         <div className="survey-title">{survey.title}</div>
@@ -57,6 +58,6 @@ export function SurveyItem({ survey }: SurveyItemProps) {
           <IconChevronRight />
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
