@@ -28,6 +28,7 @@ export async function VolunteerGrid({ city, tags, page = 1, limit = 20 }: Volunt
   const res = await client.get("/api/discover/volunteers", { query });
 
   if (!res.ok) {
+    console.log(await res.json())
     return (
       <div className="discover-empty">
         <div className="discover-error-icon">
