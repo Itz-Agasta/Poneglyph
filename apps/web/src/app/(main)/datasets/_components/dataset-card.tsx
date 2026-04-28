@@ -29,7 +29,7 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
   return (
     <Link
       href={`/datasets/${dataset.id}`}
-      className="group flex flex-col h-full overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-primary/30"
+      className="group flex flex-col h-full overflow-hidden rounded-[var(--radius-xl)] border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_48px_-24px_rgba(0,0,0,0.1)] hover:border-primary/30"
     >
       {/* Thumbnail Area */}
       <div className="relative h-24 w-full overflow-hidden bg-muted">
@@ -51,7 +51,7 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-base font-bold leading-tight tracking-tight text-foreground line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+        <h3 className="font-heading font-normal text-[22px] leading-tight tracking-tight text-foreground line-clamp-2 mb-1.5 group-hover:text-primary transition-colors">
           {dataset.title}
         </h3>
 

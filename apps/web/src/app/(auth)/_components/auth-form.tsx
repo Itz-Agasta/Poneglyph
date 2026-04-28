@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
@@ -20,6 +20,36 @@ export function AuthForm({ initialTab }: { initialTab: "signin" | "signup" }) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const { data: session, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    if (isPending) return;
+    if (session?.user) {
+      router.replace("/dashboard");
+      return;
+    }
+    const cookies = document.cookie;
+    const sessionCookies = cookies
+      .split(";")
+      .map((c) => c.trim())
+      .filter(
+        (c) => c.startsWith("better-auth") || c.startsWith("session") || c.startsWith("__Secure"),
+      );
+    console.group("[AuthForm] Session state on", window.location.pathname);
+    console.log("page:", initialTab === "signin" ? "sign-in" : "sign-up");
+    console.log("isPending:", isPending);
+    console.log("isAuthenticated:", !!session?.user);
+    console.log("user email:", session?.user?.email ?? "none");
+    console.log("user id:", session?.user?.id ?? "none");
+    console.log("session expires:", session?.session?.expiresAt ?? "none");
+    console.log(
+      "session cookies visible to JS:",
+      sessionCookies.length ? sessionCookies : "none (httpOnly or absent)",
+    );
+    console.log("all document.cookie:", cookies || "empty");
+    console.groupEnd();
+  }, [isPending]);
 
   // Sign-in fields
   const [siEmail, setSiEmail] = useState("");
@@ -89,15 +119,21 @@ export function AuthForm({ initialTab }: { initialTab: "signin" | "signup" }) {
         await authClient.signIn.email(
           { email: siEmail, password: siPwd, rememberMe: siRemember },
           {
-            onRequest: () => setLoading(true),
+            onRequest: () => {
+              console.log("[AuthForm] onRequest called");
+              setLoading(true);
+            },
             onSuccess: () => {
+              console.log("[AuthForm] onSuccess - login successful!");
               setSuccess(true);
               setTimeout(() => {
+                console.log("[AuthForm] Redirecting to /dashboard");
                 router.push("/dashboard");
                 router.refresh();
               }, 500);
             },
             onError: (ctx) => {
+              console.error("[AuthForm] onError - login failed:", ctx.error);
               setLoading(false);
               alert(ctx.error.message || "Invalid email or password");
             },
@@ -107,22 +143,24 @@ export function AuthForm({ initialTab }: { initialTab: "signin" | "signup" }) {
         await authClient.signUp.email(
           { email: suEmail, password: suPwd, name: `${suFirst} ${suLast}`.trim() },
           {
-            onRequest: () => setLoading(true),
+            onRequest: () => {
+              console.log("[AuthForm] onRequest called");
+              setLoading(true);
+            },
             onSuccess: () => {
+              console.log("[AuthForm] onSuccess - signup successful!");
               setSuccess(true);
-              setTimeout(() => {
-                router.push("/dashboard");
-                router.refresh();
-              }, 1200);
             },
             onError: (ctx) => {
+              console.error("[AuthForm] onError - signup failed:", ctx.error);
               setLoading(false);
               alert(ctx.error.message || "Failed to create account");
             },
           },
         );
       }
-    } catch {
+    } catch (error) {
+      console.error("[AuthForm] Caught error:", error);
       setLoading(false);
       alert("Something went wrong. Please try again.");
     }

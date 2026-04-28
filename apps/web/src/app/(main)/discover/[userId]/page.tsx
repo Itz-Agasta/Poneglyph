@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Separator } from "@Poneglyph/ui/components/separator";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { IconArrowLeft, IconMapPin } from "@tabler/icons-react";
 import { apiClientWithCookies } from "@/lib/api-client";
 import { VolunteerProfileHeader } from "./_components/volunteer-profile-header";
 import { VolunteerPastWorks } from "./_components/volunteer-past-works";
+import { SendMessageButtonWrapper } from "./_components/send-message-button-wrapper";
+import "../discover.css";
 
 type Props = {
   params: Promise<{ userId: string }>;
@@ -18,48 +19,78 @@ export default async function VolunteerProfilePage(props: Props) {
     param: { targetUserId: userId },
   });
 
-  if (res.status === 404) {
-    notFound();
-  }
-
-  if (!res.ok) {
-    throw new Error("Failed to load volunteer profile");
-  }
+  if (res.status === 404) notFound();
+  if (!res.ok) throw new Error("Failed to load volunteer profile");
 
   const { volunteer } = await res.json();
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <Link
-        href="/discover"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-      >
-        <IconArrowLeft className="w-4 h-4" />
-        Back to Discover
-      </Link>
+    <div className="profile-page">
+      <div className="profile-container">
+        <Link href="/discover" className="profile-back">
+          <IconArrowLeft width={15} height={15} />
+          Back to Discover
+        </Link>
 
-      <div className="flex flex-col gap-8">
-        <VolunteerProfileHeader volunteer={volunteer} />
+        {/* Identity card */}
+        <div className="profile-card">
+          <VolunteerProfileHeader volunteer={volunteer} />
 
-        <Separator className="bg-border" />
+          <div className="profile-head">
+            <div className="profile-identity">
+              <p className="profile-name">{volunteer.name ?? "Anonymous Volunteer"}</p>
 
+              {volunteer.city && (
+                <div className="profile-location">
+                  <IconMapPin width={14} height={14} />
+                  <span>{volunteer.city}</span>
+                </div>
+              )}
+
+              {volunteer.tags.length > 0 && (
+                <div className="profile-tags">
+                  {volunteer.tags.map((tag: { id: string; name: string }) => (
+                    <span key={tag.id} className="profile-tag">
+                      {tag.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="profile-actions">
+              <SendMessageButtonWrapper targetUserId={userId} targetUserName={volunteer.name} />
+            </div>
+          </div>
+        </div>
+
+        {/* About */}
         {volunteer.description && (
-          <>
-            <section>
-              <h2 className="text-lg font-semibold text-foreground mb-3">About</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {volunteer.description}
-              </p>
-            </section>
-
-            <Separator className="bg-border" />
-          </>
+          <div className="profile-section-card">
+            <p className="profile-section-title">About</p>
+            <p className="profile-about-text">{volunteer.description}</p>
+          </div>
         )}
 
-        <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Past Works</h2>
+        {/* Experience */}
+        <div className="profile-section-card">
+          <p className="profile-section-title">Experience</p>
           <VolunteerPastWorks pastWorks={volunteer.pastWorks ?? []} />
-        </section>
+        </div>
+
+        {/* Skills */}
+        {volunteer.tags.length > 0 && (
+          <div className="profile-section-card">
+            <p className="profile-section-title">Skills &amp; Interests</p>
+            <div className="profile-skill-tags">
+              {volunteer.tags.map((tag: { id: string; name: string }) => (
+                <span key={tag.id} className="profile-skill-tag">
+                  {tag.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

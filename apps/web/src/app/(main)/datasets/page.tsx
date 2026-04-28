@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import "../../(auth)/auth.css";
 
 import { DatasetGrid } from "./_components/dataset-grid";
 import { DatasetFilters } from "./_components/dataset-filters";
@@ -45,9 +46,14 @@ export default async function DatasetsPage(props: Props) {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground mb-4">Explore Datasets</h1>
+    <div className="container mx-auto px-4 py-12 max-w-[1200px]" data-accent="lime">
+      <div className="mb-10 text-center max-w-2xl mx-auto">
+          <h1 className="font-heading font-normal text-[34px] leading-[1.1] tracking-[-0.015em] text-foreground mb-3">
+            Explore <em className="italic" style={{ color: "color-mix(in oklch, var(--primary) 75%, var(--foreground))" }}>Datasets</em>
+          </h1>
+        <p className="text-[14.5px] text-muted-foreground mb-8">
+          Search and discover curated survey data for analysis. Start charting your own poneglyphs today.
+        </p>
         <DatasetSearchBar initialQuery={q} />
       </div>
 

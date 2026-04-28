@@ -1,11 +1,19 @@
+"use client";
+
 import { Badge } from "@Poneglyph/ui/components/badge";
 import { Button } from "@Poneglyph/ui/components/button";
 import { IconDownload, IconEye, IconPaperclip } from "@tabler/icons-react";
+import { env } from "@Poneglyph/env/web";
 import type { DatasetAttachment } from "@/lib/types";
 
 interface Props {
   datasetId: string;
   attachments: DatasetAttachment[];
+}
+
+function toAbsoluteUrl(url: string) {
+  if (url.startsWith("http")) return url;
+  return `${env.NEXT_PUBLIC_SERVER_URL}${url}`;
 }
 
 export function DatasetAttachments({ datasetId, attachments }: Props) {
@@ -28,7 +36,15 @@ export function DatasetAttachments({ datasetId, attachments }: Props) {
 
       <ul className="divide-y divide-border">
         {attachments.map((attachment) => {
-          const fileBase = `/api/datasets/${datasetId}/files/${attachment.index}`;
+          const ext = attachment.fileType.toLowerCase();
+          const fileName =
+            ext === "other"
+              ? `file-${attachment.index + 1}`
+              : `file-${attachment.index + 1}.${ext}`;
+          const isPdf = ext === "pdf";
+          const absoluteUrl = toAbsoluteUrl(attachment.url);
+          const previewHref = `/pdf/${datasetId}?src=${encodeURIComponent(absoluteUrl)}&title=${encodeURIComponent(fileName)}`;
+
           return (
             <li
               key={attachment.index}
@@ -47,14 +63,14 @@ export function DatasetAttachments({ datasetId, attachments }: Props) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                <a href={fileBase} target="_blank" rel="noopener noreferrer">
+                <a href={isPdf ? previewHref : absoluteUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="sm" className="gap-1.5">
                     <IconEye className="size-3.5" />
-                    Preview
+                    {isPdf ? "Preview" : "Open"}
                   </Button>
                 </a>
-                <a href={`${fileBase}?download=true`} download>
-                  <Button variant="outline" size="sm" className="gap-1.5">
+                <a href={absoluteUrl} target="_blank" rel="noopener noreferrer">
+                  <Button variant="ghost" size="sm" className="gap-1.5">
                     <IconDownload className="size-3.5" />
                     Download
                   </Button>

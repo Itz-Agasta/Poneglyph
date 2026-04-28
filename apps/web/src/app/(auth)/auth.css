@@ -719,20 +719,20 @@ label.label {
 }
 
 /* Tweaks colors override */
-.stage[data-accent="violet"] {
+[data-accent="violet"] {
   --primary: oklch(0.68 0.22 295);
   --primary-foreground: oklch(0.98 0.02 295);
 }
-.stage[data-accent="amber"] {
+[data-accent="amber"] {
   --primary: oklch(0.82 0.17 75);
   --primary-foreground: oklch(0.32 0.08 75);
 }
-.stage[data-accent="ocean"] {
+[data-accent="ocean"] {
   --primary: oklch(0.7 0.14 230);
   --primary-foreground: oklch(0.98 0.02 230);
 }
 /* Lime color scheme overrides */
-.stage[data-accent="lime"] {
+[data-accent="lime"] {
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);

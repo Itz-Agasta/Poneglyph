@@ -93,9 +93,9 @@ export function DatasetFilters() {
     >
       {/* Sort */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold tracking-tight text-foreground uppercase">Sort By</h3>
+        <h3 className="text-[13px] font-medium tracking-wide text-foreground uppercase">Sort By</h3>
         <select
-          className="w-full bg-card border border-border text-sm rounded-md px-3 py-2 focus:ring-1 focus:ring-primary outline-none text-foreground"
+          className="w-full bg-transparent border border-input text-[14px] rounded-[var(--radius-md)] px-3 h-10 focus:border-ring focus:ring-3 focus:ring-ring/35 outline-none text-foreground transition-all"
           value={currentSortValue}
           onChange={(e) => handleSortChange(e.target.value)}
         >
@@ -109,19 +109,19 @@ export function DatasetFilters() {
 
       {/* Status */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold tracking-tight text-foreground uppercase">Status</h3>
-        <div className="space-y-2">
+        <h3 className="text-[13px] font-medium tracking-wide text-foreground uppercase">Status</h3>
+        <div className="space-y-2.5">
           {STATUS_OPTIONS.map((opt) => (
-            <label key={opt.value} className="flex items-center gap-2 cursor-pointer group">
+            <label key={opt.value} className="flex items-center gap-2.5 cursor-pointer group">
               <input
                 type="radio"
                 name="status"
                 value={opt.value}
                 checked={currentStatus === opt.value}
                 onChange={(e) => handleParamChange("status", e.target.value)}
-                className="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-offset-background cursor-pointer"
+                className="w-[16px] h-[16px] text-primary bg-transparent border border-input focus:ring-ring/35 focus:ring-offset-0 cursor-pointer transition-colors"
               />
-              <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+              <span className="text-[12.5px] leading-[1.45] text-muted-foreground group-hover:text-foreground transition-colors">
                 {opt.label}
               </span>
             </label>
@@ -131,34 +131,34 @@ export function DatasetFilters() {
 
       {/* File Type */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold tracking-tight text-foreground uppercase">
+        <h3 className="text-[13px] font-medium tracking-wide text-foreground uppercase">
           File Type
         </h3>
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 cursor-pointer group">
+        <div className="space-y-2.5">
+          <label className="flex items-center gap-2.5 cursor-pointer group">
             <input
               type="radio"
               name="fileType"
               value=""
               checked={currentFileType === ""}
               onChange={(e) => handleParamChange("fileType", e.target.value)}
-              className="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-offset-background cursor-pointer"
+              className="w-[16px] h-[16px] text-primary bg-transparent border border-input focus:ring-ring/35 focus:ring-offset-0 cursor-pointer transition-colors"
             />
-            <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+            <span className="text-[12.5px] leading-[1.45] text-muted-foreground group-hover:text-foreground transition-colors">
               All Types
             </span>
           </label>
           {FILE_TYPES.map((opt) => (
-            <label key={opt.value} className="flex items-center gap-2 cursor-pointer group">
+            <label key={opt.value} className="flex items-center gap-2.5 cursor-pointer group">
               <input
                 type="radio"
                 name="fileType"
                 value={opt.value}
                 checked={currentFileType === opt.value}
                 onChange={(e) => handleParamChange("fileType", e.target.value)}
-                className="w-4 h-4 text-primary bg-background border-border focus:ring-primary focus:ring-offset-background cursor-pointer"
+                className="w-[16px] h-[16px] text-primary bg-transparent border border-input focus:ring-ring/35 focus:ring-offset-0 cursor-pointer transition-colors"
               />
-              <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+              <span className="text-[12.5px] leading-[1.45] text-muted-foreground group-hover:text-foreground transition-colors">
                 {opt.label}
               </span>
             </label>
@@ -168,9 +168,9 @@ export function DatasetFilters() {
 
       {/* Language */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold tracking-tight text-foreground uppercase">Language</h3>
+        <h3 className="text-[13px] font-medium tracking-wide text-foreground uppercase">Language</h3>
         <select
-          className="w-full bg-card border border-border text-sm rounded-md px-3 py-2 focus:ring-1 focus:ring-primary outline-none text-foreground"
+          className="w-full bg-transparent border border-input text-[14px] rounded-[var(--radius-md)] px-3 h-10 focus:border-ring focus:ring-3 focus:ring-ring/35 outline-none text-foreground transition-all"
           value={currentLanguage}
           onChange={(e) => handleParamChange("language", e.target.value)}
         >
@@ -194,7 +194,7 @@ export function DatasetFilters() {
               router.push(pathname);
             });
           }}
-          className="w-full py-2 text-sm font-medium text-muted-foreground bg-muted hover:bg-muted/80 rounded-md transition-colors"
+          className="w-full h-10 flex items-center justify-center text-[14px] font-semibold text-foreground bg-card border border-border rounded-[var(--radius-md)] shadow-[0_1px_0_rgba(0,0,0,0.02)] hover:bg-muted transition-colors mt-4"
         >
           Clear Filters
         </button>

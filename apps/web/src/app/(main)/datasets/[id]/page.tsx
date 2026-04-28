@@ -28,7 +28,10 @@ export default async function DatasetDetailPage(props: Props) {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <DatasetDetailHeader dataset={dataset} />
       <div className="mt-8">
-        <DatasetAttachments datasetId={dataset.id} attachments={dataset.attachments} />
+        <DatasetAttachments
+          datasetId={dataset.id}
+          attachments={dataset.attachments}
+        />
       </div>
     </div>
   );

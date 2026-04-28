@@ -69,16 +69,16 @@ export function DatasetSearchBar({ initialQuery = "" }: DatasetSearchBarProps) {
   };
 
   return (
-    <div className="relative w-full max-w-2xl">
-      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-        <IconSearch className="w-5 h-5 text-muted-foreground" />
+    <div className="relative w-full">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+        <IconSearch className="w-4 h-4 text-muted-foreground" />
       </div>
       <Input
         type="text"
         placeholder="Search datasets by title, description, or publisher..."
         value={query}
         onChange={handleChange}
-        className="w-full pl-10 pr-10 py-6 text-base bg-card border-border rounded-xl shadow-sm focus-visible:ring-1 focus-visible:ring-primary"
+        className="w-full pl-11 pr-10 h-[48px] text-[14.5px] bg-card border-border rounded-[calc(var(--radius-md))] shadow-[0_1px_2px_rgba(0,0,0,0.04)] focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-all duration-200"
       />
       {query && (
         <div className="absolute inset-y-0 right-0 flex items-center pr-2">

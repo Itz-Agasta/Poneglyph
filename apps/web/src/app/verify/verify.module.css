@@ -1,0 +1,320 @@
+.verifyWrapper {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.841 0.238 128.85);
+  --primary-foreground: oklch(0.405 0.101 131.063);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  --radius: 0.875rem;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Instrument Serif", ui-serif, Georgia, serif;
+
+  background:
+    radial-gradient(
+      80% 60% at 50% -10%,
+      color-mix(in oklch, var(--primary) 18%, var(--background)),
+      transparent 60%
+    ),
+    var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:global(.dark) .verifyWrapper {
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.768 0.233 130.85);
+  --primary-foreground: oklch(0.405 0.101 131.063);
+  --secondary: oklch(0.274 0.006 286.033);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.552 0.016 285.938);
+}
+
+.stage {
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 36px;
+}
+.brandMark {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+.brandName {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 44px 36px 36px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 24px 48px -24px rgba(0, 0, 0, 0.1);
+}
+
+.seal {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 24px;
+  display: grid;
+  place-items: center;
+}
+.sealRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in oklch, var(--primary) 40%, var(--border));
+  animation: rotate 24s linear infinite;
+}
+.sealRingInner {
+  inset: 14px;
+  border: 1px solid color-mix(in oklch, var(--primary) 30%, var(--border));
+  animation-duration: 16s;
+  animation-direction: reverse;
+}
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sealDisc {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 0 0 6px color-mix(in oklch, var(--primary) 18%, transparent),
+    0 8px 24px -8px color-mix(in oklch, var(--primary) 60%, transparent);
+  animation: pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.sealDisc svg {
+  width: 28px;
+  height: 28px;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: draw 420ms cubic-bezier(0.65, 0, 0.35, 1) 360ms forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.stage h1 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 0 0 10px;
+}
+.stage h1 em {
+  font-style: italic;
+  color: color-mix(in oklch, var(--primary) 75%, var(--foreground));
+}
+
+.lede {
+  color: var(--muted-foreground);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0 0 28px;
+  text-wrap: pretty;
+}
+.emailChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 2px;
+}
+.emailChip svg {
+  width: 12px;
+  height: 12px;
+  color: var(--primary);
+}
+.emailChip a {
+  color: var(--foreground);
+  text-decoration: none;
+}
+.emailChip a:hover {
+  text-decoration: underline;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 0 0 28px;
+}
+.metaCell {
+  padding: 14px 6px;
+  text-align: left;
+}
+.metaCell + .metaCell {
+  border-left: 1px solid var(--border);
+  padding-left: 18px;
+}
+.metaLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+  margin-bottom: 4px;
+}
+.metaValue {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 22%, transparent);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.btn {
+  height: 44px;
+  width: 100%;
+  border: 1px solid transparent;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition:
+    background 160ms ease,
+    transform 80ms ease;
+  text-decoration: none;
+}
+.btn:hover {
+  background: color-mix(in oklch, var(--primary) 88%, black);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btnGhost {
+  background: transparent;
+  color: var(--muted-foreground);
+  border: 0;
+  height: 36px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: color 160ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-family: inherit;
+}
+.btnGhost:hover {
+  color: var(--foreground);
+}
+
+.footnote {
+  margin-top: 28px;
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+}
+.footnote a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Confetti-ish glyph specks */
+.speck {
+  position: absolute;
+  border-radius: 1px;
+  animation: float 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) 400ms both;
+  pointer-events: none;
+}
+@keyframes float {
+  from {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0);
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: var(--end) rotate(180deg);
+  }
+}

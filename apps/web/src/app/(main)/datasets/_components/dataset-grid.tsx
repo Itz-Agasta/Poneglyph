@@ -82,10 +82,10 @@ export async function DatasetGrid(props: DatasetGridProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          Showing <span className="font-medium text-foreground">{datasets.length}</span> of{" "}
-          <span className="font-medium text-foreground">{total}</span> datasets
+      <div className="flex items-center justify-between pb-2 border-b border-border/40">
+        <p className="text-[13px] font-medium text-muted-foreground uppercase tracking-widest">
+          Showing <span className="text-foreground">{datasets.length}</span> of{" "}
+          <span className="text-foreground">{total}</span> datasets
         </p>
       </div>
 

@@ -18,15 +18,17 @@ export const conversation = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
 
-    // Nullable — becomes null if the user deletes their account
-    participantOneId: text("participant_one_id").references(() => user.id, {
-      onDelete: "set null",
-    }),
+    participantOneId: text("participant_one_id")
+      .notNull()
+      .references(() => user.id, {
+        onDelete: "cascade",
+      }),
 
-    // Nullable — becomes null if the user deletes their account
-    participantTwoId: text("participant_two_id").references(() => user.id, {
-      onDelete: "set null",
-    }),
+    participantTwoId: text("participant_two_id")
+      .notNull()
+      .references(() => user.id, {
+        onDelete: "cascade",
+      }),
 
     // Denormalized — updated on every new message insert.
     // Used to sort inbox by recency without a subquery.
@@ -78,6 +80,11 @@ export const message = pgTable(
     index("message_conversation_id_created_at_idx").on(table.conversationId, table.createdAt),
   ],
 );
+
+export const userRelations = relations(user, ({ many }) => ({
+  conversationsAsParticipantOne: many(conversation, { relationName: "participantOne" }),
+  conversationsAsParticipantTwo: many(conversation, { relationName: "participantTwo" }),
+}));
 
 export const conversationRelations = relations(conversation, ({ one, many }) => ({
   participantOne: one(user, {

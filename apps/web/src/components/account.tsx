@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import {
   DropdownMenu,
@@ -9,16 +10,38 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuLabel,
 } from "@Poneglyph/ui/components/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@Poneglyph/ui/components/avatar";
-import { IconSettings, IconLogout, IconChevronDown, IconUser } from "@tabler/icons-react";
+import { IconSettings, IconLogout, IconChevronDown, IconUser, IconMail } from "@tabler/icons-react";
 
 export function Account({ variant = "default" }: { variant?: "default" | "transparent" }) {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
   const isAuthenticated = !!user;
+
+  useEffect(() => {
+    if (isPending) return;
+    const cookies = document.cookie;
+    const sessionCookies = cookies
+      .split(";")
+      .map((c) => c.trim())
+      .filter(
+        (c) => c.startsWith("better-auth") || c.startsWith("session") || c.startsWith("__Secure"),
+      );
+    console.group("[Account] Session state on", window.location.pathname);
+    console.log("isPending:", isPending);
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("user email:", user?.email ?? "none");
+    console.log("user id:", user?.id ?? "none");
+    console.log("session expires:", session?.session?.expiresAt ?? "none");
+    console.log(
+      "session cookies visible to JS:",
+      sessionCookies.length ? sessionCookies : "none (httpOnly or absent)",
+    );
+    console.log("all document.cookie:", cookies || "empty");
+    console.groupEnd();
+  }, [isPending, isAuthenticated]);
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -60,16 +83,20 @@ export function Account({ variant = "default" }: { variant?: "default" | "transp
             <IconChevronDown size={16} className="text-muted-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel className="font-normal">
+            <div className="px-2 py-1.5 font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none truncate">{user.name}</p>
                 <p className="text-xs leading-none text-muted-foreground truncate">{user.email}</p>
               </div>
-            </DropdownMenuLabel>
+            </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
               <IconUser size={16} className="mr-2" />
               User Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/messages")}>
+              <IconMail size={16} className="mr-2" />
+              Messages
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push("/settings")}>
               <IconSettings size={16} className="mr-2" />
