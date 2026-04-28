@@ -1,0 +1,19 @@
+"use client";
+
+import { authClient } from "@/lib/auth-client";
+import { SendMessageButton } from "./send-message-button";
+
+interface SendMessageButtonWrapperProps {
+  targetUserId: string;
+}
+
+export function SendMessageButtonWrapper({ targetUserId }: SendMessageButtonWrapperProps) {
+  const { data: session } = authClient.useSession();
+  const currentUserId = session?.user?.id;
+
+  if (!currentUserId || currentUserId === targetUserId) {
+    return null;
+  }
+
+  return <SendMessageButton targetUserId={targetUserId} />;
+}

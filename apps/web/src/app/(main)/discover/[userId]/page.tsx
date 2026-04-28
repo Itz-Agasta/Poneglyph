@@ -5,6 +5,7 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import { apiClientWithCookies } from "@/lib/api-client";
 import { VolunteerProfileHeader } from "./_components/volunteer-profile-header";
 import { VolunteerPastWorks } from "./_components/volunteer-past-works";
+import { SendMessageButtonWrapper } from "./_components/send-message-button-wrapper";
 
 type Props = {
   params: Promise<{ userId: string }>;
@@ -39,7 +40,12 @@ export default async function VolunteerProfilePage(props: Props) {
       </Link>
 
       <div className="flex flex-col gap-8">
-        <VolunteerProfileHeader volunteer={volunteer} />
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex-1">
+            <VolunteerProfileHeader volunteer={volunteer} />
+          </div>
+          <SendMessageButtonWrapper targetUserId={userId} />
+        </div>
 
         <Separator className="bg-border" />
 

@@ -43,6 +43,13 @@
       "when": 1776823866901,
       "tag": "0005_certain_mentor",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1777332302337,
+      "tag": "0006_cooing_big_bertha",
+      "breakpoints": true
     }
   ]
 }

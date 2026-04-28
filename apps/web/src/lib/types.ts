@@ -66,3 +66,29 @@ export type DatasetDetail = {
   tags: Tag[];
   attachments: DatasetAttachment[];
 };
+
+export type VolunteerOwn = {
+  description: string | null;
+  city: string | null;
+  bio: string | null;
+  pastWorks: string[];
+  isOpenToWork: boolean;
+  wantsToStartOrg: boolean | null;
+  tags: Tag[];
+};
+
+export type ConversationSummary = {
+  id: string;
+  otherUser: { id: string; name: string | null; image: string | null };
+  lastMessageContent: string | null;
+  lastMessageAt: string;
+  unreadCount: number;
+};
+
+export type Message = {
+  id: string;
+  senderId: string | null;
+  content: string;
+  createdAt: string;
+  readAt: string | null;
+};

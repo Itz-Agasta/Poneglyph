@@ -6,7 +6,8 @@
     "./chat": "./src/chat.ts",
     "./upload": "./src/upload.ts",
     "./dataset": "./src/dataset.ts",
-    "./volunteer": "./src/volunteer.ts"
+    "./volunteer": "./src/volunteer.ts",
+    "./messages": "./src/messages.ts"
   },
   "dependencies": {
     "zod": "catalog:"

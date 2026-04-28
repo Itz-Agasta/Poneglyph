@@ -45,6 +45,7 @@ function PoneglyphLogo() {
 }
 
 const navLinks = [
+  { label: "Discover", href: "/discover" },
   { label: "About", href: "/about" },
   { label: "Research", href: "/research" },
   { label: "Datasets", href: "/datasets" },

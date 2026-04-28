@@ -60,13 +60,8 @@ export function createAuth() {
         secure: env.NODE_ENV === "production",
         httpOnly: true,
       },
-      crossSubDomainCookies: {
-        enabled: env.NODE_ENV === "production",
-        domain: env.NODE_ENV === "production" ? ".vyse.site" : undefined,
-      },
     },
     plugins: [openAPI(), bearer()],
   });
 }
-
 export const auth = createAuth();

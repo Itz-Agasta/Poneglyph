@@ -9,10 +9,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuLabel,
 } from "@Poneglyph/ui/components/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@Poneglyph/ui/components/avatar";
-import { IconSettings, IconLogout, IconChevronDown, IconUser } from "@tabler/icons-react";
+import { IconSettings, IconLogout, IconChevronDown, IconUser, IconMail } from "@tabler/icons-react";
 
 export function Account({ variant = "default" }: { variant?: "default" | "transparent" }) {
   const router = useRouter();
@@ -60,16 +59,20 @@ export function Account({ variant = "default" }: { variant?: "default" | "transp
             <IconChevronDown size={16} className="text-muted-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel className="font-normal">
+            <div className="px-2 py-1.5 font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none truncate">{user.name}</p>
                 <p className="text-xs leading-none text-muted-foreground truncate">{user.email}</p>
               </div>
-            </DropdownMenuLabel>
+            </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
               <IconUser size={16} className="mr-2" />
               User Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/messages")}>
+              <IconMail size={16} className="mr-2" />
+              Messages
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push("/settings")}>
               <IconSettings size={16} className="mr-2" />
