@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Account } from "@/components/account";
@@ -33,14 +34,14 @@ function IconX() {
 
 function PoneglyphLogo() {
   return (
-    <div className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors duration-300 bg-foreground text-background">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <rect x="1" y="1" width="5" height="5" rx="0.5" fill="currentColor" />
-        <rect x="8" y="1" width="5" height="5" rx="0.5" fill="currentColor" />
-        <rect x="1" y="8" width="5" height="5" rx="0.5" fill="currentColor" />
-        <rect x="8" y="8" width="5" height="5" rx="0.5" fill="currentColor" />
-      </svg>
-    </div>
+    <Image
+      src="/poneg_logo_white.png"
+      alt="Poneglyph logo"
+      width={50}
+      height={50}
+      className="shrink-0"
+      priority
+    />
   );
 }
 

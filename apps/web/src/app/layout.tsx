@@ -33,6 +33,13 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Poneglyph — Data Stories Vividly Visualized",
   description: "AI-powered analysis and extracted insights from survey datasets worldwide.",
+  icons: {
+    icon: "/poneg_logo.webp",
+    shortcut: "/poneg_logo.webp",
+  },
+  openGraph: {
+    images: [{ url: "/poneg_logo.webp" }],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

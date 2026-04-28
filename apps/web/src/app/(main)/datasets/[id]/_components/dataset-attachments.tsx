@@ -41,9 +41,16 @@ export function DatasetAttachments({ datasetId, attachments }: Props) {
             ext === "other"
               ? `file-${attachment.index + 1}`
               : `file-${attachment.index + 1}.${ext}`;
-          const isPdf = ext === "pdf";
           const absoluteUrl = toAbsoluteUrl(attachment.url);
-          const previewHref = `/pdf/${datasetId}?src=${encodeURIComponent(absoluteUrl)}&title=${encodeURIComponent(fileName)}`;
+          const encodedParams = `src=${encodeURIComponent(absoluteUrl)}&title=${encodeURIComponent(fileName)}`;
+          const previewHref =
+            ext === "pdf"
+              ? `/pdf/${datasetId}?${encodedParams}`
+              : ext === "csv"
+                ? `/csv/${datasetId}?${encodedParams}`
+                : ext === "xlsx" || ext === "xls"
+                  ? `/excel/${datasetId}?${encodedParams}`
+                  : null;
 
           return (
             <li
@@ -63,10 +70,10 @@ export function DatasetAttachments({ datasetId, attachments }: Props) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                <a href={isPdf ? previewHref : absoluteUrl} target="_blank" rel="noopener noreferrer">
+                <a href={previewHref ?? absoluteUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="sm" className="gap-1.5">
                     <IconEye className="size-3.5" />
-                    {isPdf ? "Preview" : "Open"}
+                    {previewHref ? "Preview" : "Open"}
                   </Button>
                 </a>
                 <a href={absoluteUrl} target="_blank" rel="noopener noreferrer">
