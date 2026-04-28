@@ -127,11 +127,6 @@ export function AuthForm({ initialTab }: { initialTab: "signin" | "signup" }) {
             onSuccess: () => {
               console.log("[AuthForm] onSuccess - signup successful!");
               setSuccess(true);
-              setTimeout(() => {
-                console.log("[AuthForm] Redirecting to /dashboard");
-                router.push("/dashboard");
-                router.refresh();
-              }, 1200);
             },
             onError: (ctx) => {
               console.error("[AuthForm] onError - signup failed:", ctx.error);

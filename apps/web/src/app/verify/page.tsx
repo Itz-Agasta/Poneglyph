@@ -2,13 +2,39 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import styles from "./verify.module.css";
 import { authClient } from "../../lib/auth-client";
 
 export default function VerifyPage() {
   const sealRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
+  const [verifyStatus, setVerifyStatus] = useState<"pending" | "success" | "error">("pending");
+  const [verifyError, setVerifyError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
   const { data: session, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    const token = searchParams.get("token");
+    const callbackURL = searchParams.get("callbackURL") ?? "/sign-in";
+
+    if (!token) {
+      setVerifyStatus("error");
+      setVerifyError("Missing verification token.");
+      return;
+    }
+
+    authClient.verifyEmail(
+      { query: { token, callbackURL } },
+      {
+        onSuccess: () => setVerifyStatus("success"),
+        onError: (ctx) => {
+          setVerifyStatus("error");
+          setVerifyError(ctx.error.message ?? "Verification failed.");
+        },
+      },
+    );
+  }, [searchParams]);
 
   useEffect(() => {
     setMounted(true);
@@ -16,7 +42,6 @@ export default function VerifyPage() {
 
     const seal = sealRef.current;
 
-    // Clean up existing specks if it re-runs in dev mode
     const existingSpecks = seal.querySelectorAll(`.${styles.speck}`);
     existingSpecks.forEach((s) => s.remove());
 
@@ -67,83 +92,150 @@ export default function VerifyPage() {
         </div>
 
         <div className={styles.card}>
-          <div className={styles.seal} ref={sealRef}>
-            <div className={styles.sealRing}></div>
-            <div className={`${styles.sealRing} ${styles.sealRingInner}`}></div>
-            <div className={styles.sealDisc}>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m5 12 5 5L20 7" />
-              </svg>
-            </div>
-          </div>
-
-          <h1>
-            Email <em>verified</em>
-          </h1>
-          <p className={styles.lede}>
-            Your email
-            <span className={styles.emailChip}>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m5 12 5 5L20 7" />
-              </svg>
-              {isPending ? (
-                <span style={{ opacity: 0.5 }}>Loading...</span>
-              ) : (
-                <a href={`mailto:${session?.user?.email || "you@example.com"}`}>
-                  {session?.user?.email || "you@example.com"}
-                </a>
-              )}
-            </span>
-            is confirmed. The archive is open — you can sign in and start charting.
-          </p>
-
-          <div className={styles.meta}>
-            <div className={styles.metaCell}>
-              <div className={styles.metaLabel}>Status</div>
-              <div className={styles.metaValue}>
-                <span className={styles.dot}></span> Verified
+          {verifyStatus === "error" ? (
+            <>
+              <div className={styles.seal} style={{ opacity: 0.4 }}>
+                <div className={styles.sealRing}></div>
+                <div className={`${styles.sealRing} ${styles.sealRingInner}`}></div>
+                <div className={styles.sealDisc}>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </div>
               </div>
-            </div>
-            <div className={styles.metaCell}>
-              <div className={styles.metaLabel}>Verified at</div>
-              <div className={styles.metaValue}>{timestamp}</div>
-            </div>
-          </div>
+              <h1>
+                Verification <em>failed</em>
+              </h1>
+              <p className={styles.lede}>
+                {verifyError ?? "The link may have expired or already been used."}
+              </p>
+              <div className={styles.actions}>
+                <Link className={styles.btn} href="/sign-in">
+                  Back to sign in
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </>
+          ) : verifyStatus === "pending" ? (
+            <>
+              <div className={styles.seal} style={{ opacity: 0.6 }} ref={sealRef}>
+                <div className={styles.sealRing}></div>
+                <div className={`${styles.sealRing} ${styles.sealRingInner}`}></div>
+                <div className={styles.sealDisc}>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m5 12 5 5L20 7" />
+                  </svg>
+                </div>
+              </div>
+              <h1>Verifying…</h1>
+              <p className={styles.lede}>Confirming your email address, please wait.</p>
+            </>
+          ) : (
+            <>
+              <div className={styles.seal} ref={sealRef}>
+                <div className={styles.sealRing}></div>
+                <div className={`${styles.sealRing} ${styles.sealRingInner}`}></div>
+                <div className={styles.sealDisc}>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m5 12 5 5L20 7" />
+                  </svg>
+                </div>
+              </div>
 
-          <div className={styles.actions}>
-            <Link className={styles.btn} href="/sign-in">
-              Continue to sign in
-              <svg
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 12h14M13 5l7 7-7 7" />
-              </svg>
-            </Link>
-            <button className={styles.btnGhost} type="button" onClick={() => window.close()}>
-              Close this tab
-            </button>
-          </div>
+              <h1>
+                Email <em>verified</em>
+              </h1>
+              <p className={styles.lede}>
+                Your email
+                <span className={styles.emailChip}>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m5 12 5 5L20 7" />
+                  </svg>
+                  {isPending ? (
+                    <span style={{ opacity: 0.5 }}>Loading...</span>
+                  ) : (
+                    <a href={`mailto:${session?.user?.email || "you@example.com"}`}>
+                      {session?.user?.email || "you@example.com"}
+                    </a>
+                  )}
+                </span>
+                is confirmed. The archive is open — you can sign in and start charting.
+              </p>
+
+              <div className={styles.meta}>
+                <div className={styles.metaCell}>
+                  <div className={styles.metaLabel}>Status</div>
+                  <div className={styles.metaValue}>
+                    <span className={styles.dot}></span> Verified
+                  </div>
+                </div>
+                <div className={styles.metaCell}>
+                  <div className={styles.metaLabel}>Verified at</div>
+                  <div className={styles.metaValue}>{timestamp}</div>
+                </div>
+              </div>
+
+              <div className={styles.actions}>
+                <Link className={styles.btn} href="/sign-in">
+                  Continue to sign in
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </Link>
+                <button className={styles.btnGhost} type="button" onClick={() => window.close()}>
+                  Close this tab
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         <p className={styles.footnote}>
