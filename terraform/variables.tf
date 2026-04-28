@@ -80,7 +80,13 @@ variable "better_auth_url" {
 }
 
 variable "cors_origin" {
-  description = "Allowed frontend origin"
+  description = "Allowed frontend origins (comma-separated)"
+  type        = string
+  default     = "https://poneglyph.vyse.site,http://localhost:3001"
+}
+
+variable "frontend_url" {
+  description = "Frontend URL for redirects"
   type        = string
   default     = "https://poneglyph.vyse.site"
 }

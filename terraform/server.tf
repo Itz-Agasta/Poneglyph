@@ -17,6 +17,10 @@ locals {
       value = var.cors_origin
     },
     {
+      name  = "FRONTEND_URL"
+      value = var.frontend_url
+    },
+    {
       name  = "DATABASE_URL"
       value = var.database_url
     },

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { uploadFieldLimits } from "@Poneglyph/db/schema/data";
 
 const ACCEPTED_DOCUMENT_MIME = [
   "application/pdf",
@@ -27,12 +28,21 @@ const imageFile = z
   .mime([...ACCEPTED_IMAGE_MIME], "Thumbnail must be an image (jpg, jpeg, png, or webp)");
 
 export const UploadRequestSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  title: z
+    .string()
+    .trim()
+    .min(1, "Title is required")
+    .max(uploadFieldLimits.sourceName, `Title must be at most ${uploadFieldLimits.sourceName} characters`),
   description: z.string().min(1, "Description is required"),
   summary: z.string().optional(),
-  publisher: z.string().optional(),
+  publisher: z
+    .string()
+    .trim()
+    .max(uploadFieldLimits.publisher, `Publisher must be at most ${uploadFieldLimits.publisher} characters`)
+    .optional(),
   tags: z
     .string()
+    .max(2000, "Tags input is too long")
     .optional()
     .transform((val) =>
       val
@@ -40,7 +50,12 @@ export const UploadRequestSchema = z.object({
             .split(",")
             .map((t) => t.trim())
             .filter(Boolean)
+            .slice(0, 20)
         : [],
+    )
+    .refine(
+      (tags) => tags.every((tag) => tag.length <= uploadFieldLimits.tagName),
+      `Each tag must be at most ${uploadFieldLimits.tagName} characters`,
     ),
   files: z.preprocess(
     (val) => (Array.isArray(val) ? val : [val]),
