@@ -3,7 +3,7 @@ import { volunteer } from "@Poneglyph/db/schema/users";
 import { tags as tagsTable, volunteerTags } from "@Poneglyph/db/schema/data";
 import { VolunteerListQuerySchema, VolunteerParamSchema } from "@Poneglyph/schemas/volunteer";
 import { zValidator } from "@hono/zod-validator";
-import { count, and, inArray, eq, desc, sql, type SQL } from "drizzle-orm";
+import { count, and, inArray, eq, desc, type SQL } from "drizzle-orm";
 import { Hono } from "hono";
 import { requireAuth } from "../../middleware/auth";
 
@@ -69,8 +69,7 @@ discoverRouter.get(
     const normalizedCity = city?.trim().toLowerCase();
 
     if (normalizedCity) conditions.push(eq(sql`lower(${volunteer.city})`, normalizedCity));
-    if (matchedVolunteerIds.length > 0)
-      conditions.push(inArray(volunteer.userId, matchedVolunteerIds));
+    if (matchedVolunteerIds.length > 0) conditions.push(inArray(volunteer.userId, matchedVolunteerIds));
 
     const condition =
       conditions.length === 0
@@ -125,7 +124,7 @@ discoverRouter.get(
           description: record.description,
           city: record.city,
           pastWorks: record.pastWorks,
-          tags: record.volunteerTags.map((item) => item.tag!),
+          tags: record.volunteerTags.map((item) => item.tag),
         })),
         total,
         page,
@@ -190,7 +189,7 @@ discoverRouter.get(
         description: volunteerRecord.description,
         city: volunteerRecord.city,
         pastWorks: volunteerRecord.pastWorks,
-        tags: volunteerRecord.volunteerTags.map((item) => item.tag!),
+        tags: volunteerRecord.volunteerTags.map((item) => item.tag),
       },
     });
   },

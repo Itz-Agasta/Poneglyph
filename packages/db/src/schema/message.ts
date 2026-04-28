@@ -81,7 +81,7 @@ export const message = pgTable(
   ],
 );
 
-export const messageUserRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(user, ({ many }) => ({
   conversationsAsParticipantOne: many(conversation, { relationName: "participantOne" }),
   conversationsAsParticipantTwo: many(conversation, { relationName: "participantTwo" }),
 }));

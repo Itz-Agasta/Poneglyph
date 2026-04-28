@@ -45,7 +45,7 @@ volunteerRouter.get("/me", requireAuth, async (c) => {
         pastWorks: volunteerRecord.pastWorks,
         isOpenToWork: volunteerRecord.isOpenToWork,
         wantsToStartOrg: volunteerRecord.wantsToStartOrg,
-        tags: volunteerRecord.volunteerTags.map((vt) => vt.tag!),
+        tags: volunteerRecord.volunteerTags.map((vt) => vt.tag),
       },
     },
     200,
@@ -119,7 +119,7 @@ volunteerRouter.post("/me", requireAuth, zValidator("json", VolunteerUpsertSchem
           .returning({ id: tags.id });
 
         if (result.length > 0) {
-          tagIds.push(result[0]!.id);
+          tagIds.push(result[0].id);
         }
       }
     }
@@ -169,7 +169,7 @@ volunteerRouter.post("/me", requireAuth, zValidator("json", VolunteerUpsertSchem
         pastWorks: updatedRecord.pastWorks,
         isOpenToWork: updatedRecord.isOpenToWork,
         wantsToStartOrg: updatedRecord.wantsToStartOrg,
-        tags: updatedRecord.volunteerTags.map((vt) => vt.tag!),
+        tags: updatedRecord.volunteerTags.map((vt) => vt.tag),
       },
     },
     200,
