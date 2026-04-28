@@ -1,22 +1,19 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
 import "./discover.css";
 import { VolunteerGrid } from "./_components/volunteer-grid";
 import { VolunteerFilters } from "./_components/volunteer-filters";
 import { DiscoverTabs } from "./_components/discover-tabs";
 
-type Props = {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
+export default function DiscoverPage() {
+  const searchParams = useSearchParams();
 
-export default async function DiscoverPage(props: Props) {
-  const searchParams = await props.searchParams;
-
-  const city = typeof searchParams.city === "string" ? searchParams.city : undefined;
-  const tags = typeof searchParams.tags === "string" ? searchParams.tags : undefined;
-  const page = typeof searchParams.page === "string" ? searchParams.page : "1";
-  const limit = typeof searchParams.limit === "string" ? searchParams.limit : "20";
-  const currentTab = typeof searchParams.type === "string" ? searchParams.type : "volunteers";
-
-  const suspenseKey = JSON.stringify({ city, tags, page, limit, currentTab });
+  const city = searchParams.get("city") ?? undefined;
+  const tags = searchParams.get("tags") ?? undefined;
+  const page = searchParams.get("page") ?? "1";
+  const limit = searchParams.get("limit") ?? "20";
+  const currentTab = searchParams.get("type") ?? "volunteers";
 
   return (
     <div className="discover-page">
