@@ -10,7 +10,7 @@ import { getSessionCookie } from "better-auth/cookies";
  * NOTE: We cannot call auth.api.getSession() here because auth lives on the
  * separate Hono server, not in this Next.js app.
  */
-export function proxy(request: NextRequest) {
+function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
 
   const { pathname } = request.nextUrl;
@@ -37,6 +37,8 @@ export function proxy(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+export default proxy;
 
 export const config = {
   matcher: [
