@@ -9,10 +9,6 @@ locals {
       value = var.better_auth_url
     },
     {
-      name  = "FRONTEND_URL"
-      value = var.cors_origin
-    },
-    {
       name  = "CORS_ORIGIN"
       value = var.cors_origin
     },
