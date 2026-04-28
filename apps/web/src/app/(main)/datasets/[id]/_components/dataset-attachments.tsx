@@ -29,6 +29,12 @@ export function DatasetAttachments({ datasetId, attachments }: Props) {
       <ul className="divide-y divide-border">
         {attachments.map((attachment) => {
           const fileBase = `/api/datasets/${datasetId}/files/${attachment.index}`;
+          const fileName = `file-${attachment.index + 1}.${attachment.fileType.toLowerCase()}`;
+          const isPdf = attachment.fileType.toLowerCase() === "pdf";
+          const previewHref = isPdf
+            ? `/pdf/${datasetId}?src=${encodeURIComponent(fileBase)}&title=${encodeURIComponent(fileName)}`
+            : fileBase;
+
           return (
             <li
               key={attachment.index}
@@ -47,13 +53,20 @@ export function DatasetAttachments({ datasetId, attachments }: Props) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                <a href={fileBase} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={previewHref}
+                  target={isPdf ? undefined : "_blank"}
+                  rel={isPdf ? undefined : "noopener noreferrer"}
+                >
                   <Button variant="ghost" size="sm" className="gap-1.5">
                     <IconEye className="size-3.5" />
                     Preview
                   </Button>
                 </a>
-                <a href={`${fileBase}?download=true`} download>
+                <a
+                  href={`${fileBase}?download=true`}
+                  download={fileName}
+                >
                   <Button variant="outline" size="sm" className="gap-1.5">
                     <IconDownload className="size-3.5" />
                     Download
