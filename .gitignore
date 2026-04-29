@@ -78,3 +78,5 @@ graphify-out/
 # Local agent instructions
 AGENTS.md
 .tmp/
+.graphify_cached.json
+.graphify_uncached.txt

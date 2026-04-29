@@ -4,10 +4,10 @@ This Terraform stack deploys `apps/server` and `apps/workers/upload-worker` to G
 
 ## Deployed Services
 
-| Service                   | Description                          | URL                               |
-| ------------------------- | ------------------------------------ | --------------------------------- |
-| `poneglyph-server`        | Main API server (Hono)               | Internal (Not public yet)         |
-| `poneglyph-upload-worker` | Upload processing worker (Rust/AXum) | Internal (Pub/Sub triggered)      |
+| Service                   | Description                          | URL                          |
+| ------------------------- | ------------------------------------ | ---------------------------- |
+| `poneglyph-server`        | Main API server (Hono)               | Internal (Not public yet)    |
+| `poneglyph-upload-worker` | Upload processing worker (Rust/AXum) | Internal (Pub/Sub triggered) |
 
 ## Resources Created
 
