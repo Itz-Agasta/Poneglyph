@@ -1,12 +1,19 @@
 terraform {
+  cloud {
+    organization = "vyse"
+
+    workspaces {
+      name = "poneglyph-prod"
+    }
+  }
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 6.0.0, < 8.0.0"
+      version = "7.30.0"
     }
   }
 
-  required_version = ">= 1.3"
+  required_version = "1.14.9"
 }
 
 provider "google" {
