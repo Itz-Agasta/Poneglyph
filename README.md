@@ -1,101 +1,95 @@
-# Poneglyph
+![thumbnail](./docs/imgs/thumbnail.png)
 
-## Features
+<p align="center">
+  <img src="https://img.shields.io/badge/Google%20Solution%20Challenge-2026-blue?style=for-the-badge" alt="Google Solution Challenge 2026" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License" />
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Hono-E36002?style=for-the-badge" alt="Hono" />
+  <img src="https://img.shields.io/badge/Bun-FBF0DF?style=for-the-badge&logo=bun&logoColor=black" alt="Bun" />
+  <img src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" />
+  <img src="https://img.shields.io/badge/Google%20Gemini-886FBF?style=for-the-badge" alt="Google Gemini" />
+  <img src="https://img.shields.io/badge/Vercel%20AI%20SDK-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel AI SDK" />
+  <img src="https://img.shields.io/badge/Better%20Auth-000000?style=for-the-badge" alt="Better Auth" />
+  <img src="https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white" alt="Turborepo" />
+  <img src="https://img.shields.io/badge/Google%20Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="Google Cloud" />
+  <img src="https://img.shields.io/badge/Google%20Pub%2FSub-4285F4?style=for-the-badge" alt="Google Pub/Sub" />
+  <img src="https://img.shields.io/badge/Terraform-844FBA?style=for-the-badge&logo=terraform&logoColor=white" alt="Terraform" />
+</p>
 
-- **TypeScript** - For type safety and improved developer experience
-- **Next.js** - Full-stack React framework
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **Shared UI package** - shadcn/ui primitives live in `packages/ui`
-- **Hono** - Lightweight, performant server framework
-- **Bun** - Runtime environment
-- **Drizzle** - TypeScript-first ORM
-- **PostgreSQL** - Database engine
-- **Authentication** - Better-Auth
-- **Oxlint** - Oxlint + Oxfmt (linting & formatting)
-- **Turborepo** - Optimized monorepo build system
+<h1 align="center">Poneglyph</h1>
 
-## Getting Started
+<p align="center">
+  <strong>A unified platform for open data discovery, AI-powered research, and volunteer-driven data collection.</strong>
+  <br />
+  <em>Think of it as GitHub for survey data  where organizations publish, volunteers contribute, and AI agents analyze.</em>
+</p>
 
-First, install the dependencies:
+<p align="center">
+  <a href="https://youtu.be/9IbQkpQFVAs">View Demo</a>
+  ·
+  <a href="https://github.com/Itz-Agasta/poneglyph/issues">Report Bug</a>
+  ·
+  <a href="https://github.com/Itz-Agasta/poneglyph/issues">Request Feature</a>
+  ·
+  <a href="https://github.com/Itz-Agasta/poneglyph/pulls">Send a Pull Request</a>
+</p>
 
-```bash
-bun install
-```
+---
 
-## Database Setup
+## Overview
 
-This project uses PostgreSQL with Drizzle ORM.
+Today, survey and research data is scattered across dozens of platforms, difficult to navigate, and nearly impossible to turn into actionable insight. Poneglyph solves this by bringing **50+ open data sources** into a single, searchable platform and layering AI research agents on top so users can ask questions, analyze datasets, and extract meaningful insights without manual effort.
 
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/server/.env` file with your PostgreSQL connection details.
+### Key Capabilities
 
-3. Apply the schema to your database:
+- **Unified Data Library** — Search, explore, and understand datasets from 50+ external sources in one place, with semantic vector search powered by pgvector HNSW indexes.
+- **AI Research Agents** — Chat with your data. Ask natural-language questions and get synthesized answers backed by multi-source analysis using Google Gemini, Groq, and Tavily.
+- **Volunteer Collaboration** — Organizations can post fieldwork opportunities, accept volunteer applications, and manage data collection campaigns, all on-platform.
+- **Dual Collection Modes** — Hire real volunteers for on-the-ground work, or run fully automated survey campaigns using AI agent swarms.
+- **Incentive System** — A digital currency framework rewards contributors for their work, redeemable for platform benefits.
+- **SEO-Optimized Discoverability** — Datasets are structured for organic search, driving a freemium + lead generation model (free exploration, login-gated downloads).
 
-```bash
-bun run db:push
-```
+---
 
-Then, run the development server:
+## How Organizations use Poneglyph
 
-```bash
-bun run dev
-```
+![How orgs use poneglyph](./docs/imgs/orgs.png)
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
+## How Volunteers use Poneglyph
 
-## UI Customization
+![How volunteers use poneglyph](./docs/imgs/volunteer2.png)
 
-React web apps in this stack share shadcn/ui primitives through `packages/ui`.
+---
 
-- Change design tokens and global styles in `packages/ui/src/styles/globals.css`
-- Update shared primitives in `packages/ui/src/components/*`
-- Adjust shadcn aliases or style config in `packages/ui/components.json` and `apps/web/components.json`
+## Watch our Demo
 
-### Add more shared components
+[![Watch the demo](./docs/imgs/demo.png)](https://drive.google.com/file/d/1YKA0lxptWLse_9OqTN5ll4SFlsFxU33z/view?usp=sharing)
 
-Run this from the project root to add more primitives to the shared UI package:
+## Architecture
 
-```bash
-npx shadcn@latest add accordion dialog popover sheet table -c packages/ui
-```
+Poneglyph is a **Turborepo monorepo** with a polyglot architecture. TypeScript for the web and API layer, Rust for high-performance data workers.
 
-Import shared components like this:
+![Architecture](./docs/imgs/arch.png)
 
-```tsx
-import { Button } from "@Poneglyph/ui/components/button";
-```
+### Tech Stack
 
-### Add app-specific blocks
+| Layer             | Technology                                                             |
+| ----------------- | ---------------------------------------------------------------------- |
+| **Frontend**      | Next.js 16, React 19, TailwindCSS v4, shadcn/ui, D3.js, Recharts, GSAP |
+| **API**           | Hono, Bun runtime, Vercel AI SDK (v6)                                  |
+| **AI/ML**         | Google Gemini, Groq, Tavily, pgvector (768-dim HNSW)                   |
+| **Auth**          | Better Auth, Resend (email)                                            |
+| **Database**      | PostgreSQL, Drizzle ORM                                                |
+| **Workers**       | Rust (Tokio, SQLx, Lapin)                                              |
+| **Message Queue** | Google Pub/Sub                                                         |
+| **Storage**       | Cloudflare R2                                                          |
+| **Infra**         | Terraform, Google Cloud Run                                            |
+| **Tooling**       | Turborepo, TypeScript, Zod, oxfmt, oxlint                              |
 
-If you want to add app-specific blocks instead of shared primitives, run the shadcn CLI from `apps/web`.
+---
 
-## Git Hooks and Formatting
+## Contact
 
-- Format and lint fix: `bun run check`
-
-## Project Structure
-
-```
-Poneglyph/
-├── apps/
-│   ├── web/         # Frontend application (Next.js)
-│   └── server/      # Backend API (Hono)
-├── packages/
-│   ├── ui/          # Shared shadcn/ui components and styles
-│   ├── auth/        # Authentication configuration & logic
-│   └── db/          # Database schema & queries
-```
-
-## Available Scripts
-
-- `bun run dev`: Start all applications in development mode
-- `bun run build`: Build all applications
-- `bun run dev:web`: Start only the web application
-- `bun run dev:server`: Start only the server
-- `bun run check-types`: Check TypeScript types across all apps
-- `bun run db:push`: Push schema changes to database
-- `bun run db:generate`: Generate database client/types
-- `bun run db:migrate`: Run database migrations
-- `bun run db:studio`: Open database studio UI
-- `bun run check`: Run Oxlint and Oxfmt
+This project is licensed under the [MIT License](LICENSE). For questions or feedback, reach out at [rupam.golui@proton.me](mailto:rupam.golui@proton.me).
